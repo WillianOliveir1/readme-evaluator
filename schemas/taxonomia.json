@@ -1,0 +1,206 @@
+{
+  "metadados": {
+    "nome_repositorio": "",
+    "link_repositorio": "",
+    "link_readme_raw": "",
+    "data_avaliacao": "",
+    "avaliador": "",
+    "observacoes_gerais": ""
+  },
+  "sumario_estrutural": {
+    "secoes_detectadas": [],
+    "categorias_presentes": {
+      "what": "",
+      "why": "",
+      "how_instalacao": "",
+      "how_uso": "",
+      "how_config_requisitos": "",
+      "when": "",
+      "who": "",
+      "license": "",
+      "contribution": "",
+      "references": "",
+      "other": ""
+    },
+    "observacoes_organizacao": ""
+  },
+  "categorias": {
+    "what": {
+      "checklist": {
+        "descricao_clara": "",
+        "escopo_funcionalidades": "",
+        "publico_alvo": ""
+      },
+      "qualidade": {
+        "clarity": 0,
+        "understandability": 0,
+        "conciseness": 0,
+        "consistency": 0
+      },
+      "evidencias": [],
+      "justificativas": [],
+      "melhorias_sugeridas": []
+    },
+    "why": {
+      "checklist": {
+        "proposito_explicito": "",
+        "beneficios_vs_alternativas": "",
+        "casos_uso": ""
+      },
+      "qualidade": {
+        "clarity": 0,
+        "effectiveness": 0,
+        "appeal": 0
+      },
+      "evidencias": [],
+      "justificativas": [],
+      "melhorias_sugeridas": []
+    },
+    "how_instalacao": {
+      "checklist": {
+        "comandos_reproduziveis": "",
+        "requisitos_compatibilidade": "",
+        "dependencias": ""
+      },
+      "qualidade": {
+        "structure": 0,
+        "readability": 0,
+        "clarity": 0
+      },
+      "evidencias": [],
+      "justificativas": [],
+      "melhorias_sugeridas": []
+    },
+    "how_uso": {
+      "checklist": {
+        "mwe": "",
+        "exemplos_io": "",
+        "comandos_api_contexto": ""
+      },
+      "qualidade": {
+        "understandability": 0,
+        "readability_codigo": 0,
+        "effectiveness": 0
+      },
+      "evidencias": [],
+      "justificativas": [],
+      "melhorias_sugeridas": []
+    },
+    "how_config_requisitos": {
+      "checklist": {
+        "config_documentada": "",
+        "parametros_opcoes": "",
+        "troubleshooting": ""
+      },
+      "qualidade": {
+        "clarity": 0,
+        "structure": 0,
+        "conciseness": 0
+      },
+      "evidencias": [],
+      "justificativas": [],
+      "melhorias_sugeridas": []
+    },
+    "when": {
+      "checklist": {
+        "status_atual": "",
+        "roadmap": "",
+        "changelog": ""
+      },
+      "qualidade": {
+        "clarity": 0,
+        "consistency": 0
+      },
+      "evidencias": [],
+      "justificativas": [],
+      "melhorias_sugeridas": []
+    },
+    "who": {
+      "checklist": {
+        "autores_maintainers": "",
+        "canais_contato": "",
+        "codigo_conduta": ""
+      },
+      "qualidade": {
+        "clarity": 0,
+        "consistency": 0
+      },
+      "evidencias": [],
+      "justificativas": [],
+      "melhorias_sugeridas": []
+    },
+    "license": {
+      "checklist": {
+        "tipo_licenca": "",
+        "link_license": ""
+      },
+      "qualidade": {
+        "clarity": 0,
+        "consistency": 0
+      },
+      "evidencias": [],
+      "justificativas": [],
+      "melhorias_sugeridas": []
+    },
+    "contribution": {
+      "checklist": {
+        "link_contributing": "",
+        "passos_contribuicao": "",
+        "padroes": ""
+      },
+      "qualidade": {
+        "structure": 0,
+        "clarity": 0,
+        "readability": 0
+      },
+      "evidencias": [],
+      "justificativas": [],
+      "melhorias_sugeridas": []
+    },
+    "references": {
+      "checklist": {
+        "link_docs": "",
+        "referencias_relevantes": "",
+        "faq_suporte": ""
+      },
+      "qualidade": {
+        "effectiveness": 0,
+        "clarity": 0
+      },
+      "evidencias": [],
+      "justificativas": [],
+      "melhorias_sugeridas": []
+    },
+    "other": {
+      "checklist": {
+        "secoes_genericas": "",
+        "placeholders": ""
+      },
+      "acao": {
+        "reclassificar": false,
+        "sugerir_remocao": false
+      },
+      "evidencias": [],
+      "melhorias_sugeridas": []
+    }
+  },
+  "sintese_dimensoes": {
+    "quality": 0,
+    "appeal": 0,
+    "readability": 0,
+    "understandability": 0,
+    "structure": 0,
+    "cohesion": 0,
+    "conciseness": 0,
+    "effectiveness": 0,
+    "consistency": 0,
+    "clarity": 0,
+    "observacoes_globais": ""
+  },
+  "resumo_executivo": {
+    "pontos_fortes": [],
+    "pontos_fracos": [],
+    "lacunas_criticas": [],
+    "recomendacoes_prioritarias": []
+  }
+}
