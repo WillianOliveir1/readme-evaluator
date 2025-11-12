@@ -1,20 +1,20 @@
 {
-  "metadados": {
-    "nome_repositorio": "",
-    "link_repositorio": "",
-    "link_readme_raw": "",
-    "data_avaliacao": "",
-    "avaliador": "",
-    "observacoes_gerais": ""
+  "metadata": {
+    "repository_name": "",
+    "repository_link": "",
+    "readme_raw_link": "",
+    "evaluation_date": "",
+    "evaluator": "",
+    "general_notes": ""
   },
-  "sumario_estrutural": {
-    "secoes_detectadas": [],
-    "categorias_presentes": {
+  "structural_summary": {
+    "detected_sections": [],
+    "present_categories": {
       "what": "",
       "why": "",
-      "how_instalacao": "",
-      "how_uso": "",
-      "how_config_requisitos": "",
+      "how_installation": "",
+      "how_usage": "",
+      "how_config_requirements": "",
       "when": "",
       "who": "",
       "license": "",
@@ -22,169 +22,169 @@
       "references": "",
       "other": ""
     },
-    "observacoes_organizacao": ""
+    "organization_notes": ""
   },
-  "categorias": {
+  "categories": {
     "what": {
       "checklist": {
-        "descricao_clara": "",
-        "escopo_funcionalidades": "",
-        "publico_alvo": ""
+        "clear_description": "",
+        "scope_features": "",
+        "target_audience": ""
       },
-      "qualidade": {
+      "quality": {
         "clarity": 0,
         "understandability": 0,
         "conciseness": 0,
         "consistency": 0
       },
-      "evidencias": [],
-      "justificativas": [],
-      "melhorias_sugeridas": []
+      "evidences": [],
+      "justifications": [],
+      "suggested_improvements": []
     },
     "why": {
       "checklist": {
-        "proposito_explicito": "",
-        "beneficios_vs_alternativas": "",
-        "casos_uso": ""
+        "explicit_purpose": "",
+        "benefits_vs_alternatives": "",
+        "use_cases": ""
       },
-      "qualidade": {
+      "quality": {
         "clarity": 0,
         "effectiveness": 0,
         "appeal": 0
       },
-      "evidencias": [],
-      "justificativas": [],
-      "melhorias_sugeridas": []
+      "evidences": [],
+      "justifications": [],
+      "suggested_improvements": []
     },
-    "how_instalacao": {
+    "how_installation": {
       "checklist": {
-        "comandos_reproduziveis": "",
-        "requisitos_compatibilidade": "",
-        "dependencias": ""
+        "reproducible_commands": "",
+        "compatibility_requirements": "",
+        "dependencies": ""
       },
-      "qualidade": {
+      "quality": {
         "structure": 0,
         "readability": 0,
         "clarity": 0
       },
-      "evidencias": [],
-      "justificativas": [],
-      "melhorias_sugeridas": []
+      "evidences": [],
+      "justifications": [],
+      "suggested_improvements": []
     },
-    "how_uso": {
+    "how_usage": {
       "checklist": {
-        "mwe": "",
-        "exemplos_io": "",
-        "comandos_api_contexto": ""
+        "minimal_working_example": "",
+        "io_examples": "",
+        "api_commands_context": ""
       },
-      "qualidade": {
+      "quality": {
         "understandability": 0,
-        "readability_codigo": 0,
+        "code_readability": 0,
         "effectiveness": 0
       },
-      "evidencias": [],
-      "justificativas": [],
-      "melhorias_sugeridas": []
+      "evidences": [],
+      "justifications": [],
+      "suggested_improvements": []
     },
-    "how_config_requisitos": {
+    "how_config_requirements": {
       "checklist": {
-        "config_documentada": "",
-        "parametros_opcoes": "",
+        "documented_configuration": "",
+        "parameters_options": "",
         "troubleshooting": ""
       },
-      "qualidade": {
+      "quality": {
         "clarity": 0,
         "structure": 0,
         "conciseness": 0
       },
-      "evidencias": [],
-      "justificativas": [],
-      "melhorias_sugeridas": []
+      "evidences": [],
+      "justifications": [],
+      "suggested_improvements": []
     },
     "when": {
       "checklist": {
-        "status_atual": "",
+        "current_status": "",
         "roadmap": "",
         "changelog": ""
       },
-      "qualidade": {
+      "quality": {
         "clarity": 0,
         "consistency": 0
       },
-      "evidencias": [],
-      "justificativas": [],
-      "melhorias_sugeridas": []
+      "evidences": [],
+      "justifications": [],
+      "suggested_improvements": []
     },
     "who": {
       "checklist": {
-        "autores_maintainers": "",
-        "canais_contato": "",
-        "codigo_conduta": ""
+        "authors_maintainers": "",
+        "contact_channels": "",
+        "code_of_conduct": ""
       },
-      "qualidade": {
+      "quality": {
         "clarity": 0,
         "consistency": 0
       },
-      "evidencias": [],
-      "justificativas": [],
-      "melhorias_sugeridas": []
+      "evidences": [],
+      "justifications": [],
+      "suggested_improvements": []
     },
     "license": {
       "checklist": {
-        "tipo_licenca": "",
-        "link_license": ""
+        "license_type": "",
+        "license_link": ""
       },
-      "qualidade": {
+      "quality": {
         "clarity": 0,
         "consistency": 0
       },
-      "evidencias": [],
-      "justificativas": [],
-      "melhorias_sugeridas": []
+      "evidences": [],
+      "justifications": [],
+      "suggested_improvements": []
     },
     "contribution": {
       "checklist": {
-        "link_contributing": "",
-        "passos_contribuicao": "",
-        "padroes": ""
+        "contributing_link": "",
+        "contribution_steps": "",
+        "standards": ""
       },
-      "qualidade": {
+      "quality": {
         "structure": 0,
         "clarity": 0,
         "readability": 0
       },
-      "evidencias": [],
-      "justificativas": [],
-      "melhorias_sugeridas": []
+      "evidences": [],
+      "justifications": [],
+      "suggested_improvements": []
     },
     "references": {
       "checklist": {
-        "link_docs": "",
-        "referencias_relevantes": "",
-        "faq_suporte": ""
+        "docs_link": "",
+        "relevant_references": "",
+        "faq_support": ""
       },
-      "qualidade": {
+      "quality": {
         "effectiveness": 0,
         "clarity": 0
       },
-      "evidencias": [],
-      "justificativas": [],
-      "melhorias_sugeridas": []
+      "evidences": [],
+      "justifications": [],
+      "suggested_improvements": []
     },
     "other": {
       "checklist": {
-        "secoes_genericas": "",
+        "generic_sections": "",
         "placeholders": ""
       },
-      "acao": {
-        "reclassificar": false,
-        "sugerir_remocao": false
+      "action": {
+        "reclassify": false,
+        "suggest_removal": false
       },
-      "evidencias": [],
-      "melhorias_sugeridas": []
+      "evidences": [],
+      "suggested_improvements": []
     }
   },
-  "sintese_dimensoes": {
+  "dimensions_summary": {
     "quality": 0,
     "appeal": 0,
     "readability": 0,
@@ -195,12 +195,12 @@
     "effectiveness": 0,
     "consistency": 0,
     "clarity": 0,
-    "observacoes_globais": ""
+    "global_notes": ""
   },
-  "resumo_executivo": {
-    "pontos_fortes": [],
-    "pontos_fracos": [],
-    "lacunas_criticas": [],
-    "recomendacoes_prioritarias": []
+  "executive_summary": {
+    "strengths": [],
+    "weaknesses": [],
+    "critical_gaps": [],
+    "priority_recommendations": []
   }
 }

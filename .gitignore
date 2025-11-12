@@ -1,0 +1,82 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+build/
+dist/
+downloads/
+eggs/
+.eggs/
+*.egg-info/
+pip-wheel-metadata/
+
+# Virtual environments
+.env
+.env.example
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# Python tool caches
+.tox/
+.nox/
+.pytest_cache/
+.mypy_cache/
+.pyright/
+.pyre/
+.coverage
+coverage.xml
+htmlcov/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Jupyter
+.ipynb_checkpoints
+
+# Logs and temp files
+*.log
+tmp/
+temp/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-lock.yaml
+package-lock.json
+
+# OneDrive and Office temp
+~$*
+
+# Secrets and local config
+.env
+secrets.json
+local_settings.py
+
+# Frontend build artifacts
+frontend/.next/
+frontend/.cache/
+frontend/build/
+frontend/dist/
+
+# PyInstaller
+*.manifest
+*.spec

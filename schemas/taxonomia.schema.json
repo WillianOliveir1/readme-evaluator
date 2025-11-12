@@ -1,72 +1,123 @@
 {
   "type": "object",
   "additionalProperties": false,
-  "required": ["metadados", "sumario_estrutural", "categorias", "sintese_dimensoes", "resumo_executivo"],
+  "required": [
+    "metadata",
+    "structural_summary",
+    "categories",
+    "dimensions_summary",
+    "executive_summary"
+  ],
   "properties": {
-    "metadados": {
+    "metadata": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["nome_repositorio", "link_repositorio", "link_readme_raw", "data_avaliacao", "avaliador", "observacoes_gerais"],
+      "required": [
+        "repository_name",
+        "repository_link",
+        "readme_raw_link",
+        "evaluation_date",
+        "evaluator",
+        "general_observations"
+      ],
       "properties": {
-        "nome_repositorio": { "type": "string" },
-        "link_repositorio": { "type": "string" },
-        "link_readme_raw": { "type": "string" },
-        "data_avaliacao": { "type": "string" },
-        "avaliador": { "type": "string" },
-        "observacoes_gerais": { "type": "string" }
+        "repository_name": { "type": "string" },
+        "repository_link": { "type": "string" },
+        "readme_raw_link": { "type": "string" },
+        "evaluation_date": { "type": "string" },
+        "evaluator": { "type": "string" },
+        "general_observations": { "type": "string" }
       }
     },
-    "sumario_estrutural": {
+    "structural_summary": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["secoes_detectadas", "categorias_presentes", "observacoes_organizacao"],
+      "required": [
+        "detected_sections",
+        "present_categories",
+        "organization_observations"
+      ],
       "properties": {
-        "secoes_detectadas": { "type": "array", "items": { "type": "string" } },
-        "categorias_presentes": {
+        "detected_sections": { "type": "array", "items": { "type": "string" } },
+        "present_categories": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["what","why","how_instalacao","how_uso","how_config_requisitos","when","who","license","contribution","references","other"],
+          "required": [
+            "what",
+            "why",
+            "how_installation",
+            "how_usage",
+            "how_config_requirements",
+            "when",
+            "who",
+            "license",
+            "contribution",
+            "references",
+            "other"
+          ],
           "properties": {
-            "what": { "type": "string", "enum": ["✔","✖","N/A"] },
-            "why": { "type": "string", "enum": ["✔","✖","N/A"] },
-            "how_instalacao": { "type": "string", "enum": ["✔","✖","N/A"] },
-            "how_uso": { "type": "string", "enum": ["✔","✖","N/A"] },
-            "how_config_requisitos": { "type": "string", "enum": ["✔","✖","N/A"] },
-            "when": { "type": "string", "enum": ["✔","✖","N/A"] },
-            "who": { "type": "string", "enum": ["✔","✖","N/A"] },
-            "license": { "type": "string", "enum": ["✔","✖","N/A"] },
-            "contribution": { "type": "string", "enum": ["✔","✖","N/A"] },
-            "references": { "type": "string", "enum": ["✔","✖","N/A"] },
-            "other": { "type": "string", "enum": ["✔","✖","N/A"] }
+            "what": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+            "why": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+            "how_installation": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+            "how_usage": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+            "how_config_requirements": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+            "when": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+            "who": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+            "license": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+            "contribution": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+            "references": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+            "other": { "type": "string", "enum": ["✔", "✖", "N/A"] }
           }
         },
-        "observacoes_organizacao": { "type": "string" }
+        "organization_observations": { "type": "string" }
       }
     },
-    "categorias": {
+    "categories": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["what","why","how_instalacao","how_uso","how_config_requisitos","when","who","license","contribution","references","other"],
+      "required": [
+        "what",
+        "why",
+        "how_installation",
+        "how_usage",
+        "how_config_requirements",
+        "when",
+        "who",
+        "license",
+        "contribution",
+        "references",
+        "other"
+      ],
       "properties": {
         "what": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["checklist","qualidade","evidencias","justificativas","melhorias_sugeridas"],
+          "required": [
+            "checklist",
+            "quality",
+            "evidences",
+            "justifications",
+            "suggested_improvements"
+          ],
           "properties": {
             "checklist": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["descricao_clara","escopo_funcionalidades","publico_alvo"],
+              "required": [
+                "clear_description",
+                "features_scope",
+                "target_audience"
+              ],
               "properties": {
-                "descricao_clara": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "escopo_funcionalidades": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "publico_alvo": { "type": "string", "enum": ["✔","✖","N/A"] }
+                "clear_description": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "features_scope": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "target_audience": { "type": "string", "enum": ["✔", "✖", "N/A"] }
               }
             },
-            "qualidade": {
+            "quality": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["clarity","understandability","conciseness","consistency"],
+              "required": ["clarity", "understandability", "conciseness", "consistency"],
               "properties": {
                 "clarity": { "type": "integer", "minimum": 1, "maximum": 5 },
                 "understandability": { "type": "integer", "minimum": 1, "maximum": 5 },
@@ -74,309 +125,391 @@
                 "consistency": { "type": "integer", "minimum": 1, "maximum": 5 }
               }
             },
-            "evidencias": { "type": "array", "items": { "type": "string" } },
-            "justificativas": { "type": "array", "items": { "type": "string" } },
-            "melhorias_sugeridas": { "type": "array", "items": { "type": "string" } }
+            "evidences": { "type": "array", "items": { "type": "string" } },
+            "justifications": { "type": "array", "items": { "type": "string" } },
+            "suggested_improvements": { "type": "array", "items": { "type": "string" } }
           }
         },
         "why": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["checklist","qualidade","evidencias","justificativas","melhorias_sugeridas"],
+          "required": [
+            "checklist",
+            "quality",
+            "evidences",
+            "justifications",
+            "suggested_improvements"
+          ],
           "properties": {
             "checklist": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["proposito_explicito","beneficios_vs_alternativas","casos_uso"],
+              "required": [
+                "explicit_purpose",
+                "benefits_vs_alternatives",
+                "use_cases"
+              ],
               "properties": {
-                "proposito_explicito": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "beneficios_vs_alternativas": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "casos_uso": { "type": "string", "enum": ["✔","✖","N/A"] }
+                "explicit_purpose": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "benefits_vs_alternatives": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "use_cases": { "type": "string", "enum": ["✔", "✖", "N/A"] }
               }
             },
-            "qualidade": {
+            "quality": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["clarity","effectiveness","appeal"],
+              "required": ["clarity", "effectiveness", "appeal"],
               "properties": {
                 "clarity": { "type": "integer", "minimum": 1, "maximum": 5 },
                 "effectiveness": { "type": "integer", "minimum": 1, "maximum": 5 },
                 "appeal": { "type": "integer", "minimum": 1, "maximum": 5 }
               }
             },
-            "evidencias": { "type": "array", "items": { "type": "string" } },
-            "justificativas": { "type": "array", "items": { "type": "string" } },
-            "melhorias_sugeridas": { "type": "array", "items": { "type": "string" } }
+            "evidences": { "type": "array", "items": { "type": "string" } },
+            "justifications": { "type": "array", "items": { "type": "string" } },
+            "suggested_improvements": { "type": "array", "items": { "type": "string" } }
           }
         },
-        "how_instalacao": {
+        "how_installation": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["checklist","qualidade","evidencias","justificativas","melhorias_sugeridas"],
+          "required": [
+            "checklist",
+            "quality",
+            "evidences",
+            "justifications",
+            "suggested_improvements"
+          ],
           "properties": {
             "checklist": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["comandos_reproduziveis","requisitos_compatibilidade","dependencias"],
+              "required": [
+                "reproducible_commands",
+                "compatibility_requirements",
+                "dependencies"
+              ],
               "properties": {
-                "comandos_reproduziveis": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "requisitos_compatibilidade": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "dependencias": { "type": "string", "enum": ["✔","✖","N/A"] }
+                "reproducible_commands": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "compatibility_requirements": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "dependencies": { "type": "string", "enum": ["✔", "✖", "N/A"] }
               }
             },
-            "qualidade": {
+            "quality": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["structure","readability","clarity"],
+              "required": ["structure", "readability", "clarity"],
               "properties": {
                 "structure": { "type": "integer", "minimum": 1, "maximum": 5 },
                 "readability": { "type": "integer", "minimum": 1, "maximum": 5 },
                 "clarity": { "type": "integer", "minimum": 1, "maximum": 5 }
               }
             },
-            "evidencias": { "type": "array", "items": { "type": "string" } },
-            "justificativas": { "type": "array", "items": { "type": "string" } },
-            "melhorias_sugeridas": { "type": "array", "items": { "type": "string" } }
+            "evidences": { "type": "array", "items": { "type": "string" } },
+            "justifications": { "type": "array", "items": { "type": "string" } },
+            "suggested_improvements": { "type": "array", "items": { "type": "string" } }
           }
         },
-        "how_uso": {
+        "how_usage": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["checklist","qualidade","evidencias","justificativas","melhorias_sugeridas"],
+          "required": [
+            "checklist",
+            "quality",
+            "evidences",
+            "justifications",
+            "suggested_improvements"
+          ],
           "properties": {
             "checklist": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["mwe","exemplos_io","comandos_api_contexto"],
+              "required": [
+                "minimal_working_example",
+                "examples_io",
+                "api_commands_context"
+              ],
               "properties": {
-                "mwe": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "exemplos_io": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "comandos_api_contexto": { "type": "string", "enum": ["✔","✖","N/A"] }
+                "minimal_working_example": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "examples_io": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "api_commands_context": { "type": "string", "enum": ["✔", "✖", "N/A"] }
               }
             },
-            "qualidade": {
+            "quality": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["understandability","readability_codigo","effectiveness"],
+              "required": ["understandability", "code_readability", "effectiveness"],
               "properties": {
                 "understandability": { "type": "integer", "minimum": 1, "maximum": 5 },
-                "readability_codigo": { "type": "integer", "minimum": 1, "maximum": 5 },
+                "code_readability": { "type": "integer", "minimum": 1, "maximum": 5 },
                 "effectiveness": { "type": "integer", "minimum": 1, "maximum": 5 }
               }
             },
-            "evidencias": { "type": "array", "items": { "type": "string" } },
-            "justificativas": { "type": "array", "items": { "type": "string" } },
-            "melhorias_sugeridas": { "type": "array", "items": { "type": "string" } }
+            "evidences": { "type": "array", "items": { "type": "string" } },
+            "justifications": { "type": "array", "items": { "type": "string" } },
+            "suggested_improvements": { "type": "array", "items": { "type": "string" } }
           }
         },
-        "how_config_requisitos": {
+        "how_config_requirements": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["checklist","qualidade","evidencias","justificativas","melhorias_sugeridas"],
+          "required": [
+            "checklist",
+            "quality",
+            "evidences",
+            "justifications",
+            "suggested_improvements"
+          ],
           "properties": {
             "checklist": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["config_documentada","parametros_opcoes","troubleshooting"],
+              "required": [
+                "documented_configuration",
+                "parameters_options",
+                "troubleshooting"
+              ],
               "properties": {
-                "config_documentada": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "parametros_opcoes": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "troubleshooting": { "type": "string", "enum": ["✔","✖","N/A"] }
+                "documented_configuration": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "parameters_options": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "troubleshooting": { "type": "string", "enum": ["✔", "✖", "N/A"] }
               }
             },
-            "qualidade": {
+            "quality": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["clarity","structure","conciseness"],
+              "required": ["clarity", "structure", "conciseness"],
               "properties": {
                 "clarity": { "type": "integer", "minimum": 1, "maximum": 5 },
                 "structure": { "type": "integer", "minimum": 1, "maximum": 5 },
                 "conciseness": { "type": "integer", "minimum": 1, "maximum": 5 }
               }
             },
-            "evidencias": { "type": "array", "items": { "type": "string" } },
-            "justificativas": { "type": "array", "items": { "type": "string" } },
-            "melhorias_sugeridas": { "type": "array", "items": { "type": "string" } }
+            "evidences": { "type": "array", "items": { "type": "string" } },
+            "justifications": { "type": "array", "items": { "type": "string" } },
+            "suggested_improvements": { "type": "array", "items": { "type": "string" } }
           }
         },
         "when": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["checklist","qualidade","evidencias","justificativas","melhorias_sugeridas"],
+          "required": [
+            "checklist",
+            "quality",
+            "evidences",
+            "justifications",
+            "suggested_improvements"
+          ],
           "properties": {
             "checklist": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["status_atual","roadmap","changelog"],
+              "required": ["current_status", "roadmap", "changelog"],
               "properties": {
-                "status_atual": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "roadmap": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "changelog": { "type": "string", "enum": ["✔","✖","N/A"] }
+                "current_status": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "roadmap": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "changelog": { "type": "string", "enum": ["✔", "✖", "N/A"] }
               }
             },
-            "qualidade": {
+            "quality": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["clarity","consistency"],
+              "required": ["clarity", "consistency"],
               "properties": {
                 "clarity": { "type": "integer", "minimum": 1, "maximum": 5 },
                 "consistency": { "type": "integer", "minimum": 1, "maximum": 5 }
               }
             },
-            "evidencias": { "type": "array", "items": { "type": "string" } },
-            "justificativas": { "type": "array", "items": { "type": "string" } },
-            "melhorias_sugeridas": { "type": "array", "items": { "type": "string" } }
+            "evidences": { "type": "array", "items": { "type": "string" } },
+            "justifications": { "type": "array", "items": { "type": "string" } },
+            "suggested_improvements": { "type": "array", "items": { "type": "string" } }
           }
         },
         "who": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["checklist","qualidade","evidencias","justificativas","melhorias_sugeridas"],
+          "required": [
+            "checklist",
+            "quality",
+            "evidences",
+            "justifications",
+            "suggested_improvements"
+          ],
           "properties": {
             "checklist": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["autores_maintainers","canais_contato","codigo_conduta"],
+              "required": ["authors_maintainers", "contact_channels", "code_of_conduct"],
               "properties": {
-                "autores_maintainers": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "canais_contato": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "codigo_conduta": { "type": "string", "enum": ["✔","✖","N/A"] }
+                "authors_maintainers": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "contact_channels": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "code_of_conduct": { "type": "string", "enum": ["✔", "✖", "N/A"] }
               }
             },
-            "qualidade": {
+            "quality": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["clarity","consistency"],
+              "required": ["clarity", "consistency"],
               "properties": {
                 "clarity": { "type": "integer", "minimum": 1, "maximum": 5 },
                 "consistency": { "type": "integer", "minimum": 1, "maximum": 5 }
               }
             },
-            "evidencias": { "type": "array", "items": { "type": "string" } },
-            "justificativas": { "type": "array", "items": { "type": "string" } },
-            "melhorias_sugeridas": { "type": "array", "items": { "type": "string" } }
+            "evidences": { "type": "array", "items": { "type": "string" } },
+            "justifications": { "type": "array", "items": { "type": "string" } },
+            "suggested_improvements": { "type": "array", "items": { "type": "string" } }
           }
         },
         "license": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["checklist","qualidade","evidencias","justificativas","melhorias_sugeridas"],
+          "required": [
+            "checklist",
+            "quality",
+            "evidences",
+            "justifications",
+            "suggested_improvements"
+          ],
           "properties": {
             "checklist": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["tipo_licenca","link_license"],
+              "required": ["license_type", "license_link"],
               "properties": {
-                "tipo_licenca": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "link_license": { "type": "string", "enum": ["✔","✖","N/A"] }
+                "license_type": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "license_link": { "type": "string", "enum": ["✔", "✖", "N/A"] }
               }
             },
-            "qualidade": {
+            "quality": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["clarity","consistency"],
+              "required": ["clarity", "consistency"],
               "properties": {
                 "clarity": { "type": "integer", "minimum": 1, "maximum": 5 },
                 "consistency": { "type": "integer", "minimum": 1, "maximum": 5 }
               }
             },
-            "evidencias": { "type": "array", "items": { "type": "string" } },
-            "justificativas": { "type": "array", "items": { "type": "string" } },
-            "melhorias_sugeridas": { "type": "array", "items": { "type": "string" } }
+            "evidences": { "type": "array", "items": { "type": "string" } },
+            "justifications": { "type": "array", "items": { "type": "string" } },
+            "suggested_improvements": { "type": "array", "items": { "type": "string" } }
           }
         },
         "contribution": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["checklist","qualidade","evidencias","justificativas","melhorias_sugeridas"],
+          "required": [
+            "checklist",
+            "quality",
+            "evidences",
+            "justifications",
+            "suggested_improvements"
+          ],
           "properties": {
             "checklist": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["link_contributing","passos_contribuicao","padroes"],
+              "required": ["contributing_link", "contribution_steps", "standards"],
               "properties": {
-                "link_contributing": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "passos_contribuicao": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "padroes": { "type": "string", "enum": ["✔","✖","N/A"] }
+                "contributing_link": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "contribution_steps": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "standards": { "type": "string", "enum": ["✔", "✖", "N/A"] }
               }
             },
-            "qualidade": {
+            "quality": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["structure","clarity","readability"],
+              "required": ["structure", "clarity", "readability"],
               "properties": {
                 "structure": { "type": "integer", "minimum": 1, "maximum": 5 },
                 "clarity": { "type": "integer", "minimum": 1, "maximum": 5 },
                 "readability": { "type": "integer", "minimum": 1, "maximum": 5 }
               }
             },
-            "evidencias": { "type": "array", "items": { "type": "string" } },
-            "justificativas": { "type": "array", "items": { "type": "string" } },
-            "melhorias_sugeridas": { "type": "array", "items": { "type": "string" } }
+            "evidences": { "type": "array", "items": { "type": "string" } },
+            "justifications": { "type": "array", "items": { "type": "string" } },
+            "suggested_improvements": { "type": "array", "items": { "type": "string" } }
           }
         },
         "references": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["checklist","qualidade","evidencias","justificativas","melhorias_sugeridas"],
+          "required": [
+            "checklist",
+            "quality",
+            "evidences",
+            "justifications",
+            "suggested_improvements"
+          ],
           "properties": {
             "checklist": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["link_docs","referencias_relevantes","faq_suporte"],
+              "required": ["docs_link", "relevant_references", "support_faq"],
               "properties": {
-                "link_docs": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "referencias_relevantes": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "faq_suporte": { "type": "string", "enum": ["✔","✖","N/A"] }
+                "docs_link": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "relevant_references": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "support_faq": { "type": "string", "enum": ["✔", "✖", "N/A"] }
               }
             },
-            "qualidade": {
+            "quality": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["effectiveness","clarity"],
+              "required": ["effectiveness", "clarity"],
               "properties": {
                 "effectiveness": { "type": "integer", "minimum": 1, "maximum": 5 },
                 "clarity": { "type": "integer", "minimum": 1, "maximum": 5 }
               }
             },
-            "evidencias": { "type": "array", "items": { "type": "string" } },
-            "justificativas": { "type": "array", "items": { "type": "string" } },
-            "melhorias_sugeridas": { "type": "array", "items": { "type": "string" } }
+            "evidences": { "type": "array", "items": { "type": "string" } },
+            "justifications": { "type": "array", "items": { "type": "string" } },
+            "suggested_improvements": { "type": "array", "items": { "type": "string" } }
           }
         },
         "other": {
           "type": "object",
           "additionalProperties": false,
-          "required": ["checklist","acao","evidencias","melhorias_sugeridas"],
+          "required": ["checklist", "action", "evidences", "suggested_improvements"],
           "properties": {
             "checklist": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["secoes_genericas","placeholders"],
+              "required": ["generic_sections", "placeholders"],
               "properties": {
-                "secoes_genericas": { "type": "string", "enum": ["✔","✖","N/A"] },
-                "placeholders": { "type": "string", "enum": ["✔","✖","N/A"] }
+                "generic_sections": { "type": "string", "enum": ["✔", "✖", "N/A"] },
+                "placeholders": { "type": "string", "enum": ["✔", "✖", "N/A"] }
               }
             },
-            "acao": {
+            "action": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["reclassificar","sugerir_remocao"],
+              "required": ["reclassify", "suggest_removal"],
               "properties": {
-                "reclassificar": { "type": "boolean" },
-                "sugerir_remocao": { "type": "boolean" }
+                "reclassify": { "type": "boolean" },
+                "suggest_removal": { "type": "boolean" }
               }
             },
-            "evidencias": { "type": "array", "items": { "type": "string" } },
-            "melhorias_sugeridas": { "type": "array", "items": { "type": "string" } }
+            "evidences": { "type": "array", "items": { "type": "string" } },
+            "suggested_improvements": { "type": "array", "items": { "type": "string" } }
           }
         }
       }
     },
-    "sintese_dimensoes": {
+    "dimensions_summary": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["quality","appeal","readability","understandability","structure","cohesion","conciseness","effectiveness","consistency","clarity","observacoes_globais"],
+      "required": [
+        "quality",
+        "appeal",
+        "readability",
+        "understandability",
+        "structure",
+        "cohesion",
+        "conciseness",
+        "effectiveness",
+        "consistency",
+        "clarity",
+        "global_observations"
+      ],
       "properties": {
         "quality": { "type": "integer", "minimum": 1, "maximum": 5 },
         "appeal": { "type": "integer", "minimum": 1, "maximum": 5 },
@@ -388,18 +521,23 @@
         "effectiveness": { "type": "integer", "minimum": 1, "maximum": 5 },
         "consistency": { "type": "integer", "minimum": 1, "maximum": 5 },
         "clarity": { "type": "integer", "minimum": 1, "maximum": 5 },
-        "observacoes_globais": { "type": "string" }
+        "global_observations": { "type": "string" }
       }
     },
-    "resumo_executivo": {
+    "executive_summary": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["pontos_fortes","pontos_fracos","lacunas_criticas","recomendacoes_prioritarias"],
+      "required": [
+        "strengths",
+        "weaknesses",
+        "critical_gaps",
+        "priority_recommendations"
+      ],
       "properties": {
-        "pontos_fortes": { "type": "array", "items": { "type": "string" } },
-        "pontos_fracos": { "type": "array", "items": { "type": "string" } },
-        "lacunas_criticas": { "type": "array", "items": { "type": "string" } },
-        "recomendacoes_prioritarias": { "type": "array", "items": { "type": "string" } }
+        "strengths": { "type": "array", "items": { "type": "string" } },
+        "weaknesses": { "type": "array", "items": { "type": "string" } },
+        "critical_gaps": { "type": "array", "items": { "type": "string" } },
+        "priority_recommendations": { "type": "array", "items": { "type": "string" } }
       }
     }
   }
