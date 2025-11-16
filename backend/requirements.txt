@@ -18,7 +18,6 @@ hf-xet==1.2.0
 httpcore==1.0.9
 httptools==0.7.1
 httpx==0.28.1
-huggingface_hub==1.1.4
 idna==3.11
 jiter==0.12.0
 jsonschema==4.25.1
@@ -46,6 +45,5 @@ typing-inspection==0.4.2
 typing_extensions==4.15.0
 urllib3==2.5.0
 uvicorn==0.38.0
-uvloop==0.22.1
 watchfiles==1.1.1
 websockets==15.0.1

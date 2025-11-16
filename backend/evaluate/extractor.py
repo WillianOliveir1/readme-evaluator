@@ -2,10 +2,17 @@
 from __future__ import annotations
 
 import json
-from typing import Optional, Any, Dict
+import time
+from typing import Optional, Any, Dict, Callable
+import jsonschema
 
 from backend import prompt_builder
-from backend.hf_client import HuggingFaceClient
+from backend.gemini_client import GeminiClient
+from backend.evaluate.progress import ProgressTracker, ProgressStage, EvaluationResult
+from backend.evaluate.json_postprocessor import fix_string_arrays_in_json, remove_disallowed_category_fields
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def extract_json_from_readme(
@@ -13,45 +20,213 @@ def extract_json_from_readme(
     schema_path: str,
     example_json: Optional[Dict[str, Any]] = None,
     model: Optional[str] = None,
+    system_prompt: Optional[str] = None,
+    readme_path: Optional[str] = None,
     max_tokens: int = 2048,
     temperature: float = 0.0,
-) -> Dict[str, Any]:
+    progress_callback: Optional[Callable] = None,
+) -> EvaluationResult:
     """Build extraction prompt and call model (if model provided).
 
-    Returns a dict with keys:
+    Returns an EvaluationResult with:
       - prompt: the built prompt string
       - model_output: raw model response (if model provided)
       - parsed: parsed JSON object if output was valid JSON, else None
+      - progress_history: list of ProgressUpdate objects
+      - timing: dict with timing information
+      - tokens: dict with token usage
     """
-    schema_text = prompt_builder.PromptBuilder.load_schema_text(schema_path)
-
-    # Use PromptBuilder with explicit labels so the prompt sections are clearly named
-    pb = prompt_builder.PromptBuilder(schema=schema_text, readme=readme_text)
-    if example_json is not None:
+    # Initialize progress tracker
+    tracker = ProgressTracker(callback=progress_callback)
+    timing = {}
+    
+    try:
+        # Stage 1: Building Prompt
+        tracker.start_stage(ProgressStage.BUILDING_PROMPT, "Loading schema and building prompt...")
+        build_start = time.time()
+        
+        schema_text = prompt_builder.PromptBuilder.load_schema_text(schema_path)
+        # Try to parse the schema text into a JSON object for validation later
+        schema_obj = None
         try:
-            example_str = json.dumps(example_json, ensure_ascii=False, indent=2)
-        except (TypeError, ValueError):
-            example_str = str(example_json)
-        pb.add_part("example_json", example_str)
-
-    footer = (
-        "IMPORTANT: The model must output a single JSON object, valid according to the schema above. "
-        "No surrounding backticks, no markdown, no commentary."
-    )
-
-    prompt = pb.build(instruction=None, footer=footer)
-
-    result = {"prompt": prompt}
-
-    if model:
-        client = HuggingFaceClient()
-        raw = client.generate(prompt, model=model, max_tokens=max_tokens, temperature=temperature)
-        result["model_output"] = raw
-        # try to parse JSON
-        try:
-            parsed = json.loads(raw)
-            result["parsed"] = parsed
+            schema_obj = __import__("json").loads(schema_text) if schema_text else None
         except Exception:
-            result["parsed"] = None
+            schema_obj = None
 
-    return result
+        # Log diagnostics
+        try:
+            logging.info("extract_json_from_readme: readme_text length=%d", len(readme_text) if readme_text is not None else 0)
+            if readme_text:
+                logging.debug("extract_json_from_readme: readme_text snippet: %s", readme_text[:400].replace('\n', ' '))
+        except Exception:
+            pass
+
+        # Build prompt using PromptBuilder
+        pb = prompt_builder.PromptBuilder(template_header=system_prompt or None, schema=schema_text, readme=readme_text)
+        
+        if readme_path:
+            try:
+                pb.add_part("readme_path", readme_path)
+            except Exception:
+                pass
+        
+        if example_json is not None:
+            try:
+                example_str = json.dumps(example_json, ensure_ascii=False, indent=2)
+            except (TypeError, ValueError):
+                example_str = str(example_json)
+            pb.add_part("example_json", example_str)
+
+        footer = (
+            "IMPORTANT: The model must output a single JSON object, valid according to the schema above. "
+            "No surrounding backticks, no markdown, no commentary."
+        )
+
+        prompt = pb.build(instruction=None, footer=footer)
+        timing["prompt_build"] = time.time() - build_start
+        
+        # Log prompt info
+        try:
+            snippet = prompt[:1000].replace('\n', ' ') if prompt else ''
+            logger.info("extractor: built prompt length=%d", len(prompt))
+        except Exception:
+            logger.exception("extractor: failed to log prompt preview")
+
+        tracker.complete_stage(ProgressStage.BUILDING_PROMPT, f"Prompt built ({len(prompt)} chars)")
+        
+        # Create result object
+        result_obj = EvaluationResult(
+            success=True,
+            prompt=prompt,
+            timing=timing,
+        )
+
+        # Stage 2: Call Model (if provided)
+        if model:
+            tracker.start_stage(ProgressStage.CALLING_MODEL, f"Calling {model}...")
+            model_start = time.time()
+            
+            try:
+                client = GeminiClient()
+                raw = client.generate(prompt, model=model, max_tokens=max_tokens, temperature=temperature)
+                result_obj.model_output = raw
+                timing["model_call"] = time.time() - model_start
+                
+                if not raw or not raw.strip():
+                    # Empty response from model
+                    tracker.error_stage(ProgressStage.CALLING_MODEL, "Empty response from model", "Model returned empty output")
+                    tracker.start_stage(ProgressStage.PARSING_JSON, "JSON parsing skipped (empty model output)")
+                    tracker.complete_stage(ProgressStage.PARSING_JSON, "JSON parsing skipped")
+                    tracker.start_stage(ProgressStage.VALIDATING, "Validation skipped (no parsed JSON)")
+                    tracker.complete_stage(ProgressStage.VALIDATING, "Validation skipped")
+                    result_obj.recovery_suggestions.append("Model returned empty response. Check API key, rate limits, or try again.")
+                else:
+                    tracker.complete_stage(
+                        ProgressStage.CALLING_MODEL,
+                        f"Model responded ({len(raw)} chars)",
+                        details={"response_length": len(raw)}
+                    )
+                    
+                    # Stage 3: Parse JSON
+                    tracker.start_stage(ProgressStage.PARSING_JSON, "Parsing JSON response...")
+                    parse_start = time.time()
+                    
+                    try:
+                        # Remove markdown backticks if present
+                        raw_cleaned = raw.strip()
+                        if raw_cleaned.startswith("```json"):
+                            raw_cleaned = raw_cleaned[7:]
+                        elif raw_cleaned.startswith("```"):
+                            raw_cleaned = raw_cleaned[3:]
+                        
+                        if raw_cleaned.endswith("```"):
+                            raw_cleaned = raw_cleaned[:-3]
+                        
+                        raw_cleaned = raw_cleaned.strip()
+                        
+                        # Parse JSON
+                        parsed = json.loads(raw_cleaned)
+                        
+                        # Apply post-processing to fix string → array conversions
+                        parsed = fix_string_arrays_in_json(parsed)
+                        
+                        # Remove fields not allowed in specific categories
+                        parsed = remove_disallowed_category_fields(parsed)
+                        
+                        result_obj.parsed = parsed
+                        timing["parsing"] = time.time() - parse_start
+                        tracker.complete_stage(ProgressStage.PARSING_JSON, "JSON parsed and fixed successfully")
+                    except json.JSONDecodeError as e:
+                        result_obj.parsed = None
+                        timing["parsing"] = time.time() - parse_start
+                        logger.error("JSON decode error: %s, raw length: %d, raw snippet: %s", str(e), len(raw), raw[:200])
+                        tracker.error_stage(ProgressStage.PARSING_JSON, str(e), "Failed to parse JSON")
+                        result_obj.recovery_suggestions.append("Model output was not valid JSON. Try with a different model or adjust temperature.")
+
+                    # Stage 4: Validate
+                    if result_obj.parsed is not None:
+                        tracker.start_stage(ProgressStage.VALIDATING, "Validating against schema...")
+                        validate_start = time.time()
+                        
+                        if schema_obj is not None:
+                            try:
+                                jsonschema.validate(instance=result_obj.parsed, schema=schema_obj)
+                                result_obj.validation_ok = True
+                                result_obj.validation_errors = None
+                                timing["validation"] = time.time() - validate_start
+                                tracker.complete_stage(ProgressStage.VALIDATING, "Schema validation passed")
+                            except jsonschema.ValidationError as ve:
+                                result_obj.validation_ok = False
+                                try:
+                                    err_path = list(ve.path)
+                                except Exception:
+                                    err_path = []
+                                result_obj.validation_errors = {
+                                    "message": str(ve.message),
+                                    "path": err_path,
+                                }
+                                timing["validation"] = time.time() - validate_start
+                                tracker.error_stage(
+                                    ProgressStage.VALIDATING,
+                                    f"Schema validation failed at {err_path}",
+                                    message="Schema validation failed"
+                                )
+                                result_obj.recovery_suggestions.append(f"Field validation failed at: {'.'.join(map(str, err_path))}")
+                        else:
+                            result_obj.validation_ok = None
+                            result_obj.validation_errors = None
+                    else:
+                        tracker.start_stage(ProgressStage.VALIDATING, "Validation skipped (no valid JSON)")
+                        tracker.complete_stage(ProgressStage.VALIDATING, "Validation skipped")
+                
+            except Exception as e:
+                logger.exception("Model call error: %s", str(e))
+                tracker.error_stage(ProgressStage.CALLING_MODEL, str(e), f"Error calling model: {type(e).__name__}")
+                result_obj.recovery_suggestions.append(f"Model call failed: {str(e)}")
+        else:
+            # No model provided - skip calling model and parsing
+            tracker.start_stage(ProgressStage.CALLING_MODEL, "Model call skipped (not requested)")
+            tracker.complete_stage(ProgressStage.CALLING_MODEL, "Model call skipped")
+            tracker.start_stage(ProgressStage.PARSING_JSON, "JSON parsing skipped (no model output)")
+            tracker.complete_stage(ProgressStage.PARSING_JSON, "JSON parsing skipped")
+            tracker.start_stage(ProgressStage.VALIDATING, "Validation skipped (no parsed JSON)")
+            tracker.complete_stage(ProgressStage.VALIDATING, "Validation skipped")
+        
+        
+        timing["total"] = time.time() - tracker.start_time
+        result_obj.timing = timing
+        result_obj.progress_history = tracker.get_history()
+        tracker.complete_stage(ProgressStage.COMPLETED, "Evaluation completed")
+        
+        return result_obj
+        
+    except Exception as e:
+        logger.exception("Unexpected error in extract_json_from_readme")
+        return EvaluationResult(
+            success=False,
+            prompt="",
+            progress_history=tracker.get_history(),
+            timing=timing,
+            recovery_suggestions=[f"Unexpected error: {str(e)}"],
+        )
+

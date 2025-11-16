@@ -1,111 +1,52 @@
- # readme-evaluator — Guia de instalação e execução
+# README Evaluator
 
-Este repositório contém um backend em Python (FastAPI) e um frontend Next.js para avaliar READMEs e extrair uma taxonomia JSON baseada em um esquema canônico.
+Ferramenta para avaliar READMEs de repositórios GitHub usando IA. Extrai uma taxonomia JSON estruturada baseada em um esquema canônico e renderiza um resumo legível da avaliação.
 
-Este README mostra passo a passo como instalar dependências e executar o projeto em um ambiente Windows (cmd.exe). Ajuste comandos para outras shells/OS quando necessário.
+## 🚀 Quick Start
 
-## Pré-requisitos
+### Pré-requisitos
 
-- Python 3.10+ instalado e disponível no PATH
-- Node.js 18+ / npm (para a parte frontend)
-- Git (opcional)
+- **Python 3.10+** (backend)
+- **Node.js 18+** e npm (frontend)
+- **GEMINI_API_KEY** (chave da API Google Gemini)
 
-## Visão geral dos diretórios importantes
+### Setup (5 minutos)
 
-- `backend/` — código Python (FastAPI, cliente HF, extrator, renderizador)
-- `frontend/` — aplicação Next.js (UI)
-- `schemas/` — esquema JSON canônico usado pelo prompt
-- `backend/examples/` — exemplos de README e JSON de saída
-
-## 1) Preparar o ambiente Python (backend)
-
-Abra um terminal (cmd.exe) no diretório do projeto.
-
-1. Crie e ative um virtualenv (recomendado):
+#### 1. Backend (Python + FastAPI)
 
 ```cmd
+# Crie um virtualenv
 python -m venv .venv
 .venv\Scripts\activate
-```
 
-2. Instale dependências do backend:
-
-```cmd
+# Instale dependências
 pip install --upgrade pip
 pip install -r backend/requirements.txt
 ```
 
-3. (Opcional) Se preferir, instale ferramentas de lint/test localmente:
+#### 2. Configure a API Key
 
-```cmd
-pip install flake8 pytest
+Crie um arquivo `.env` na raiz do projeto:
+
+```
+GEMINI_API_KEY=sua_chave_aqui
 ```
 
-## 2) Configurar variáveis de ambiente
-
-O projeto usa a variável `HUGGINGFACE_API_TOKEN` para chamar a API de inferência. Existem duas opções:
-
-- Exportar no terminal (temporário):
+Ou export no terminal:
 
 ```cmd
-set HUGGINGFACE_API_TOKEN=hf_...seu_token_aqui...
+set GEMINI_API_KEY=sua_chave_aqui
 ```
 
-- Ou criar um arquivo `.env` na raiz do projeto com a linha:
-
-```text
-HUGGINGFACE_API_TOKEN=hf_...seu_token_aqui...
-```
-
-O backend usa `os.environ` para ler a variável; se você criar `.env` garanta que o processo que inicia o app carregue esse arquivo (por exemplo, usando `python-dotenv` em scripts de execução, ou definindo a variável no ambiente).
-
-> Nota: em ambientes corporativos a rede pode bloquear acesso a huggingface.co — se tiver problemas de conexão, teste a partir de uma rede diferente (por exemplo hotspot) ou configure proxy apropriado.
-
-## 3) Executar o backend (FastAPI)
-
-No terminal (com o virtualenv ativado):
+#### 3. Inicie o Backend
 
 ```cmd
-# executa o servidor em http://127.0.0.1:8000
 python -m uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-Endpoints úteis:
+Backend estará em `http://localhost:8000`
 
-- `POST /readme` — baixar README a partir de um repositório GitHub. Body JSON: `{ "repo_url": "https://github.com/owner/repo" }`
-- `POST /extract-json` — extrai JSON estruturado (forneça `readme_text` ou `repo_url`). Se `model` estiver vazio, retorna apenas o prompt construído.
-- `POST /render` — renderiza texto a partir do JSON validado.
-- `POST /generate` — endpoint genérico que passa o `prompt` para o Hugging Face Inference API (requer token).
-
-Exemplo rápido usando `curl` (atenção ao escaping no Windows cmd):
-
-```cmd
-curl -X POST http://127.0.0.1:8000/extract-json -H "Content-Type: application/json" -d "{\"readme_text\": \"L0001: # Example\nL0002: ...\"}"
-```
-
-Se preferir Python para chamadas às APIs, um exemplo mínimo usando `requests`:
-
-```py
-import requests
-resp = requests.post('http://127.0.0.1:8000/extract-json', json={'readme_text': 'L0001: # Example\nL0002: ...'})
-print(resp.json())
-```
-
-## 4) Executar o runner de prompt (CLI)
-
-Existe um utilitário CLI que monta o prompt de extração e pode chamar o modelo:
-
-```cmd
-# apenas constrói o prompt e mostra um preview
-python backend/run_pipeline.py --readme backend/examples/sample_readme_for_model.md --schema schemas/taxonomia.schema.json
-
-# chama o modelo (requer HUGGINGFACE_API_TOKEN no ambiente)
-python backend/run_pipeline.py --readme backend/examples/sample_readme_for_model.md --schema schemas/taxonomia.schema.json --call-model --model qwen2.5-7b-instruct
-```
-
-## 5) Executar o frontend (Next.js)
-
-No diretório `frontend`:
+#### 4. Inicie o Frontend
 
 ```cmd
 cd frontend
@@ -113,46 +54,193 @@ npm install
 npm run dev
 ```
 
-O frontend de desenvolvimento ficará disponível em `http://localhost:3000` (por padrão). A API FastAPI padrão permite CORS do `http://localhost:3000`.
+Frontend estará em `http://localhost:3000`
 
-## 6) Observações sobre o fluxo de prompts
+---
 
-- A composição de prompts agora é feita via a classe `PromptBuilder` em `backend/prompt_builder.py`.
-- Para obter rótulos legíveis nas seções do prompt (por exemplo `schema`, `readme`, `extra_text`) passe esses textos como keyword-arguments quando instanciar `PromptBuilder`, por exemplo:
+## 📋 Como Usar
 
-```py
-from backend.prompt_builder import PromptBuilder
-pb = PromptBuilder(schema=schema_text, readme=readme_text, extra_text=extra_text)
-prompt = pb.build()
+1. Abra `http://localhost:3000` no navegador
+2. Cole a URL de um repositório GitHub (ex: `https://github.com/owner/repo`)
+3. Clique em "Evaluate README"
+4. Aguarde o processamento:
+   - **Extração**: README é processado e avaliado
+   - **Renderização**: Resultado é convertido para linguagem natural legível
+5. Veja o resumo executivo na seção **"Evaluation Summary"**
+6. Explore os detalhes técnicos (JSON estruturado, prompt usado, etc.)
+
+---
+
+## 🏗️ Arquitetura
+
+```
+readme-evaluator/
+├── backend/
+│   ├── main.py                 # FastAPI app com endpoints
+│   ├── pipeline.py             # Orquestração do pipeline
+│   ├── gemini_client.py        # Cliente da API Gemini
+│   ├── prompt_builder.py       # Construção de prompts
+│   ├── evaluate/
+│   │   ├── extractor.py        # Extração de JSON
+│   │   ├── json_postprocessor.py # Correção de tipos
+│   │   └── progress.py         # Rastreamento de progresso
+│   ├── present/
+│   │   └── renderer.py         # Renderização para texto
+│   └── requirements.txt
+├── frontend/
+│   ├── pages/index.js          # UI principal (Next.js)
+│   └── package.json
+├── schemas/
+│   └── taxonomia.schema.json   # Schema JSON canônico
+└── README.md
 ```
 
-## 7) Limpeza de Git / .gitignore
+---
 
-Adicionei um `.gitignore` na raiz para evitar commitar ambientes virtuais, caches e arquivos sensíveis. Se já comitou arquivos que agora estão no `.gitignore`, remova-os do índice com:
+## 🔌 API Endpoints
+
+### `POST /extract-json-stream`
+
+Avalia um README e retorna a taxonomia JSON + texto renderizado via Server-Sent Events (SSE).
+
+**Request:**
+```json
+{
+  "readme_text": "# Project Name\n...",
+  "model": "gemini-2.5-flash",
+  "max_tokens": 2048,
+  "temperature": 0.1
+}
+```
+
+**Response (SSE):**
+- `type: "progress"` — Atualizações de progresso
+- `type: "result"` — JSON estruturado (taxonomia)
+- `type: "rendered"` — Texto renderizado em linguagem natural
+- `type: "error"` — Erro durante processamento
+
+---
+
+### `POST /readme`
+
+Baixa o README de um repositório GitHub.
+
+**Request:**
+```json
+{
+  "repo_url": "https://github.com/owner/repo"
+}
+```
+
+**Response:**
+```json
+{
+  "content": "# Project\n...",
+  "filename": "README.md"
+}
+```
+
+---
+
+## 📊 Taxonomia JSON
+
+O schema (`schemas/taxonomia.schema.json`) define 11 categorias:
+
+1. **what** — O que é o projeto?
+2. **why** — Por que existe?
+3. **how_installation** — Como instalar?
+4. **how_usage** — Como usar?
+5. **how_config_requirements** — Configuração e requisitos?
+6. **when** — Status e versão?
+7. **who** — Autores e mantenedores?
+8. **license** — Licença?
+9. **contribution** — Como contribuir?
+10. **references** — Documentação e referências?
+11. **other** — Outras seções detectadas?
+
+Cada categoria contém:
+- **checklist** — Itens específicos presentes/ausentes
+- **quality** — Notas de 1-5 (para maioria das categorias)
+- **evidences** — Trechos encontrados no README
+- **justifications** — Por que recebeu essa avaliação
+- **suggested_improvements** — Sugestões
+
+---
+
+## 🔧 Post-Processing
+
+O backend aplica automaticamente:
+
+1. **Fix de Arrays** — Converte strings para arrays em campos como `evidences`, `justifications`, `suggested_improvements`
+2. **Fix de Booleanos** — Converte strings para booleanos em `reclassify`, `suggest_removal`
+3. **Remoção de Campos Inválidos** — Remove campos não permitidos por categoria (ex: `justifications` não existe em `other`)
+4. **Validação** — Valida contra schema JSON
+
+---
+
+## 🐛 Debugging
+
+**Ver logs do backend:**
+```cmd
+# Terminal onde backend está rodando mostra logs em tempo real
+```
+
+**DevTools do frontend (F12):**
+- Console: vê eventos SSE e logs
+- Network: vê requests para `/extract-json-stream`
+
+**Testar endpoint direto:**
+```cmd
+curl -X POST http://localhost:8000/readme ^
+  -H "Content-Type: application/json" ^
+  -d "{\"repo_url\":\"https://github.com/owner/repo\"}"
+```
+
+---
+
+## 🌍 Variáveis de Ambiente
+
+| Variável | Obrigatória | Descrição |
+|----------|-----------|-----------|
+| `GEMINI_API_KEY` | ✅ | Chave da API Google Gemini |
+| `BACKEND_PORT` | ❌ | Porta do backend (padrão: 8000) |
+| `FRONTEND_PORT` | ❌ | Porta do frontend (padrão: 3000) |
+
+---
+
+## 📦 Dependências
+
+### Backend (`backend/requirements.txt`)
+- fastapi >= 0.121.2
+- uvicorn >= 0.38.0
+- google-genai >= 1.50.1
+- jsonschema >= 4.25.1
+- pydantic >= 2.12.4
+- python-dotenv >= 1.2.1
+
+### Frontend (`frontend/package.json`)
+- next >= 16.0.1
+- react >= 18.2.0
+- react-dom >= 18.2.0
+
+---
+
+## ✅ Testes
+
+Execute testes do backend:
 
 ```cmd
-# mostrar arquivos que ainda estão no índice
-git status
-
-# remover do índice (mantém o arquivo local):
-git rm --cached path/to/file
+pytest tests/
 ```
 
-## 8) Verificações rápidas / debugging
+---
 
-- Verificar import básico do backend:
+## 📄 Licença
 
-```cmd
-python -c "import backend.main; print('backend OK')"
-```
+MIT
 
-- Se houver problemas de import, verifique se o virtualenv está ativado e se as dependências foram instaladas.
-- Se o modelo não responder, verifique `HUGGINGFACE_API_TOKEN` e a conectividade de rede.
+---
 
-## 9) Próximos passos sugeridos
+## 👥 Contribuições
 
-- Adicionar testes automatizados (pytest) para o extractor e PromptBuilder.
-- Adicionar CI para lint e testes.
-- Documentar exemplos de prompts e o esquema em mais detalhes (arquivos em `backend/prompts` e `schemas/`).
-
-Se quiser, eu atualizo este README com instruções específicas para deploy (Docker, Azure, etc.) ou adiciono um `Makefile`/scripts para facilitar repetição dos passos.
+Abra uma issue ou PR para sugestões e melhorias!

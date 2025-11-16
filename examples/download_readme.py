@@ -17,7 +17,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
 
-from backend.readme_downloader import ReadmeDownloader
+from backend.download.download import ReadmeDownloader
 
 
 def main(argv=None):

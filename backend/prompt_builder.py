@@ -80,7 +80,50 @@ class PromptBuilder:
             or "Extract the information from the README and return a single JSON object that matches the supplied JSON Schema exactly. Do not include any explanatory text. Return only a valid JSON object."
         )
 
-        parts: List[str] = [self.template_header, "INSTRUCTIONS:", instruction, ""]
+        # If the template_header contains placeholders like {readme} or {schema},
+        # allow substituting named parts into the header. Build a mapping of
+        # available part names (original, lower, and upper) to their text so
+        # common template styles work.
+        header = self.template_header
+        try:
+            mapping = {}
+            for label, text in self.parts:
+                mapping[label] = text
+                mapping[label.lower()] = text
+                mapping[label.upper()] = text
+                # common aliases: text/json/content/example variants
+                mapping[f"{label}_text"] = text
+                mapping[f"{label}_json"] = text
+                mapping[f"{label}_content"] = text
+                mapping[f"{label}_example"] = text
+                mapping[f"{label}_txt"] = text
+                mapping[f"{label}_output"] = text
+                mapping[f"{label}_output_json"] = text
+                mapping[f"{label}_example_md"] = text
+                mapping[f"{label}_md"] = text
+                # also provide lowercase variants
+                mapping[f"{label.lower()}_text"] = text
+                mapping[f"{label.lower()}_json"] = text
+                mapping[f"{label.lower()}_content"] = text
+                mapping[f"{label.lower()}_example"] = text
+                mapping[f"{label.lower()}_output"] = text
+                mapping[f"{label.lower()}_output_json"] = text
+                mapping[f"{label.lower()}_example_md"] = text
+                mapping[f"{label.lower()}_md"] = text
+                # common explicit alias for schema output used in templates
+                if label.lower() == "schema":
+                    mapping["schema_output_json"] = text
+
+            class _DefaultDict(dict):
+                def __missing__(self, key):
+                    return ""
+
+            header = header.format_map(_DefaultDict(mapping))
+        except Exception:
+            # If formatting fails for any reason, fall back to the raw header.
+            header = self.template_header
+
+        parts: List[str] = [header, "INSTRUCTIONS:", instruction, ""]
 
         for label, text in self.parts:
             parts.append(f"{label}:")

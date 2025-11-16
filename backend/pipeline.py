@@ -1,0 +1,228 @@
+"""Minimal pipeline runner that executes extraction pipeline as a job and
+writes a status file per job so the frontend can poll progress step-by-step.
+
+This is intentionally small and file-based to avoid adding external
+dependencies (queues/databases). It writes job status to
+`processing/jobs/{job_id}.json` and result files to `processed/`.
+"""
+from __future__ import annotations
+
+import json
+import os
+import uuid
+import shutil
+import logging
+from datetime import datetime
+from typing import Any, Dict, Optional
+
+from backend.download.download import ReadmeDownloader
+from backend.evaluate.extractor import extract_json_from_readme
+
+LOG = logging.getLogger(__name__)
+
+
+def _now_iso() -> str:
+    return datetime.utcnow().isoformat() + "Z"
+
+
+class PipelineRunner:
+    """Run a small pipeline and persist job status to a file.
+
+    Steps are simple and intended for frontend progress UI.
+    """
+
+    def __init__(self, jobs_dir: Optional[str] = None):
+        self.jobs_dir = jobs_dir or os.path.join(os.getcwd(), "processing", "jobs")
+        os.makedirs(self.jobs_dir, exist_ok=True)
+
+    def _job_path(self, job_id: str) -> str:
+        return os.path.join(self.jobs_dir, f"{job_id}.json")
+
+    def _write(self, job: Dict[str, Any]) -> None:
+        path = self._job_path(job["id"])
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(job, f, ensure_ascii=False, indent=2)
+
+    def new_job(self, params: Dict[str, Any]) -> Dict[str, Any]:
+        job_id = str(uuid.uuid4())
+        job = {
+            "id": job_id,
+            "status": "queued",
+            "created_at": _now_iso(),
+            "current_step": None,
+            "params": params,
+            "steps": [],
+            "artifacts": {},
+            "result": None,
+            "error": None,
+        }
+        self._write(job)
+        return job
+
+    def _start_step(self, job: Dict[str, Any], step_name: str) -> Dict[str, Any]:
+        step = {"name": step_name, "status": "running", "started_at": _now_iso(), "finished_at": None, "message": None}
+        job["steps"].append(step)
+        job["current_step"] = step_name
+        job["status"] = "running"
+        self._write(job)
+        return step
+
+    def _finish_step(self, job: Dict[str, Any], step: Dict[str, Any], ok: bool = True, message: Optional[str] = None):
+        step["finished_at"] = _now_iso()
+        step["status"] = "done" if ok else "failed"
+        step["message"] = message
+        if not ok:
+            job["status"] = "failed"
+            job["error"] = message
+        self._write(job)
+
+    def run(self, job_id: str, params: Dict[str, Any]) -> None:
+        """Execute the pipeline for a previously created job id.
+
+        This method updates the job file at each step to allow polling.
+        """
+        path = self._job_path(job_id)
+        if not os.path.exists(path):
+            LOG.error("Job %s not found", job_id)
+            return
+
+        with open(path, "r", encoding="utf-8") as f:
+            job = json.load(f)
+
+        try:
+            # Step 1: download_readme
+            step = self._start_step(job, "download_readme")
+            repo_url = params.get("repo_url")
+            branch = params.get("branch")
+            if not repo_url and not params.get("readme_text"):
+                raise ValueError("Either repo_url or readme_text must be provided")
+
+            readme_path = None
+            if repo_url:
+                dl = ReadmeDownloader()
+                readme_path = dl.download(repo_url, dest_path=None, branch=branch)
+                job["artifacts"]["readme_path"] = readme_path
+            else:
+                # write provided readme_text to a file for bookkeeping
+                txt = params.get("readme_text", "")
+                out_dir = os.path.join(os.getcwd(), "processing")
+                os.makedirs(out_dir, exist_ok=True)
+                readme_path = os.path.join(out_dir, f"{job_id}-readme.md")
+                with open(readme_path, "w", encoding="utf-8") as rf:
+                    rf.write(txt)
+                job["artifacts"]["readme_path"] = readme_path
+
+            self._finish_step(job, step, ok=True)
+
+            # read README text
+            with open(readme_path, "r", encoding="utf-8", errors="replace") as f:
+                readme_text = f.read()
+
+            # Step 2: build_prompt
+            step = self._start_step(job, "build_prompt")
+            prompt_only = extract_json_from_readme(
+                readme_text,
+                schema_path=params.get("schema_path", "schemas/taxonomia.schema.json"),
+                example_json=params.get("example_json"),
+                model=None,
+                system_prompt=params.get("system_prompt"),
+                readme_path=readme_path,
+                max_tokens=params.get("max_tokens", 20480),
+                temperature=params.get("temperature", 0.0),
+            )
+            # save prompt to artifact
+            prompt_txt = prompt_only.get("prompt")
+            if prompt_txt:
+                prompt_file = os.path.join(os.path.dirname(readme_path), f"{job_id}-prompt.txt")
+                with open(prompt_file, "w", encoding="utf-8") as pf:
+                    pf.write(prompt_txt)
+                job["artifacts"]["prompt_path"] = prompt_file
+
+            self._finish_step(job, step, ok=True)
+
+            # Step 3: call_model (may be skipped)
+            step = self._start_step(job, "call_model")
+            model = params.get("model")
+            if model and os.environ.get("GEMINI_API_KEY"):
+                called = extract_json_from_readme(
+                    readme_text,
+                    schema_path=params.get("schema_path", "schemas/taxonomia.schema.json"),
+                    example_json=params.get("example_json"),
+                    model=model,
+                    system_prompt=params.get("system_prompt"),
+                    readme_path=readme_path,
+                    max_tokens=params.get("max_tokens", 20480),
+                    temperature=params.get("temperature", 0.0),
+                )
+                job["result"] = called
+                job["artifacts"]["model_output"] = called.get("model_output")
+            else:
+                # skipped
+                job["result"] = prompt_only
+                self._finish_step(job, step, ok=True, message="skipped: no model or GEMINI_API_KEY")
+                # continue to validation step which will be skipped too
+                # mark call_model as skipped and move on
+                # We already finished the step here
+                pass
+
+            # If we reached here and model call was executed, finish step
+            if job.get("result") is not None and job["result"] is not prompt_only:
+                # model executed
+                self._finish_step(job, step, ok=True)
+
+            # Step 4: validate_schema (if possible)
+            step = self._start_step(job, "validate_schema")
+            res = job.get("result")
+            validation_ok = None
+            validation_errors = None
+            if res and res.get("parsed") is not None:
+                validation_ok = res.get("validation_ok")
+                validation_errors = res.get("validation_errors")
+            else:
+                validation_ok = None
+            job["result"] = res
+            job["result"]["validation_ok"] = validation_ok
+            job["result"]["validation_errors"] = validation_errors
+            self._finish_step(job, step, ok=True)
+
+            # Step 5: save_results (move files to processed/ and write result JSON)
+            step = self._start_step(job, "save_results")
+            processed_dir = os.path.join(os.getcwd(), "processed")
+            os.makedirs(processed_dir, exist_ok=True)
+            try:
+                if readme_path and os.path.exists(readme_path):
+                    dest_readme = os.path.join(processed_dir, os.path.basename(readme_path))
+                    shutil.move(readme_path, dest_readme)
+                    job["artifacts"]["processed_readme"] = dest_readme
+                # write result
+                base_name = os.path.splitext(os.path.basename(job["artifacts"].get("processed_readme", job_id)))[0]
+                result_json_name = f"{base_name}-result-{datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')}.json"
+                result_json_path = os.path.join(processed_dir, result_json_name)
+                with open(result_json_path, "w", encoding="utf-8") as jf:
+                    json.dump(job.get("result", {}), jf, ensure_ascii=False, indent=2)
+                job["result_path"] = result_json_path
+            except Exception as e:
+                LOG.exception("Failed to save results: %s", e)
+                self._finish_step(job, step, ok=False, message=str(e))
+                return
+
+            self._finish_step(job, step, ok=True)
+
+            # success
+            job["status"] = "succeeded"
+            job["finished_at"] = _now_iso()
+            self._write(job)
+
+        except Exception as exc:
+            LOG.exception("Job %s failed: %s", job_id, exc)
+            # mark last step failed
+            try:
+                job["status"] = "failed"
+                job["error"] = str(exc)
+                job["finished_at"] = _now_iso()
+                self._write(job)
+            except Exception:
+                pass
+
+
+__all__ = ["PipelineRunner"]

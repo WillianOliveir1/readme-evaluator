@@ -1,9 +1,7 @@
-"""CLI script moved to tools/ to be a developer helper for downloading READMEs.
+"""CLI script for downloading READMEs from GitHub repositories.
 
-This is the same as the former `examples/download_readme.py` but relocated to
-`tools/` so it's clearly a developer utility instead of an example used by the
-library. The import is updated to use the canonical `backend.download.download`
-implementation.
+Downloads are automatically saved to a temporary directory, then moved to
+the final destination directory when specified.
 """
 import argparse
 import sys
@@ -11,8 +9,7 @@ import os
 import logging
 import requests
 
-# Ensure project root (parent of this tools/ dir) is on sys.path so
-# `import backend.download.download` works when running this file directly.
+# Ensure project root (parent of this tools/ dir) is on sys.path
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 if ROOT not in sys.path:
     sys.path.insert(0, ROOT)
@@ -24,20 +21,32 @@ def main(argv=None):
     argv = argv or sys.argv[1:]
     parser = argparse.ArgumentParser(description="Download README from GitHub repo")
     parser.add_argument("repo_url", help="Repository URL (e.g. https://github.com/owner/repo)")
-    parser.add_argument("-o", "--out", dest="out", help="Output path for README (optional)")
+    parser.add_argument("-d", "--dest", dest="dest", help="Final destination directory (optional)")
     parser.add_argument("--branch", dest="branch", help="Explicit branch to use (overrides URL/default)")
     args = parser.parse_args(argv)
 
-    # Always run in verbose/debug mode for developer tooling
+    # Run in debug mode for visibility
     logging.basicConfig(level=logging.DEBUG, format="%(levelname)s: %(message)s")
     logging.debug("Starting ReadmeDownloader with repo_url=%s branch=%s", args.repo_url, args.branch)
+    
     dl = ReadmeDownloader()
     try:
-        path = dl.download(args.repo_url, dest_path=args.out, branch=args.branch)
-        logging.info("Saved README to: %s", path)
+        # Download to temp directory
+        temp_path = dl.download(args.repo_url, branch=args.branch)
+        
+        # If destination specified, move there
+        if args.dest:
+            final_path = dl.move_to_final(temp_path, args.dest)
+            logging.info("File available at: %s", final_path)
+        else:
+            logging.info("File available at: %s", temp_path)
+            logging.info("Temp directory: %s", dl.get_temp_dir())
+        
     except (FileNotFoundError, RuntimeError, requests.RequestException) as e:
         logging.error("Failed to download README: %s", e)
+        dl.cleanup_temp()
         return 2
+    
     return 0
 
 
