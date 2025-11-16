@@ -1,0 +1,325 @@
+README EVALUATION TO JSON (ENGLISH TAXONOMY) — APACHE AIRFLOW
+
+
+----------------------------------------
+
+
+{
+  "metadata": {
+    "repository_name": "airflow",
+    "repository_link": "https://github.com/apache/airflow",
+    "readme_raw_link": "https://github.com/apache/airflow/blob/main/README.md",
+    "evaluation_date": "2025-11-07",
+    "evaluator": "Luma Chen da Fonseca",
+    "general_notes": "README is strong across What, How (Config/Requirements), When, Who, License, Contribution, References, and Other. Missing a minimal working example (MWE) for usage and clearer comparative benefits in the Why section, which is also somewhat outdated. Despite that, benefits and scope are clear. High cohesion and consistency; the TOC significantly helps navigation."
+  },
+  "structural_summary": {
+    "detected_sections": [
+      "Table of Contents",
+      "Project Focus",
+      "Principles",
+      "Requirements",
+      "Getting started",
+      "Installing from PyPI",
+      "Installation",
+      "Official source code",
+      "Convenience packages",
+      "User Interface",
+      "Semantic versioning",
+      "Version Life Cycle",
+      "Support for Python and Kubernetes versions",
+      "Base OS support for reference Airflow images",
+      "Approach to dependencies of Airflow",
+      "Contributing",
+      "Voting Policy",
+      "Who uses Apache Airflow?",
+      "Who maintains Apache Airflow?",
+      "What goes into the next release?",
+      "Can I use the Apache Airflow logo in my presentation?",
+      "Links",
+      "Sponsors"
+    ],
+    "present_categories": {
+      "what": "present",
+      "why": "present",
+      "how_installation": "present",
+      "how_usage": "absent",
+      "how_config_requirements": "present",
+      "when": "present",
+      "who": "present",
+      "license": "present",
+      "contribution": "present",
+      "references": "present",
+      "other": "present"
+    },
+    "organization_notes": "Solid structure with TOC; excellent coverage of essential topics and beyond. Gaps: no minimal working example in README and complete installation configuration is deferred to external docs."
+  },
+  "categories": {
+    "what": {
+      "checklist": {
+        "clear_description": "present",
+        "scope_features": "present",
+        "target_audience": "present"
+      },
+      "quality": {
+        "clarity": 5,
+        "understandability": 5,
+        "conciseness": 5,
+        "consistency": 4
+      },
+      "evidences": [
+        "“Apache Airflow (or simply Airflow) is a platform to programmatically author, schedule, and monitor workflows.”",
+        "Mentions of maintainable, versionable, testable, and collaborative workflows (DAGs)."
+      ],
+      "justifications": [
+        "Direct definition of what the project is.",
+        "Clear language and explanation of key terms (DAGs).",
+        "Short, direct paragraphs cover essentials.",
+        "Terminology is mostly stable, though occasionally informal."
+      ],
+      "suggested_improvements": []
+    },
+    "why": {
+      "checklist": {
+        "explicit_purpose": "present",
+        "benefits_vs_alternatives": "absent",
+        "use_cases": "present"
+      },
+      "quality": {
+        "clarity": 5,
+        "effectiveness": 5,
+        "appeal": 3
+      },
+      "evidences": [
+        "“Airflow works best with workflows that are mostly static and slowly changing.”",
+        "“Airflow is commonly used to process data... tasks should ideally be idempotent...”",
+        "Mentions alternatives (Luigi, Oozie, Azkaban), with outdated references."
+      ],
+      "justifications": [
+        "Benefits and ideal use cases are explicit and practical.",
+        "Effectively explains strengths and suitable scenarios.",
+        "Comparative positioning versus alternatives is underdeveloped and outdated."
+      ],
+      "suggested_improvements": [
+        "Update and clarify benefits vs. current alternatives; refresh references to comparable projects."
+      ]
+    },
+    "how_installation": {
+      "checklist": {
+        "reproducible_commands": "present",
+        "compatibility_requirements": "present",
+        "dependencies": "present"
+      },
+      "quality": {
+        "structure": 5,
+        "readability": 5,
+        "clarity": 5
+      },
+      "evidences": [
+        "Separate sections for 'Installing from PyPI' and 'Convenience packages'.",
+        "Explicit commands with constraints, e.g., pip install 'apache-airflow==3.1.2' --constraint <constraints-url>.",
+        "Notes that pip install is complex and requires constraints."
+      ],
+      "justifications": [
+        "Clear organization covering multiple install paths.",
+        "Command formatting is readable and precise.",
+        "Explains why constraints are required and provides exact commands."
+      ],
+      "suggested_improvements": []
+    },
+    "how_usage": {
+      "checklist": {
+        "minimal_working_example": "absent",
+        "io_examples": "absent",
+        "api_commands_context": "absent"
+      },
+      "quality": {
+        "understandability": 2,
+        "code_readability": 1,
+        "effectiveness": 1
+      },
+      "evidences": [
+        "README lacks a DAG usage snippet or MWE."
+      ],
+      "justifications": [
+        "Without an MWE, users must leave the README to learn the basic workflow."
+      ],
+      "suggested_improvements": [
+        "Add a short executable DAG example to illustrate core usage."
+      ]
+    },
+    "how_config_requirements": {
+      "checklist": {
+        "documented_configuration": "present",
+        "parameters_options": "present",
+        "troubleshooting": "present"
+      },
+      "quality": {
+        "clarity": 5,
+        "structure": 5,
+        "conciseness": 4
+      },
+      "evidences": [
+        "Clear requirement tables (Python, PostgreSQL, Kubernetes) and production notes (Linux recommended).",
+        "‘Requirements’ section visually separates compatibility (Main vs. Stable).",
+        "Notes on WSL2 for Windows and discouraging SQLite in production."
+      ],
+      "justifications": [
+        "Explicit versions and environment recommendations set accurate expectations.",
+        "Well-organized requirements using tables and subsections.",
+        "Keeps details concise in the main section, delegating dense policy content appropriately."
+      ],
+      "suggested_improvements": []
+    },
+    "when": {
+      "checklist": {
+        "current_status": "present",
+        "roadmap": "present",
+        "changelog": "present"
+      },
+      "quality": {
+        "clarity": 5,
+        "consistency": 4
+      },
+      "evidences": [
+        "‘Version Life Cycle’ table shows state (Supported, EOL) and key dates.",
+        "Semantic versioning policy and notes on Helm Chart versioning independence.",
+        "‘What goes into the next release?’ explains cherry-picking and milestones."
+      ],
+      "justifications": [
+        "Status and lifecycle are clearly presented and easy to scan.",
+        "Versioning policies are transparent across artifacts."
+      ],
+      "suggested_improvements": []
+    },
+    "who": {
+      "checklist": {
+        "authors_maintainers": "present",
+        "contact_channels": "present",
+        "code_of_conduct": "absent"
+      },
+      "quality": {
+        "clarity": 5,
+        "consistency": 5
+      },
+      "evidences": [
+        "Lists organizations using Airflow and links to maintainers/core committers.",
+        "Links to chat/community and contribution requirements."
+      ],
+      "justifications": [
+        "Clear discovery of maintainers and community channels.",
+        "Communication and governance information are well-structured."
+      ],
+      "suggested_improvements": [
+        "Add an explicit link to the Code of Conduct."
+      ]
+    },
+    "license": {
+      "checklist": {
+        "license_type": "present",
+        "license_link": "present"
+      },
+      "quality": {
+        "clarity": 5,
+        "consistency": 5
+      },
+      "evidences": [
+        "License badge indicates Apache 2.",
+        "Badge links to https://www.apache.org/licenses/LICENSE-2.0.txt."
+      ],
+      "justifications": [
+        "License type and link are explicit and consistent across the README."
+      ],
+      "suggested_improvements": []
+    },
+    "contribution": {
+      "checklist": {
+        "contributing_link": "present",
+        "contribution_steps": "present",
+        "standards": "present"
+      },
+      "quality": {
+        "structure": 5,
+        "clarity": 5,
+        "readability": 5
+      },
+      "evidences": [
+        "Mentions setup instructions, coding standards, and PR guidelines.",
+        "Links to contributors' guide and contribution quickstart.",
+        "Voting Policy clarifies binding votes and governance."
+      ],
+      "justifications": [
+        "Clear onboarding for contributors with governance details.",
+        "Expectations are easy to understand and follow."
+      ],
+      "suggested_improvements": []
+    },
+    "references": {
+      "checklist": {
+        "docs_link": "present",
+        "relevant_references": "present",
+        "faq_support": "present"
+      },
+      "quality": {
+        "effectiveness": 5,
+        "clarity": 5
+      },
+      "evidences": [
+        "Direct links to stable docs, Wiki (AIPs), DockerHub, Stack Overflow, and GitHub.",
+        "‘Getting started’ links to installing Airflow, getting started, and tutorial."
+      ],
+      "justifications": [
+        "Comprehensive coverage of useful references and support.",
+        "Resources are easy to locate and contextually placed."
+      ],
+      "suggested_improvements": []
+    },
+    "other": {
+      "checklist": {
+        "generic_sections": "present",
+        "placeholders": "present"
+      },
+      "action": {
+        "reclassify": false,
+        "suggest_removal": false
+      },
+      "evidences": [
+        "Sponsors and 'What goes into the next release?' provide additional value beyond core taxonomy."
+      ],
+      "suggested_improvements": []
+    }
+  },
+  "dimensions_summary": {
+    "quality": 5,
+    "appeal": 3,
+    "readability": 5,
+    "understandability": 4,
+    "structure": 5,
+    "cohesion": 5,
+    "conciseness": 5,
+    "effectiveness": 4,
+    "consistency": 5,
+    "clarity": 5,
+    "global_notes": "Strong README across governance, lifecycle (EOL), requirements compatibility, and multiple installation paths (including Docker). Lacks a minimal DAG example for quick start and clearer comparative benefits in the Why section, which appears outdated. TOC, tables, and consistent terminology make it highly navigable and dependable."
+  },
+  "executive_summary": {
+    "strengths": [
+      "Exemplary governance coverage (Voting Policy, maintainers) and clear version lifecycle (including EOL).",
+      "Transparent dependency policy (constraints vs. upper bounds) and detailed requirements (Python/PostgreSQL/Kubernetes).",
+      "Multiple installation options with clear documentation, and extensive references/support resources."
+    ],
+    "weaknesses": [
+      "No minimal working example (DAG) in the README.",
+      "Why section could better highlight differentiated benefits versus alternatives and be updated."
+    ],
+    "critical_gaps": [
+      "How (Usage/Examples): missing an executable DAG MWE for basic workflow demonstration."
+    ],
+    "priority_recommendations": [
+      "Add a short DAG MWE code block to illustrate core concepts and accelerate onboarding.",
+      "Preserve detailed requirement tables and lifecycle information, which are critical for developers and operators.",
+      "Clarify and update the Why section to present benefits over current alternatives."
+    ]
+  }
+}
+
