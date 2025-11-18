@@ -32,13 +32,27 @@
         "target_audience": ""
       },
       "quality": {
-        "clarity": 0,
-        "understandability": 0,
-        "conciseness": 0,
-        "consistency": 0
+        "clarity": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+        "understandability": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+        "conciseness": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+        "consistency": {
+					"note": 0,
+					"evidences": [],
+          "justifications": [],  
+				}
       },
-      "evidences": [],
-      "justifications": [],
       "suggested_improvements": []
     },
     "why": {
@@ -48,12 +62,22 @@
         "use_cases": ""
       },
       "quality": {
-        "clarity": 0,
-        "effectiveness": 0,
-        "appeal": 0
+        "clarity": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+        "effectiveness": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+        "appeal": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				}
       },
-      "evidences": [],
-      "justifications": [],
       "suggested_improvements": []
     },
     "how_installation": {
@@ -63,12 +87,22 @@
         "dependencies": ""
       },
       "quality": {
-        "structure": 0,
-        "readability": 0,
-        "clarity": 0
+        "structure": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+        "readability": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+        "clarity": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				}
       },
-      "evidences": [],
-      "justifications": [],
       "suggested_improvements": []
     },
     "how_usage": {
@@ -78,12 +112,22 @@
         "api_commands_context": ""
       },
       "quality": {
-        "understandability": 0,
-        "code_readability": 0,
-        "effectiveness": 0
+        "understandability": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+        "code_readability": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+        "effectiveness": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				}
       },
-      "evidences": [],
-      "justifications": [],
       "suggested_improvements": []
     },
     "how_config_requirements": {
@@ -93,12 +137,22 @@
         "troubleshooting": ""
       },
       "quality": {
-        "clarity": 0,
-        "structure": 0,
-        "conciseness": 0
+        "clarity": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+        "structure": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+        "conciseness": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				}
       },
-      "evidences": [],
-      "justifications": [],
       "suggested_improvements": []
     },
     "when": {
@@ -108,11 +162,17 @@
         "changelog": ""
       },
       "quality": {
-        "clarity": 0,
-        "consistency": 0
+        "clarity": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+        "consistency": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				}
       },
-      "evidences": [],
-      "justifications": [],
       "suggested_improvements": []
     },
     "who": {
@@ -122,11 +182,17 @@
         "code_of_conduct": ""
       },
       "quality": {
-        "clarity": 0,
-        "consistency": 0
+        "clarity": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+        "consistency": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				}
       },
-      "evidences": [],
-      "justifications": [],
       "suggested_improvements": []
     },
     "license": {
@@ -135,11 +201,17 @@
         "license_link": ""
       },
       "quality": {
-        "clarity": 0,
-        "consistency": 0
+        "clarity": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+        "consistency": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				}
       },
-      "evidences": [],
-      "justifications": [],
       "suggested_improvements": []
     },
     "contribution": {
@@ -149,12 +221,22 @@
         "standards": ""
       },
       "quality": {
-        "structure": 0,
-        "clarity": 0,
-        "readability": 0
+        "structure": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+        "clarity": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+        "readability": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				}
       },
-      "evidences": [],
-      "justifications": [],
       "suggested_improvements": []
     },
     "references": {
@@ -164,11 +246,17 @@
         "faq_support": ""
       },
       "quality": {
-        "effectiveness": 0,
-        "clarity": 0
+        "effectiveness": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+        "clarity": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				}
       },
-      "evidences": [],
-      "justifications": [],
       "suggested_improvements": []
     },
     "other": {
@@ -185,16 +273,56 @@
     }
   },
   "dimensions_summary": {
-    "quality": 0,
-    "appeal": 0,
-    "readability": 0,
-    "understandability": 0,
-    "structure": 0,
-    "cohesion": 0,
-    "conciseness": 0,
-    "effectiveness": 0,
-    "consistency": 0,
-    "clarity": 0,
+    "quality": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+    "appeal": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+    "readability": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+    "understandability": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+    "structure": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+    "cohesion": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+    "conciseness": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+    "effectiveness": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+    "consistency": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
+    "clarity": {
+					"note": 0,
+					"evidences": [],
+          "justifications": []
+				},
     "global_notes": ""
   },
   "executive_summary": {
