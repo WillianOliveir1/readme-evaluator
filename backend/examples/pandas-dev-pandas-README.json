@@ -46,10 +46,26 @@
 				"target_audience": 1
 			},
 			"quality": {
-				"clarity": 5,
-				"understandability": 5,
-				"conciseness": 5,
-				"consistency": 5
+				"clarity": {
+					"note": 5,
+					"evidences": [],
+          			"justifications": []
+				},
+				"understandability": {
+					"note": 5,
+					"evidences": [],
+          			"justifications": []
+				},
+				"conciseness": {
+					"note": 5,
+					"evidences": [],
+          			"justifications": []
+				},
+				"consistency": {
+					"note": 5,
+					"evidences": [],
+          			"justifications": []
+				}
 			},
 			"evidence": [
 				"pandas is a Python package that provides fast, flexible, and expressive data structures...",
@@ -68,9 +84,21 @@
 				"use_cases": 1
 			},
 			"quality": {
-				"clarity": 4,
-				"effectiveness": 5,
-				"appeal": 4
+				"clarity": {
+					"note": 4,
+					"evidences": [],
+          			"justifications": []
+				},
+				"effectiveness": {
+					"note": 5,
+					"evidences": [],
+          			"justifications": []
+				},
+				"appeal":{
+					"note": 4,
+					"evidences": [],
+          			"justifications": []
+				}
 			},
 			"evidence": [
 				"the most powerful and flexible open-source data analysis/manipulation tool...",
@@ -91,9 +119,21 @@
 				"dependencies": 1
 			},
 			"quality": {
-				"structure": 5,
-				"readability": 5,
-				"clarity": 5
+				"structure": {
+					"note": 5,
+					"evidences": [],
+          			"justifications": []
+				},
+				"readability": {
+					"note": 5,
+					"evidences": [],
+          			"justifications": []
+				},
+				"clarity": {
+					"note": 5,
+					"evidences": [],
+          			"justifications": []
+				}
 			},
 			"evidence": [
 				"conda install -c conda-forge pandas",
@@ -113,9 +153,21 @@
 				"commands_api_context": 0
 			},
 			"quality": {
-				"understandability": 2,
-				"code_readability": 1,
-				"effectiveness": 2
+				"understandability": {
+					"note": 2,
+					"evidences": [],
+          			"justifications": []
+				},
+				"code_readability": {
+					"note": 1,
+					"evidences": [],
+          			"justifications": []
+				},
+				"effectiveness": {
+					"note": 2,
+					"evidences": [],
+          			"justifications": []
+				}
 			},
 			"evidence": [
 				"No usage snippet is included in the README; documentation link is provided."
@@ -134,9 +186,21 @@
 				"troubleshooting": 1
 			},
 			"quality": {
-				"clarity": 4,
-				"structure": 4,
-				"conciseness": 5
+				"clarity": {
+					"note": 4,
+					"evidences": [],
+          			"justifications": []
+				},
+				"structure": {
+					"note": 4,
+					"evidences": [],
+          			"justifications": []
+				},
+				"conciseness": {
+					"note": 5,
+					"evidences": [],
+          			"justifications": []
+				}
 			},
 			"evidence": [
 				"Dependencies listed with link to full installation instructions.",
@@ -154,8 +218,16 @@
 				"changelog": 1
 			},
 			"quality": {
-				"clarity": 4,
-				"consistency": 5
+				"clarity": {
+					"note": 4,
+					"evidences": [],
+          			"justifications": []
+				},
+				"consistency": {
+					"note": 5,
+					"evidences": [],
+          			"justifications": []
+				}
 			},
 			"evidence": [
 				"Changelog link: https://pandas.pydata.org/pandas-docs/stable/whatsnew/index.html",
@@ -175,8 +247,16 @@
 				"code_of_conduct": 1
 			},
 			"quality": {
-				"clarity": 5,
-				"consistency": 5
+				"clarity": {
+					"note": 5,
+					"evidences": [],
+          			"justifications": []
+				},
+				"consistency": {
+					"note": 5,
+					"evidences": [],
+          			"justifications": []
+				}
 			},
 			"evidence": [
 				"Getting Help: Stack Overflow; pydata mailing list.",
@@ -194,8 +274,16 @@
 				"license_link": 1
 			},
 			"quality": {
-				"clarity": 5,
-				"consistency": 5
+				"clarity": {
+					"note": 5,
+					"evidences": [],
+          			"justifications": []
+				},
+				"consistency": {
+					"note": 5,
+					"evidences": [],
+          			"justifications": []
+				}
 			},
 			"evidence": [
 				"BSD 3 (LICENSE)"
@@ -212,9 +300,21 @@
 				"standards": 1
 			},
 			"quality": {
-				"structure": 5,
-				"clarity": 5,
-				"readability": 5
+				"structure": {
+					"note": 5,
+					"evidences": [],
+          			"justifications": []
+				},
+				"clarity": {
+					"note": 5,
+					"evidences": [],
+          			"justifications": []
+				},
+				"readability": {
+					"note": 5,
+					"evidences": [],
+          			"justifications": []
+				}
 			},
 			"evidence": [
 				"Contributing guide; good first issues; CodeTriage."
@@ -231,8 +331,16 @@
 				"faq_support": 1
 			},
 			"quality": {
-				"effectiveness": 5,
-				"clarity": 5
+				"effectiveness": {
+					"note": 5,
+					"evidences": [],
+          			"justifications": []
+				},
+				"clarity": {
+					"note": 5,
+					"evidences": [],
+          			"justifications": []
+				}
 			},
 			"evidence": [
 				"Official documentation: https://pandas.pydata.org/pandas-docs/stable/",
