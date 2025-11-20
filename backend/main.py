@@ -35,8 +35,10 @@ from backend.download.download import ReadmeDownloader
 from backend.evaluate.extractor import extract_json_from_readme
 from backend.evaluate.progress import ProgressUpdate
 from backend.present.renderer import render_from_json
-from backend.db.persistence import save_to_file, save_to_mongo
+from backend.db.persistence import save_to_file, save_to_mongo, save_with_mongo_fallback
+from backend.db.mongodb_handler import MongoDBHandler
 from backend.gemini_client import GeminiClient
+from backend.cache_manager import get_cache_manager
 import json as _json
 from backend.pipeline import PipelineRunner
 from fastapi.responses import StreamingResponse
@@ -135,6 +137,9 @@ async def root():
             {"path": "/render", "method": "POST", "desc": "render JSON to human text"},
             {"path": "/render-evaluation", "method": "POST", "desc": "transform evaluation JSON to natural language text"},
             {"path": "/generate", "method": "POST", "desc": "call Gemini model (requires GEMINI_API_KEY)"},
+            {"path": "/cache/stats", "method": "GET", "desc": "get cache statistics"},
+            {"path": "/cache/cleanup", "method": "POST", "desc": "manually cleanup old cache files"},
+            {"path": "/cache/cleanup-job/{job_id}", "method": "DELETE", "desc": "cleanup files for specific job"},
         ],
     }
 
@@ -328,14 +333,28 @@ async def extract_stream_endpoint(req: ExtractRequest):
         try:
             readme_text = None
             path = None
+            owner = None
+            repo = None
+            readme_raw_link = None
             
             if req.repo_url:
                 logging.info("extract-stream: received repo_url=%s", req.repo_url)
+                # Extract owner/repo from URL
+                import re
+                match = re.match(r"https?://github\.com/(?P<owner>[^/]+)/(?P<repo>[^/]+)(?:\.git)?(?:/(?:tree|blob)/[^/]+)?", req.repo_url)
+                if match:
+                    owner = match.group("owner")
+                    repo = match.group("repo")
+                    logging.info("Extracted owner=%s, repo=%s", owner, repo)
+                
                 dl = ReadmeDownloader()
                 try:
                     logging.info("extract-stream: starting download for %s", req.repo_url)
                     path = dl.download(req.repo_url, branch=None)
                     logging.info("extract-stream: downloaded README to %s", path)
+                    # Construct raw GitHub link for the README
+                    if owner and repo:
+                        readme_raw_link = f"https://raw.githubusercontent.com/{owner}/{repo}/main/{os.path.basename(path)}"
                 except Exception as exc:
                     logging.exception("extract-stream: failed to download: %s", exc)
                     yield f"data: {_json.dumps({'error': str(exc), 'type': 'error'})}\n\n"
@@ -379,6 +398,9 @@ async def extract_stream_endpoint(req: ExtractRequest):
                 req.max_tokens or 20480,
                 req.temperature or 0.0,
                 on_progress,
+                owner,
+                repo,
+                readme_raw_link,
             )
             
             # Yield all progress updates from queue
@@ -393,6 +415,55 @@ async def extract_stream_endpoint(req: ExtractRequest):
             result_dict = result.to_dict()
             if path:
                 result_dict['saved_path'] = path
+            
+            # Save to MongoDB + File backup with proper naming
+            # MongoDB is primary storage (source of truth)
+            # File backup is automatic as failsafe with owner-repo-timestamp naming
+            try:
+                logging.info("Attempting to save result to MongoDB and file backup...")
+                
+                # Extract repository info for proper file naming
+                repo_name = result_dict.get("parsed", {}).get("metadata", {}).get("repository_name", "evaluation")
+                timestamp = datetime.now().strftime("%Y%m%dT%H%M%SZ")
+                repo_clean = repo_name.lower().replace(" ", "-")
+                filename = f"{repo_clean}-{timestamp}.json"
+                
+                # Save to MongoDB using MongoDBHandler
+                try:
+                    handler = MongoDBHandler()
+                    mongo_id = handler.insert_one(result_dict)
+                    handler.disconnect()
+                    
+                    result_dict["mongo_id"] = mongo_id
+                    if mongo_id:
+                        logging.info(f"✓ Result saved to MongoDB with ID: {mongo_id}")
+                        yield f"data: {_json.dumps({'type': 'database', 'status': 'saved', 'mongo_id': mongo_id})}\n\n"
+                    else:
+                        logging.warning("MongoDB save failed")
+                        yield f"data: {_json.dumps({'type': 'database', 'status': 'failed', 'message': 'Failed to save to MongoDB'})}\n\n"
+                except ValueError as e:
+                    logging.warning(f"MongoDB configuration error: {e}")
+                    yield f"data: {_json.dumps({'type': 'database', 'status': 'skipped', 'message': str(e)})}\n\n"
+                except Exception as mongo_exc:
+                    logging.exception(f"MongoDB save failed: {mongo_exc}")
+                    yield f"data: {_json.dumps({'type': 'database', 'status': 'failed', 'error': str(mongo_exc)})}\n\n"
+                
+                # Save to file as backup with proper naming
+                try:
+                    processed_dir = Path("processed")
+                    processed_dir.mkdir(exist_ok=True)
+                    file_path = processed_dir / filename
+                    with open(file_path, "w", encoding="utf-8") as f:
+                        _json.dump(result_dict, f, indent=2, ensure_ascii=False)
+                    logging.info(f"✓ Result also saved to file: {file_path}")
+                    yield f"data: {_json.dumps({'type': 'file_backup', 'status': 'saved', 'filename': filename, 'path': str(file_path)})}\n\n"
+                except Exception as file_exc:
+                    logging.warning(f"Error saving file backup: {file_exc}")
+                    yield f"data: {_json.dumps({'type': 'file_backup', 'status': 'failed', 'error': str(file_exc)})}\n\n"
+                
+            except Exception as db_exc:
+                logging.exception("Error in save process: %s", db_exc)
+                yield f"data: {_json.dumps({'type': 'database_error', 'error': str(db_exc)})}\n\n"
             
             yield f"data: {_json.dumps({'type': 'result', 'result': result_dict})}\n\n"
             
@@ -410,7 +481,7 @@ async def extract_stream_endpoint(req: ExtractRequest):
                         result_dict['parsed'],
                         style_instructions=default_style,
                         model=req.model,
-                        max_tokens=2048,
+                        max_tokens=20480,
                         temperature=0.1,
                     )
                     
@@ -477,7 +548,7 @@ def render_evaluation_endpoint(req: EvaluationRequest):
             req.evaluation_json,
             style_instructions=style,
             model=req.model,
-            max_tokens=req.max_tokens or 2048,
+            max_tokens=req.max_tokens or 20480,
             temperature=req.temperature or 0.1,
         )
         return result
@@ -509,3 +580,167 @@ def get_job_status(job_id: str):
         return data
     except Exception as exc:
         raise HTTPException(status_code=500, detail=str(exc))
+
+
+# Cache Management Endpoints
+
+
+@app.get("/cache/stats")
+def get_cache_stats():
+    """Get statistics about cache directories.
+
+    Returns information about cache usage, file count, and oldest files.
+    Useful for monitoring cache growth.
+    """
+    cache_mgr = get_cache_manager()
+    return cache_mgr.get_stats()
+
+
+@app.post("/cache/cleanup")
+def cleanup_cache(older_than_hours: int = 24, keep_jobs: bool = True):
+    """Clean up old cache files (default: older than 24 hours).
+
+    Args:
+        older_than_hours: Only delete files older than this many hours
+        keep_jobs: If true, preserve processing/jobs/ directory for active jobs
+
+    Returns:
+        Cleanup results and statistics
+    """
+    cache_mgr = get_cache_manager(max_age_hours=older_than_hours)
+    deleted = cache_mgr.cleanup_old_files(dry_run=False)
+    stats_after = cache_mgr.get_stats()
+
+    return {
+        "status": "cleaned",
+        "deleted_count": len(deleted["processing"]) + len(deleted["processed"]),
+        "deleted": deleted,
+        "stats_after": stats_after,
+    }
+
+
+@app.delete("/cache/cleanup-job/{job_id}")
+def cleanup_job_cache(job_id: str):
+    """Clean up all files associated with a specific job.
+
+    This removes temporary files created during job execution from
+    both processing/ and processed/ directories, but keeps MongoDB records.
+
+    Args:
+        job_id: UUID of the job to clean up
+
+    Returns:
+        Cleanup results
+    """
+    cache_mgr = get_cache_manager()
+    result = cache_mgr.cleanup_job(job_id, dry_run=False)
+
+    return {
+        "status": "cleaned",
+        "job_id": job_id,
+        "deleted_files": result["deleted_files"],
+        "errors": result["errors"],
+    }
+
+
+@app.post("/cache/cleanup-all")
+def cleanup_all_cache(keep_jobs: bool = True):
+    """Completely clear all cache files.
+
+    Warning: This removes all temporary files from processing/ and processed/.
+    MongoDB records are NOT affected - they remain the source of truth.
+
+    Args:
+        keep_jobs: If true, preserve processing/jobs/ for active job status
+
+    Returns:
+        Cleanup results and statistics
+    """
+    cache_mgr = get_cache_manager()
+    result = cache_mgr.cleanup_all(keep_jobs_dir=keep_jobs, dry_run=False)
+    stats_after = cache_mgr.get_stats()
+
+    return {
+        "status": "fully_cleaned",
+        "deleted_files": result["deleted_files"],
+        "preserved": result["preserved"],
+        "errors": result["errors"],
+        "stats_after": stats_after,
+    }
+
+
+class SaveFileRequest(BaseModel):
+    """Request model for saving evaluation results to disk."""
+    result: dict
+    owner: Optional[str] = None
+    repo: Optional[str] = None
+    custom_filename: Optional[str] = None
+
+
+@app.post("/save-to-file")
+def save_result_to_file(request: SaveFileRequest):
+    """Save evaluation result to disk with proper naming convention.
+    
+    Supports three naming modes:
+    1. Custom filename (if provided): uses as-is
+    2. Owner + Repo: generates "{owner}-{repo}-{timestamp}.json"
+    3. Auto-extract: extracts from result['parsed']['metadata']['repository_name']
+    
+    Args:
+        result: Evaluation result dictionary (from /extract-json-stream)
+        owner: Optional repository owner (e.g., "keras-team")
+        repo: Optional repository name (e.g., "keras")
+        custom_filename: Optional custom filename (overrides other naming modes)
+    
+    Returns:
+        Success status with file path
+        
+    Example:
+        POST /save-to-file
+        {
+            "result": {...},
+            "owner": "keras-team",
+            "repo": "keras"
+        }
+    """
+    try:
+        # Create processed directory if it doesn't exist
+        processed_dir = Path("processed")
+        processed_dir.mkdir(exist_ok=True)
+        
+        # Determine filename
+        if request.custom_filename:
+            filename = request.custom_filename
+        elif request.owner and request.repo:
+            timestamp = datetime.now().strftime("%Y%m%dT%H%M%SZ")
+            owner_clean = request.owner.lower().replace(" ", "-")
+            repo_clean = request.repo.lower().replace(" ", "-")
+            filename = f"{owner_clean}-{repo_clean}-{timestamp}.json"
+        else:
+            # Extract repository name from result metadata
+            try:
+                repo_name = request.result.get("parsed", {}).get("metadata", {}).get("repository_name", "evaluation")
+                timestamp = datetime.now().strftime("%Y%m%dT%H%M%SZ")
+                repo_clean = repo_name.lower().replace(" ", "-")
+                filename = f"{repo_clean}-{timestamp}.json"
+            except Exception:
+                timestamp = datetime.now().strftime("%Y%m%dT%H%M%SZ")
+                filename = f"evaluation-{timestamp}.json"
+        
+        # Save to file
+        file_path = processed_dir / filename
+        with open(file_path, "w", encoding="utf-8") as f:
+            _json.dump(request.result, f, indent=2, ensure_ascii=False)
+        
+        logging.info(f"Evaluation saved to {file_path}")
+        
+        return {
+            "status": "success",
+            "message": f"Result saved to disk",
+            "file_path": str(file_path),
+            "filename": filename
+        }
+    
+    except Exception as e:
+        logging.exception(f"Error saving result to file: {e}")
+        raise HTTPException(status_code=500, detail=f"Error saving to file: {str(e)}")

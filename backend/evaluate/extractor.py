@@ -22,9 +22,12 @@ def extract_json_from_readme(
     model: Optional[str] = None,
     system_prompt: Optional[str] = None,
     readme_path: Optional[str] = None,
-    max_tokens: int = 2048,
+    max_tokens: int = 20480,
     temperature: float = 0.0,
     progress_callback: Optional[Callable] = None,
+    owner: Optional[str] = None,
+    repo: Optional[str] = None,
+    readme_raw_link: Optional[str] = None,
 ) -> EvaluationResult:
     """Build extraction prompt and call model (if model provided).
 
@@ -63,6 +66,21 @@ def extract_json_from_readme(
 
         # Build prompt using PromptBuilder
         pb = prompt_builder.PromptBuilder(template_header=system_prompt or None, schema=schema_text, readme=readme_text)
+        
+        # Add repository context for metadata population
+        if owner or repo or readme_raw_link:
+            repo_context = "REPOSITORY CONTEXT (fill these fields in the JSON metadata):\n"
+            if owner:
+                repo_context += f"- Repository Owner: {owner}\n"
+            if repo:
+                repo_context += f"- Repository Name: {repo}\n"
+            if owner and repo:
+                repo_context += f"- Repository Link: https://github.com/{owner}/{repo}\n"
+            if readme_raw_link:
+                repo_context += f"- README Raw Link: {readme_raw_link}\n"
+            if model:
+                repo_context += f"- Evaluator Model: {model}\n"
+            pb.add_part("repository_context", repo_context)
         
         if readme_path:
             try:
@@ -156,6 +174,54 @@ def extract_json_from_readme(
                         result_obj.parsed = parsed
                         timing["parsing"] = time.time() - parse_start
                         tracker.complete_stage(ProgressStage.PARSING_JSON, "JSON parsed and fixed successfully")
+                        
+                        # POST-PROCESS: Ensure repository metadata is correctly populated
+                        # The model receives context but may not fill these correctly, so we enforce them
+                        if result_obj.parsed and isinstance(result_obj.parsed, dict):
+                            if "metadata" not in result_obj.parsed:
+                                result_obj.parsed["metadata"] = {}
+                            
+                            metadata = result_obj.parsed["metadata"]
+                            
+                            # repository_owner: Add if we have it and it's missing or N/A
+                            if owner:
+                                current = metadata.get("repository_owner", "")
+                                if not current or current == "N/A":
+                                    metadata["repository_owner"] = owner
+                                    logging.info(f"Filled repository_owner: {owner}")
+                            
+                            # repository_name: Add if we have it and it's missing or N/A
+                            if repo:
+                                current = metadata.get("repository_name", "")
+                                if not current or current == "N/A":
+                                    metadata["repository_name"] = repo
+                                    logging.info(f"Filled repository_name: {repo}")
+                            
+                            # repository_link: Construct from owner/repo if missing or N/A
+                            if owner and repo:
+                                expected_link = f"https://github.com/{owner}/{repo}"
+                                current = metadata.get("repository_link", "")
+                                if not current or current == "N/A":
+                                    metadata["repository_link"] = expected_link
+                                    logging.info(f"Filled repository_link: {expected_link}")
+                            
+                            # readme_raw_link: Add if we have it and it's missing or N/A
+                            if readme_raw_link:
+                                current = metadata.get("readme_raw_link", "")
+                                if not current or current == "N/A":
+                                    metadata["readme_raw_link"] = readme_raw_link
+                                    logging.info(f"Filled readme_raw_link: {readme_raw_link}")
+                            
+                            # evaluation_date: ALWAYS set to current UTC date in ISO format
+                            from datetime import datetime
+                            current_date = datetime.utcnow().strftime("%Y-%m-%d")
+                            metadata["evaluation_date"] = current_date
+                            logging.info(f"Set evaluation_date to: {current_date}")
+                            
+                            # evaluator: ALWAYS use the model name (model doesn't know its own name)
+                            if model:
+                                metadata["evaluator"] = model
+                                logging.info(f"Set evaluator to model: {model}")
                     except json.JSONDecodeError as e:
                         result_obj.parsed = None
                         timing["parsing"] = time.time() - parse_start

@@ -38,6 +38,22 @@ Ou export no terminal:
 set GEMINI_API_KEY=sua_chave_aqui
 ```
 
+#### 2.5. (Opcional) Configure MongoDB Atlas
+
+Para salvar resultados em MongoDB Atlas:
+
+```
+# Veja MONGODB_SETUP.md para instruções completas
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/?retryWrites=true&w=majority
+MONGODB_DB=readme_evaluator
+MONGODB_COLLECTION=evaluations
+```
+
+Test a conexão:
+```cmd
+python tools/test_mongodb.py --full
+```
+
 #### 3. Inicie o Backend
 
 ```cmd
@@ -142,7 +158,39 @@ Baixa o README de um repositório GitHub.
 
 ---
 
-## 📊 Taxonomia JSON
+## 💾 Persistência de Dados
+
+### Armazenamento Local (Padrão)
+Todos os resultados são salvos automaticamente em:
+```
+processed/
+├── result-*.json                  # Resultado JSON estruturado
+├── result-*-backup.jsonl          # Backup em JSONL (linha por linha)
+└── README-*.md                    # README original (se download)
+```
+
+### MongoDB Atlas (Opcional)
+Configure `MONGODB_URI` em `.env` para salvar também em nuvem:
+
+```bash
+# 1. Crie conta em https://www.mongodb.com/cloud/atlas (gratuito)
+# 2. Configure em .env:
+MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/...
+# 3. Results são salvos automaticamente em MongoDB
+
+# 4. Test:
+python tools/test_mongodb.py --full
+```
+
+**Benefícios:**
+- ✓ Backup em nuvem automático
+- ✓ Query histórico de avaliações
+- ✓ Sem limite de armazenamento (tier gratuito: 512MB)
+- ✓ Integração com dashboards (MongoDB Charts)
+
+**Veja**: [MONGODB_SETUP.md](MONGODB_SETUP.md) para guia completo
+
+---
 
 O schema (`schemas/taxonomia.schema.json`) define 11 categorias:
 

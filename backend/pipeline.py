@@ -17,6 +17,8 @@ from typing import Any, Dict, Optional
 
 from backend.download.download import ReadmeDownloader
 from backend.evaluate.extractor import extract_json_from_readme
+from backend.db.mongodb_handler import MongoDBHandler
+from backend.cache_manager import get_cache_manager
 
 LOG = logging.getLogger(__name__)
 
@@ -205,6 +207,63 @@ class PipelineRunner:
                 LOG.exception("Failed to save results: %s", e)
                 self._finish_step(job, step, ok=False, message=str(e))
                 return
+
+            self._finish_step(job, step, ok=True)
+
+            # Step 6: save_to_database (MongoDB + file backup)
+            step = self._start_step(job, "save_to_database")
+            try:
+                result_data = job.get("result", {})
+                
+                # Try to save to MongoDB using MongoDBHandler
+                try:
+                    handler = MongoDBHandler()
+                    mongo_id = handler.insert_one(result_data)
+                    handler.disconnect()
+                    
+                    job["artifacts"]["mongo_id"] = mongo_id
+                    if mongo_id:
+                        LOG.info(f"Results saved to MongoDB: {mongo_id}")
+                    else:
+                        LOG.warning("MongoDB save returned None")
+                except ValueError as e:
+                    LOG.warning(f"MongoDB not configured: {e}")
+                except Exception as e:
+                    LOG.exception(f"Failed to save to MongoDB: {e}")
+                
+                # Always save file backup
+                try:
+                    backup_file = os.path.join(processed_dir, f"{job_id}-backup.json")
+                    with open(backup_file, "w", encoding="utf-8") as f:
+                        json.dump(result_data, f, indent=2, ensure_ascii=False)
+                    job["artifacts"]["backup_file"] = backup_file
+                    LOG.info(f"File backup saved: {backup_file}")
+                except Exception as file_exc:
+                    LOG.exception(f"Failed to save file backup: {file_exc}")
+                    
+            except Exception as e:
+                LOG.exception("Failed to save to database: %s", e)
+                self._finish_step(job, step, ok=False, message=str(e))
+                return
+
+            self._finish_step(job, step, ok=True)
+
+            # Step 7: cleanup_cache (remove temporary files, keep MongoDB as source of truth)
+            step = self._start_step(job, "cleanup_cache")
+            try:
+                cache_mgr = get_cache_manager()
+                cleanup_result = cache_mgr.cleanup_job(job_id, dry_run=False)
+                job["artifacts"]["cache_cleanup"] = {
+                    "deleted_files": len(cleanup_result["deleted_files"]),
+                    "errors": cleanup_result["errors"],
+                }
+                if cleanup_result["errors"]:
+                    LOG.warning(f"Errors during cache cleanup: {cleanup_result['errors']}")
+                else:
+                    LOG.info(f"Cache cleaned for job {job_id}: {len(cleanup_result['deleted_files'])} files removed")
+            except Exception as e:
+                LOG.warning(f"Failed to cleanup cache for job {job_id}: {e}")
+                job["artifacts"]["cache_cleanup"] = {"error": str(e)}
 
             self._finish_step(job, step, ok=True)
 

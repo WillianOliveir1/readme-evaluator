@@ -26,7 +26,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     parser.add_argument("--schema", default="schemas/taxonomia.schema.json", help="Path to schema file used by PromptBuilder")
     parser.add_argument("--example", default=None, help="Optional JSON example file to include as few-shot example")
     parser.add_argument("--model", default=None, help="Model id to call (e.g. gemini-2.5-flash). If omitted, only the prompt is saved")
-    parser.add_argument("--max-tokens", type=int, default=2048)
+    parser.add_argument("--max-tokens", type=int, default=20480)
     parser.add_argument("--temperature", type=float, default=0.0)
     parser.add_argument("--system-prompt-file", default=None, help="Path to a SYSTEM prompt file to include at top of prompt")
     parser.add_argument("--system-prompt", default=None, help="Inline system prompt text (alternative to file)")

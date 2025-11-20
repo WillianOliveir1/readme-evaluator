@@ -172,14 +172,14 @@ def test_step_3_call_model(prompt: str):
         
         print_info(f"Enviando prompt para {client.default_model}...")
         print_info(f"Configuração:")
-        print_info(f"  - max_tokens: 2048")
+        print_info(f"  - max_tokens: 20480")
         print_info(f"  - temperature: 0.0")
         
         start_time = time.time()
         response = client.generate(
             prompt,
             model="gemini-2.5-flash",
-            max_tokens=2048,
+            max_tokens=20480,
             temperature=0.0
         )
         elapsed = time.time() - start_time
