@@ -48,23 +48,23 @@
 			"quality": {
 				"clarity": {
 					"note": 5,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["Pandas is a Python package that provides fast, flexible, and expressive data structures..."],
+          			"justifications": ["definição direta e inequívoca do que é."]
 				},
 				"understandability": {
 					"note": 5,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["“relational” or “labeled” data; “real-world data analysis in Python”."],
+          			"justifications": ["objetivo/componente são compreensíveis de imediato."]
 				},
 				"conciseness": {
 					"note": 5,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["parágrafos curtos e diretos."],
+          			"justifications": ["cobre o essencial sem redundância."]
 				},
 				"consistency": {
 					"note": 5,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["terminologia estável (“DataFrame”, “Series”, “data analysis”)."],
+          			"justifications": ["terminologia estável e padrão profissional."]
 				}
 			},
 			"evidence": [
@@ -86,18 +86,18 @@
 			"quality": {
 				"clarity": {
 					"note": 4,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["aims to be the fundamental high-level building block… the most powerful and flexible…"],
+          			"justifications": ["benefícios estão claros, mas dispersos; sem seção “Why” dedicada."]
 				},
 				"effectiveness": {
 					"note": 5,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["Main Features” lista capacidades robustas (I/O, groupby, time series, merging, reshape…)"],
+          			"justifications": ["benefícios técnicos concretos, com links para docs."]
 				},
 				"appeal":{
 					"note": 4,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["narrativa institucional forte; sem storytelling/casos reais."],
+          			"justifications": ["engajamento bom, poderia ser mais “motivacional”."]
 				}
 			},
 			"evidence": [
@@ -121,18 +121,18 @@
 			"quality": {
 				"structure": {
 					"note": 5,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["Where to get it” com conda/pip, depois “Dependencies”; “Installation from sources”"],
+          			"justifications": ["progressão lógica do simples ao avançado, com subtítulos bem organizados."]
 				},
 				"readability": {
 					"note": 5,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["code blocks para conda/pip; links para PyPI/Conda."],
+          			"justifications": ["formato facilita escaneabilidade e execução fiel dos comandos."]
 				},
 				"clarity": {
 					"note": 5,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["comandos explícitos; links para instruções completas."],
+          			"justifications": ["inequívoco para diferentes métodos de instalação."]
 				}
 			},
 			"evidence": [
@@ -155,18 +155,18 @@
 			"quality": {
 				"understandability": {
 					"note": 2,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["não há snippet de uso no README."],
+          			"justifications": ["sem um MWE, o leitor precisa sair do README para compreender o fluxo básico de uso."]
 				},
 				"code_readability": {
 					"note": 1,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["não há blocos de exemplo de uso."],
+          			"justifications": ["impossível avaliar legibilidade de código se não há código de uso."]
 				},
 				"effectiveness": {
 					"note": 2,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["referência a docs, mas não demonstra uso direto aqui."],
+          			"justifications": ["referência a docs, mas não demonstra uso direto aqui."]
 				}
 			},
 			"evidence": [
@@ -188,18 +188,18 @@
 			"quality": {
 				"clarity": {
 					"note": 4,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["dependências listadas com links; “full installation instructions” para versões mínimas/opcionais."],
+          			"justifications": ["claro, mas delega detalhes às docs (adequado)."]
 				},
 				"structure": {
 					"note": 4,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["seção de dependências e instalação de source."],
+          			"justifications": ["organiza bem requisitos e build local."]
 				},
 				"conciseness": {
 					"note": 5,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["instruções diretas, link com detalhes."],
+          			"justifications": ["texto enxuto e suficiente."]
 				}
 			},
 			"evidence": [
@@ -220,13 +220,13 @@
 			"quality": {
 				"clarity": {
 					"note": 4,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["The list of changes … here (what’s new)."],
+          			"justifications": ["changelog claro; roadmap não está no README."]
 				},
 				"consistency": {
 					"note": 5,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["padrão consistente de links para “what’s new”."],
+          			"justifications": ["processo de versões transparente."]
 				}
 			},
 			"evidence": [
@@ -249,13 +249,13 @@
 			"quality": {
 				"clarity": {
 					"note": 5,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["“Getting Help”, “Discussion and Development”, links para Slack, mailing list, issues, meetings."],
+          			"justifications": ["fácil descobrir onde obter ajuda e participar."]
 				},
 				"consistency": {
 					"note": 5,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["comunicação organizada e padronizada."],
+          			"justifications": ["canais oficiais bem definidos."]
 				}
 			},
 			"evidence": [
@@ -276,13 +276,13 @@
 			"quality": {
 				"clarity": {
 					"note": 5,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["BSD 3 (LICENSE)"],
+          			"justifications": ["tipo e link direto informados."]
 				},
 				"consistency": {
 					"note": 5,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["badge e link para LICENSE."],
+          			"justifications": ["comunicação consistente."]
 				}
 			},
 			"evidence": [
@@ -302,18 +302,18 @@
 			"quality": {
 				"structure": {
 					"note": 5,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["seção “Contributing to pandas” com guia detalhado."],
+          			"justifications": ["fluxo claro para novos contribuidores."]
 				},
 				"clarity": {
 					"note": 5,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["links para “good first issue”, Docs, CodeTriage, guia de contribuição."],
+          			"justifications": ["fácil iniciar e entender expectativas."]
 				},
 				"readability": {
 					"note": 5,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["texto segmentado, links, chamadas à ação."],
+          			"justifications": ["leitura fluida."]
 				}
 			},
 			"evidence": [
@@ -333,13 +333,13 @@
 			"quality": {
 				"effectiveness": {
 					"note": 5,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["links para docs estáveis, what’s new, PyPI/Conda, comunidade."],
+          			"justifications": ["cobertura completa de referências úteis."]
 				},
 				"clarity": {
 					"note": 5,
-					"evidences": [],
-          			"justifications": []
+					"evidences": ["títulos e links autoexplicativos."],
+          			"justifications": ["fácil localizar qualquer recurso."]
 				}
 			},
 			"evidence": [
