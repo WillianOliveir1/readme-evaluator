@@ -20,26 +20,26 @@
       "Why use Keras 3?"
     ],
     "present_categories": {
-      "what": "present",
-      "why": "present",
-      "how_installation": "present",
-      "how_usage": "absent",
-      "how_config_requirements": "present",
-      "when": "absent",
-      "who": "present",
-      "license": "absent",
-      "contribution": "absent",
-      "references": "present",
-      "other": "absent"
+      "what": true,
+      "why": true,
+      "how_installation": true,
+      "how_usage": false,
+      "how_config_requirements": true,
+      "when": false,
+      "who": true,
+      "license": false,
+      "contribution": false,
+      "references": true,
+      "other": false
     },
     "organization_notes": "Effective flow: value message and description → installation → local environment and GPU → backend configuration → backwards compatibility → detailed 'Why'. Main gaps: missing minimal working example (usage), no 'When' (status/roadmap/changelog), no license and contribution sections in the README (likely exist as separate files)."
   },
   "categories": {
     "what": {
       "checklist": {
-        "clear_description": "present",
-        "scope_features": "present",
-        "target_audience": "present"
+        "clear_description": true,
+        "scope_features": true,
+        "target_audience": true
       },
       "quality": {
         "clarity": 5,
@@ -62,9 +62,9 @@
     },
     "why": {
       "checklist": {
-        "explicit_purpose": "present",
-        "benefits_vs_alternatives": "present",
-        "use_cases": "present"
+        "explicit_purpose": true,
+        "benefits_vs_alternatives": true,
+        "use_cases": true
       },
       "quality": {
         "clarity": 5,
@@ -85,9 +85,9 @@
     },
     "how_installation": {
       "checklist": {
-        "reproducible_commands": "present",
-        "compatibility_requirements": "present",
-        "dependencies": "present"
+        "reproducible_commands": true,
+        "compatibility_requirements": true,
+        "dependencies": true
       },
       "quality": {
         "structure": 5,
@@ -110,9 +110,9 @@
     },
     "how_usage": {
       "checklist": {
-        "minimal_working_example": "absent",
-        "io_examples": "absent",
-        "api_commands_context": "absent"
+        "minimal_working_example": false,
+        "io_examples": false,
+        "api_commands_context": false
       },
       "quality": {
         "understandability": 2,
@@ -131,9 +131,9 @@
     },
     "how_config_requirements": {
       "checklist": {
-        "documented_configuration": "present",
-        "parameters_options": "present",
-        "troubleshooting": "present"
+        "documented_configuration": true,
+        "parameters_options": true,
+        "troubleshooting": true
       },
       "quality": {
         "clarity": 5,
@@ -156,9 +156,9 @@
     },
     "when": {
       "checklist": {
-        "current_status": "absent",
-        "roadmap": "absent",
-        "changelog": "absent"
+        "current_status": false,
+        "roadmap": false,
+        "changelog": false
       },
       "quality": {
         "clarity": 2,
@@ -177,9 +177,9 @@
     },
     "who": {
       "checklist": {
-        "authors_maintainers": "absent",
-        "contact_channels": "absent",
-        "code_of_conduct": "absent"
+        "authors_maintainers": false,
+        "contact_channels": false,
+        "code_of_conduct": false
       },
       "quality": {
         "clarity": 2,
@@ -198,8 +198,8 @@
     },
     "license": {
       "checklist": {
-        "license_type": "absent",
-        "license_link": "absent"
+        "license_type": false,
+        "license_link": false
       },
       "quality": {
         "clarity": 1,
@@ -218,9 +218,9 @@
     },
     "contribution": {
       "checklist": {
-        "contributing_link": "absent",
-        "contribution_steps": "present",
-        "standards": "absent"
+        "contributing_link": false,
+        "contribution_steps": true,
+        "standards": false
       },
       "quality": {
         "structure": 3,
@@ -241,9 +241,9 @@
     },
     "references": {
       "checklist": {
-        "docs_link": "present",
-        "relevant_references": "present",
-        "faq_support": "absent"
+        "docs_link": true,
+        "relevant_references": true,
+        "faq_support": false
       },
       "quality": {
         "effectiveness": 4,
@@ -261,8 +261,8 @@
     },
     "other": {
       "checklist": {
-        "generic_sections": "absent",
-        "placeholders": "absent"
+        "generic_sections": false,
+        "placeholders": false
       },
       "action": {
         "reclassify": false,
@@ -310,4 +310,3 @@
     ]
   }
 }
-

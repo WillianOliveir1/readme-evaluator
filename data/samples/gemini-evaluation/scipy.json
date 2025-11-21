@@ -13,26 +13,26 @@
       "Call for Contributions"
     ],
     "present_categories": {
-      "what": "✔",
-      "why": "✔",
-      "how_installation": "✔",
-      "how_usage": "✖",
-      "how_config_requirements": "✖",
-      "when": "✖",
-      "who": "✔",
-      "license": "✖",
-      "contribution": "✔",
-      "references": "✔",
-      "other": "✔"
+      "what": true,
+      "why": true,
+      "how_installation": true,
+      "how_usage": false,
+      "how_config_requirements": false,
+      "when": false,
+      "who": true,
+      "license": false,
+      "contribution": true,
+      "references": true,
+      "other": true
     },
     "organization_observations": "The README is well-structured given its content, starting with a project description, followed by a comprehensive list of links, and then a dedicated section for contributions. The placement of all external links upfront is efficient. The use of reStructuredText (Rst) for image badges is unusual for a typical GitHub README, which usually supports Markdown, but it renders correctly on GitHub."
   },
   "categories": {
     "what": {
       "checklist": {
-        "clear_description": "✔",
-        "features_scope": "✔",
-        "target_audience": "✔"
+        "clear_description": true,
+        "features_scope": true,
+        "target_audience": true
       },
       "quality": {
         "clarity": 5,
@@ -54,9 +54,9 @@
     },
     "why": {
       "checklist": {
-        "explicit_purpose": "✔",
-        "benefits_vs_alternatives": "✖",
-        "use_cases": "✔"
+        "explicit_purpose": true,
+        "benefits_vs_alternatives": false,
+        "use_cases": true
       },
       "quality": {
         "clarity": 4,
@@ -80,9 +80,9 @@
     },
     "how_installation": {
       "checklist": {
-        "reproducible_commands": "✖",
-        "compatibility_requirements": "✖",
-        "dependencies": "✖"
+        "reproducible_commands": false,
+        "compatibility_requirements": false,
+        "dependencies": false
       },
       "quality": {
         "structure": 2,
@@ -104,9 +104,9 @@
     },
     "how_usage": {
       "checklist": {
-        "minimal_working_example": "✖",
-        "examples_io": "✖",
-        "api_commands_context": "✖"
+        "minimal_working_example": false,
+        "examples_io": false,
+        "api_commands_context": false
       },
       "quality": {
         "understandability": 1,
@@ -126,9 +126,9 @@
     },
     "how_config_requirements": {
       "checklist": {
-        "documented_configuration": "✖",
-        "parameters_options": "✖",
-        "troubleshooting": "✖"
+        "documented_configuration": false,
+        "parameters_options": false,
+        "troubleshooting": false
       },
       "quality": {
         "clarity": 1,
@@ -148,9 +148,9 @@
     },
     "when": {
       "checklist": {
-        "current_status": "✖",
-        "roadmap": "✖",
-        "changelog": "✖"
+        "current_status": false,
+        "roadmap": false,
+        "changelog": false
       },
       "quality": {
         "clarity": 1,
@@ -170,9 +170,9 @@
     },
     "who": {
       "checklist": {
-        "authors_maintainers": "✖",
-        "contact_channels": "✔",
-        "code_of_conduct": "✔"
+        "authors_maintainers": false,
+        "contact_channels": true,
+        "code_of_conduct": true
       },
       "quality": {
         "clarity": 4,
@@ -195,8 +195,8 @@
     },
     "license": {
       "checklist": {
-        "license_type": "✖",
-        "license_link": "✖"
+        "license_type": false,
+        "license_link": false
       },
       "quality": {
         "clarity": 1,
@@ -214,9 +214,9 @@
     },
     "contribution": {
       "checklist": {
-        "contributing_link": "✔",
-        "contribution_steps": "✔",
-        "standards": "✖"
+        "contributing_link": true,
+        "contribution_steps": true,
+        "standards": false
       },
       "quality": {
         "structure": 5,
@@ -239,9 +239,9 @@
     },
     "references": {
       "checklist": {
-        "docs_link": "✔",
-        "relevant_references": "✔",
-        "support_faq": "✔"
+        "docs_link": true,
+        "relevant_references": true,
+        "support_faq": true
       },
       "quality": {
         "effectiveness": 5,
@@ -262,8 +262,8 @@
     },
     "other": {
       "checklist": {
-        "generic_sections": "✔",
-        "placeholders": "✖"
+        "generic_sections": true,
+        "placeholders": false
       },
       "action": {
         "reclassify": false,

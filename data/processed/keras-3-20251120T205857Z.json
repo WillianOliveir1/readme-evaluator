@@ -1,0 +1,2092 @@
+{
+  "success": true,
+  "prompt_length": 184172,
+  "model_output_length": 28230,
+  "parsed": {
+    "metadata": {
+      "repository_name": "Keras 3",
+      "repository_link": "N/A",
+      "readme_raw_link": "N/A",
+      "evaluation_date": "2025-11-20",
+      "evaluator": "gemini-2.5-flash",
+      "general_notes": "The README provides a strong overview of Keras 3's capabilities and installation, with a clear focus on its multi-backend nature and benefits. However, it lacks practical usage examples, governance information, and project status details."
+    },
+    "structural_summary": {
+      "detected_sections": [
+        "Keras 3: Deep Learning for Humans",
+        "Installation",
+        "Install with pip",
+        "Local installation",
+        "Minimal installation",
+        "Adding GPU support",
+        "Backend Compatibility Table",
+        "Configuring your backend",
+        "Backwards compatibility",
+        "Why use Keras 3?"
+      ],
+      "present_categories": {
+        "what": true,
+        "why": true,
+        "how_installation": true,
+        "how_usage": false,
+        "how_config_requirements": true,
+        "when": false,
+        "who": false,
+        "license": false,
+        "contribution": false,
+        "references": true,
+        "other": false
+      },
+      "organization_notes": "The README is well-structured with clear headings and subheadings. The 'Why use Keras 3?' section is placed towards the end, which is a bit unusual but effectively reinforces the initial high-level benefits. The 'Backend Compatibility Table' is logically placed within the installation context. The 'Backwards compatibility' section provides useful context but could be integrated more smoothly or have a clearer purpose within the overall flow."
+    },
+    "categories": {
+      "what": {
+        "checklist": {
+          "clear_description": true,
+          "features_scope": true,
+          "target_audience": true
+        },
+        "quality": {
+          "clarity": {
+            "note": 5,
+            "evidences": [
+              "Keras 3 is a multi-backend deep learning framework, with support for JAX, TensorFlow, PyTorch, and OpenVINO (for inference-only).",
+              "Effortlessly build and train models for computer vision, natural language processing, audio processing, timeseries forecasting, recommender systems, etc."
+            ],
+            "justifications": [
+              "The initial paragraph clearly defines Keras 3 as a multi-backend deep learning framework and lists its supported backends and application domains."
+            ]
+          },
+          "understandability": {
+            "note": 5,
+            "evidences": [
+              "Keras 3 is a multi-backend deep learning framework, with support for JAX, TensorFlow, PyTorch, and OpenVINO (for inference-only).",
+              "Effortlessly build and train models for computer vision, natural language processing, audio processing, timeseries forecasting, recommender systems, etc."
+            ],
+            "justifications": [
+              "The description is straightforward and uses accessible language, making it easy for a broad audience to grasp what Keras 3 is and what it does."
+            ]
+          },
+          "conciseness": {
+            "note": 4,
+            "evidences": [
+              "Keras 3 is a multi-backend deep learning framework, with support for JAX, TensorFlow, PyTorch, and OpenVINO (for inference-only).",
+              "Effortlessly build and train models for computer vision, natural language processing, audio processing, timeseries forecasting, recommender systems, etc."
+            ],
+            "justifications": [
+              "The description is concise, providing key information without unnecessary jargon or verbosity. The bullet points effectively highlight core features."
+            ]
+          },
+          "consistency": {
+            "note": 5,
+            "evidences": [
+              "Keras 3 is a multi-backend deep learning framework...",
+              "Join nearly three million developers, from burgeoning startups to global enterprises, in harnessing the power of Keras 3."
+            ],
+            "justifications": [
+              "The terminology and description of Keras 3 are consistent throughout the introductory section."
+            ]
+          }
+        },
+        "evidences": [
+          "Keras 3 is a multi-backend deep learning framework, with support for JAX, TensorFlow, PyTorch, and OpenVINO (for inference-only).",
+          "Effortlessly build and train models for computer vision, natural language processing, audio processing, timeseries forecasting, recommender systems, etc.",
+          "Join nearly three million developers, from burgeoning startups to global enterprises, in harnessing the power of Keras 3."
+        ],
+        "justifications": [
+          "The initial paragraphs clearly describe the project, its multi-backend nature, and its wide range of applications. The mention of 'nearly three million developers' implicitly defines the target audience."
+        ],
+        "suggested_improvements": [
+          "Explicitly state the target audience (e.g., 'This framework is designed for ML researchers, data scientists, and developers...')."
+        ]
+      },
+      "why": {
+        "checklist": {
+          "explicit_purpose": true,
+          "benefits_vs_alternatives": true,
+          "use_cases": true
+        },
+        "quality": {
+          "clarity": {
+            "note": 5,
+            "evidences": [
+              "- **Accelerated model development**: Ship deep learning solutions faster thanks to the high-level UX of Keras",
+              "- **State-of-the-art performance**: By picking the backend that is the fastest for your model architecture (often JAX!), leverage speedups ranging from 20% to 350% compared to other frameworks."
+            ],
+            "justifications": [
+              "The benefits are clearly articulated using bolded headings and descriptive sentences, making it easy to understand the value proposition."
+            ]
+          },
+          "effectiveness": {
+            "note": 5,
+            "evidences": [
+              "- **Accelerated model development**: Ship deep learning solutions faster thanks to the high-level UX of Keras",
+              "- **State-of-the-art performance**: By picking the backend that is the fastest for your model architecture (often JAX!), leverage speedups ranging from 20% to 350% compared to other frameworks. [Benchmark here](https://keras.io/getting_started/benchmarks/)."
+            ],
+            "justifications": [
+              "The section effectively highlights key advantages like speed, performance, and scalability, directly addressing potential user needs. The benchmark link adds credibility."
+            ]
+          },
+          "appeal": {
+            "note": 5,
+            "evidences": [
+              "- **Accelerated model development**: Ship deep learning solutions faster thanks to the high-level UX of Keras",
+              "Join nearly three million developers, from burgeoning startups to global enterprises, in harnessing the power of Keras 3."
+            ],
+            "justifications": [
+              "The language is engaging and emphasizes user benefits, such as 'effortlessly build and train models' and 'ship deep learning solutions faster', which appeals to developers."
+            ]
+          }
+        },
+        "evidences": [
+          "- **Accelerated model development**: Ship deep learning solutions faster thanks to the high-level UX of Keras",
+          "- **State-of-the-art performance**: By picking the backend that is the fastest for your model architecture (often JAX!), leverage speedups ranging from 20% to 350% compared to other frameworks. [Benchmark here](https://keras.io/getting_started/benchmarks/).",
+          "- **Datacenter-scale training**: Scale confidently from your laptop to large clusters of GPUs or TPUs.",
+          "Why use Keras 3?\n- Run your high-level Keras workflows on top of any framework -- benefiting at will from the advantages of each framework, e.g. the scalability and performance of JAX or the production ecosystem options of TensorFlow."
+        ],
+        "justifications": [
+          "The README clearly states the purpose and benefits of Keras 3, emphasizing accelerated development, state-of-the-art performance, and datacenter-scale training. It also highlights benefits for specific user groups (PyTorch/JAX users) and future-proofing."
+        ],
+        "suggested_improvements": [
+          "Consider moving the 'Why use Keras 3?' section higher up, perhaps right after the initial project description, to immediately capture reader interest."
+        ]
+      },
+      "how_installation": {
+        "checklist": {
+          "reproducible_commands": true,
+          "compatibility_requirements": true,
+          "dependencies": true
+        },
+        "quality": {
+          "structure": {
+            "note": 5,
+            "evidences": [
+              "### Install with pip",
+              "### Local installation",
+              "#### Minimal installation",
+              "#### Adding GPU support"
+            ],
+            "justifications": [
+              "The installation instructions are well-organized with clear headings and subheadings for different installation methods and scenarios."
+            ]
+          },
+          "readability": {
+            "note": 5,
+            "evidences": [
+              "1. Install `keras`:\n```\npip install keras --upgrade\n```",
+              "Keras 3 is compatible with Linux and macOS systems. For Windows users, we recommend using WSL2 to run Keras."
+            ],
+            "justifications": [
+              "The instructions use numbered lists, code blocks, and clear explanations, making them very easy to follow and read."
+            ]
+          },
+          "clarity": {
+            "note": 5,
+            "evidences": [
+              "To use `keras`, you should also install the backend of choice: `tensorflow`, `jax`, or `torch`.",
+              "We recommend a clean Python environment for each backend to avoid CUDA version mismatches."
+            ],
+            "justifications": [
+              "The instructions are unambiguous, providing specific commands and important notes regarding backend installation and environment setup."
+            ]
+          }
+        },
+        "evidences": [
+          "pip install keras --upgrade",
+          "To use `keras`, you should also install the backend of choice: `tensorflow`, `jax`, or `torch`.",
+          "Keras 3 is compatible with Linux and macOS systems. For Windows users, we recommend using WSL2 to run Keras.",
+          "| Backend    | Minimum Supported Version |\n|------------|---------------------------|\n| TensorFlow | 2.16.1                    |",
+          "conda create -y -n keras-jax python=3.10\nconda activate keras-jax\npip install -r requirements-jax-cuda.txt"
+        ],
+        "justifications": [
+          "The installation section provides clear `pip` and `conda` commands, specifies OS compatibility, lists backend dependencies, and includes a compatibility table for minimum supported versions."
+        ],
+        "suggested_improvements": [
+          "None, this section is excellent."
+        ]
+      },
+      "how_usage": {
+        "checklist": {
+          "minimal_working_example": false,
+          "io_examples": false,
+          "api_commands_context": false
+        },
+        "quality": {
+          "understandability": {
+            "note": 1,
+            "evidences": [],
+            "justifications": [
+              "There are no usage examples provided, making it impossible to understand how to use the library in practice from the README alone."
+            ]
+          },
+          "code_readability": {
+            "note": 1,
+            "evidences": [],
+            "justifications": [
+              "No code examples are present in this section, so code readability cannot be assessed."
+            ]
+          },
+          "effectiveness": {
+            "note": 1,
+            "evidences": [],
+            "justifications": [
+              "The absence of usage examples severely limits the effectiveness of the README in guiding users on how to practically apply Keras 3."
+            ]
+          }
+        },
+        "evidences": [],
+        "justifications": [
+          "This section is entirely absent. The README does not provide any minimal working examples, input/output examples, or API demonstrations."
+        ],
+        "suggested_improvements": [
+          "Add a 'Quick Start' or 'Usage' section with a simple, runnable code example demonstrating how to define, compile, and train a basic Keras model using one of the backends.",
+          "Include examples showing how to switch between backends in a usage context."
+        ]
+      },
+      "how_config_requirements": {
+        "checklist": {
+          "documented_configuration": true,
+          "parameters_options": true,
+          "troubleshooting": false
+        },
+        "quality": {
+          "clarity": {
+            "note": 5,
+            "evidences": [
+              "You can export the environment variable `KERAS_BACKEND` or you can edit your local config file at `~/.keras/keras.json` to configure your backend.",
+              "**Note:** The backend must be configured before importing `keras`, and the backend cannot be changed after the package has been imported."
+            ],
+            "justifications": [
+              "The instructions for configuring the backend are very clear, providing both environment variable and config file options, along with important caveats."
+            ]
+          },
+          "structure": {
+            "note": 4,
+            "evidences": [
+              "You can export the environment variable `KERAS_BACKEND` or you can edit your local config file at `~/.keras/keras.json`",
+              "Example:\n```\nexport KERAS_BACKEND=\"jax\"\n```"
+            ],
+            "justifications": [
+              "The section is well-structured, presenting the configuration methods, available options, and code examples clearly. The notes are also well-placed."
+            ]
+          },
+          "conciseness": {
+            "note": 5,
+            "evidences": [
+              "Available backend options are: `\"tensorflow\"`, `\"jax\"`, `\"torch\"`, `\"openvino\"`.",
+              "**Note:** The OpenVINO backend is an inference-only backend, meaning it is designed only for running model predictions using `model.predict()` method."
+            ],
+            "justifications": [
+              "The information is presented succinctly, providing all necessary details without being verbose. The notes are brief and to the point."
+            ]
+          }
+        },
+        "evidences": [
+          "You can export the environment variable `KERAS_BACKEND` or you can edit your local config file at `~/.keras/keras.json` to configure your backend.",
+          "Available backend options are: `\"tensorflow\"`, `\"jax\"`, `\"torch\"`, `\"openvino\"`.",
+          "**Note:** The OpenVINO backend is an inference-only backend, meaning it is designed only for running model predictions using `model.predict()` method."
+        ],
+        "justifications": [
+          "The README clearly documents how to configure the backend using environment variables or a config file, lists available options, and provides important notes about backend behavior."
+        ],
+        "suggested_improvements": [
+          "Add a small troubleshooting section for common configuration issues, such as 'backend not found' or 'backend already imported' errors."
+        ]
+      },
+      "when": {
+        "checklist": {
+          "current_status": false,
+          "roadmap": false,
+          "changelog": false
+        },
+        "quality": {
+          "clarity": {
+            "note": 1,
+            "evidences": [],
+            "justifications": [
+              "No information regarding the project's current status, roadmap, or changelog is provided, leading to a lack of clarity on its development lifecycle."
+            ]
+          },
+          "consistency": {
+            "note": 1,
+            "evidences": [],
+            "justifications": [
+              "As this section is absent, there is no content to assess for consistency."
+            ]
+          }
+        },
+        "evidences": [],
+        "justifications": [
+          "The README does not contain any information about the project's current status (e.g., stable, beta), future roadmap, or a changelog/release history."
+        ],
+        "suggested_improvements": [
+          "Add a 'Status' section indicating if Keras 3 is stable, in beta, etc.",
+          "Include a link to a `CHANGELOG.md` or `RELEASES.md` file, or a brief 'What's New' section.",
+          "Provide a high-level roadmap or link to one, to give users an idea of future development."
+        ]
+      },
+      "who": {
+        "checklist": {
+          "authors_maintainers": false,
+          "contact_channels": false,
+          "code_of_conduct": false
+        },
+        "quality": {
+          "clarity": {
+            "note": 1,
+            "evidences": [],
+            "justifications": [
+              "No information about authors, maintainers, or contact channels is provided, making it unclear who is behind the project or how to reach them."
+            ]
+          },
+          "consistency": {
+            "note": 1,
+            "evidences": [],
+            "justifications": [
+              "As this section is absent, there is no content to assess for consistency."
+            ]
+          }
+        },
+        "evidences": [],
+        "justifications": [
+          "The README does not identify specific authors or maintainers, nor does it list any explicit support or contact channels (e.g., issue tracker, discussions, email, Slack). A Code of Conduct is also not mentioned."
+        ],
+        "suggested_improvements": [
+          "Add a 'Community' or 'Support' section listing authors/maintainers, links to the issue tracker, discussion forums, or other community channels.",
+          "Include a link to a Code of Conduct if one exists."
+        ]
+      },
+      "license": {
+        "checklist": {
+          "license_type": false,
+          "license_link": false
+        },
+        "quality": {
+          "clarity": 1,
+          "consistency": 1
+        },
+        "evidences": [],
+        "justifications": [
+          "The README does not explicitly state the license type or provide a link to a LICENSE file."
+        ],
+        "suggested_improvements": [
+          "Add a 'License' section clearly stating the license (e.g., 'Apache 2.0') and linking to the `LICENSE` file in the repository."
+        ]
+      },
+      "contribution": {
+        "checklist": {
+          "contributing_link": false,
+          "contribution_steps": false,
+          "standards": false
+        },
+        "quality": {
+          "structure": {
+            "note": 1,
+            "evidences": [],
+            "justifications": [
+              "The absence of a contribution section means there is no structure to evaluate."
+            ]
+          },
+          "clarity": {
+            "note": 1,
+            "evidences": [],
+            "justifications": [
+              "No contribution guidelines are provided, making the process unclear for potential contributors."
+            ]
+          },
+          "readability": {
+            "note": 1,
+            "evidences": [],
+            "justifications": [
+              "No contribution guidelines are present to assess for readability."
+            ]
+          }
+        },
+        "evidences": [],
+        "justifications": [
+          "The README does not include a link to a `CONTRIBUTING.md` file, nor does it outline any steps or standards for contributing to the project."
+        ],
+        "suggested_improvements": [
+          "Add a 'Contributing' section with a link to a `CONTRIBUTING.md` file, detailing the workflow for pull requests, coding standards, and testing."
+        ]
+      },
+      "references": {
+        "checklist": {
+          "docs_link": true,
+          "relevant_references": true,
+          "faq_support": false
+        },
+        "quality": {
+          "effectiveness": {
+            "note": 4,
+            "evidences": [
+              "[Benchmark here](https://keras.io/getting_started/benchmarks/)",
+              "Read more in the [Keras 3 release announcement](https://keras.io/keras_3/)."
+            ],
+            "justifications": [
+              "The provided links are relevant and direct users to more detailed information, enhancing the overall effectiveness of the README."
+            ]
+          },
+          "clarity": {
+            "note": 4,
+            "evidences": [
+              "[Benchmark here](https://keras.io/getting_started/benchmarks/)",
+              "Read more in the [Keras 3 release announcement](https://keras.io/keras_3/)."
+            ],
+            "justifications": [
+              "The links are clearly labeled and indicate what content they lead to, making it easy for users to navigate to additional resources."
+            ]
+          }
+        },
+        "evidences": [
+          "[Benchmark here](https://keras.io/getting_started/benchmarks/)",
+          "Read more in the [Keras 3 release announcement](https://keras.io/keras_3/)."
+        ],
+        "justifications": [
+          "The README includes links to a benchmark page and a release announcement, which serve as relevant external references. However, a general documentation link or FAQ is missing."
+        ],
+        "suggested_improvements": [
+          "Add a prominent link to the main Keras 3 documentation or API reference.",
+          "Consider adding a link to an FAQ or a dedicated support page if available."
+        ]
+      },
+      "other": {
+        "checklist": {
+          "generic_sections": false,
+          "placeholders": false
+        },
+        "action": {
+          "reclassify": false,
+          "suggest_removal": false
+        },
+        "evidences": [],
+        "suggested_improvements": []
+      }
+    },
+    "dimensions_summary": {
+      "quality": {
+        "note": 4,
+        "evidences": [
+          "Keras 3 is a multi-backend deep learning framework, with support for JAX, TensorFlow, PyTorch, and OpenVINO (for inference-only).",
+          "The `requirements.txt` file will install a CPU-only version of TensorFlow, JAX, and PyTorch."
+        ],
+        "justifications": [
+          "The writing quality is high, with clear, grammatically correct sentences and no apparent spelling errors. The language is professional and precise."
+        ]
+      },
+      "appeal": {
+        "note": 4,
+        "evidences": [
+          "Keras 3: Deep Learning for Humans",
+          "Join nearly three million developers, from burgeoning startups to global enterprises, in harnessing the power of Keras 3."
+        ],
+        "justifications": [
+          "The README is engaging, starting with a compelling title and highlighting significant benefits and a large user base, which draws the reader in."
+        ]
+      },
+      "readability": {
+        "note": 4,
+        "evidences": [
+          "## Installation\n### Install with pip",
+          "1. Install `keras`:\n```\npip install keras --upgrade\n```"
+        ],
+        "justifications": [
+          "The document uses clear headings, bullet points, code blocks, and tables, making it easy to scan and digest information. The formatting is consistent."
+        ]
+      },
+      "understandability": {
+        "note": 3,
+        "evidences": [
+          "Keras 3 is a multi-backend deep learning framework...",
+          "You can export the environment variable `KERAS_BACKEND` or you can edit your local config file at `~/.keras/keras.json`"
+        ],
+        "justifications": [
+          "Conceptual understanding is good due to clear descriptions and explanations of features and configuration. However, the lack of usage examples hinders practical comprehension for new users."
+        ]
+      },
+      "structure": {
+        "note": 4,
+        "evidences": [
+          "## Installation\n### Install with pip\n### Local installation",
+          "## Why use Keras 3?"
+        ],
+        "justifications": [
+          "The README is logically organized with a clear hierarchy of headings. Information flows well from description to installation and configuration. The 'Why' section is repeated, but effectively reinforces the value proposition."
+        ]
+      },
+      "cohesion": {
+        "note": 4,
+        "evidences": [
+          "Keras 3 is a multi-backend deep learning framework...",
+          "To use `keras`, you should also install the backend of choice: `tensorflow`, `jax`, or `torch`."
+        ],
+        "justifications": [
+          "Sections generally flow well, with the introduction leading into installation and configuration. The 'Backwards compatibility' section connects well to the core functionality."
+        ]
+      },
+      "conciseness": {
+        "note": 4,
+        "evidences": [
+          "Keras 3 is a multi-backend deep learning framework...",
+          "Available backend options are: `\"tensorflow\"`, `\"jax\"`, `\"torch\"`, `\"openvino\"`."
+        ],
+        "justifications": [
+          "The README is generally concise, providing essential information without excessive detail. The bullet points and tables help in presenting information densely."
+        ]
+      },
+      "effectiveness": {
+        "note": 3,
+        "evidences": [
+          "pip install keras --upgrade",
+          "export KERAS_BACKEND=\"jax\""
+        ],
+        "justifications": [
+          "The installation and configuration instructions are highly effective. However, the complete absence of usage examples significantly reduces its effectiveness for new users trying to get started with the library's core functionality."
+        ]
+      },
+      "consistency": {
+        "note": 5,
+        "evidences": [
+          "Keras 3 is a multi-backend deep learning framework...",
+          "To use `keras`, you should also install the backend of choice: `tensorflow`, `jax`, or `torch`."
+        ],
+        "justifications": [
+          "Terminology, formatting (e.g., code blocks, bolding), and overall style are consistently applied throughout the document."
+        ]
+      },
+      "clarity": {
+        "note": 4,
+        "evidences": [
+          "Keras 3 is a multi-backend deep learning framework...",
+          "**Note:** The backend must be configured before importing `keras`, and the backend cannot be changed after the package has been imported."
+        ],
+        "justifications": [
+          "The language is clear and unambiguous in describing the project, installation, and configuration. Important notes are highlighted to prevent confusion."
+        ]
+      },
+      "global_notes": "The README excels in describing what Keras 3 is, why it's beneficial, and how to install and configure it. Its primary weakness is the complete lack of practical usage examples, which is a critical omission for a deep learning framework. Essential governance information like licensing, contribution guidelines, and community contacts are also missing."
+    },
+    "executive_summary": {
+      "strengths": [
+        "Clear and concise project description, highlighting multi-backend support and application domains.",
+        "Comprehensive and well-structured installation instructions, including pip, local, and GPU-specific setups.",
+        "Strong articulation of project benefits and differentiators, supported by performance claims and a benchmark link.",
+        "Clear guidance on backend configuration with environment variables and config files.",
+        "Good readability and consistent formatting throughout the document."
+      ],
+      "weaknesses": [
+        "Complete absence of practical usage examples or a minimal working example (MWE).",
+        "Lack of information regarding project status, roadmap, or changelog.",
+        "No explicit mention of authors, maintainers, or community contact channels.",
+        "Missing license information and contribution guidelines."
+      ],
+      "critical_gaps": [
+        "The absence of a 'How — Usage/Examples' section is a critical gap, as it prevents new users from quickly understanding how to use the library's core functionality.",
+        "The lack of a clear license statement and link is a significant legal and practical gap for users and contributors.",
+        "The absence of contribution guidelines and community contact information hinders community engagement and project sustainability."
+      ],
+      "priority_recommendations": [
+        "**Add a 'Usage' section with a Minimal Working Example (MWE):** Provide a simple, runnable code snippet demonstrating how to define, compile, and train a basic model, ideally showing backend switching.",
+        "**Include License and Contribution Information:** Clearly state the project's license with a link to the `LICENSE` file, and add a 'Contributing' section with a link to `CONTRIBUTING.md` or inline guidelines.",
+        "**Enhance Project Governance Information:** Add sections for 'Status' (current version, stability), 'Roadmap', and 'Community/Support' (authors, contact channels, Code of Conduct)."
+      ]
+    }
+  },
+  "validation_ok": true,
+  "validation_errors": null,
+  "progress_history": [
+    {
+      "stage": "building_prompt",
+      "status": "in_progress",
+      "percentage": 25,
+      "message": "Loading schema and building prompt...",
+      "elapsed_seconds": 0.0,
+      "estimated_remaining_seconds": null,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "building_prompt",
+      "status": "completed",
+      "percentage": 25,
+      "message": "Prompt built (184172 chars)",
+      "elapsed_seconds": 0.08,
+      "estimated_remaining_seconds": 0.24,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Calling gemini-2.5-flash...",
+      "elapsed_seconds": 0.08,
+      "estimated_remaining_seconds": 0.03,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (120 chars)",
+      "elapsed_seconds": 38.13,
+      "estimated_remaining_seconds": 12.71,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (261 chars)",
+      "elapsed_seconds": 38.28,
+      "estimated_remaining_seconds": 12.76,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (488 chars)",
+      "elapsed_seconds": 38.41,
+      "estimated_remaining_seconds": 12.8,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (684 chars)",
+      "elapsed_seconds": 38.69,
+      "estimated_remaining_seconds": 12.9,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (862 chars)",
+      "elapsed_seconds": 38.77,
+      "estimated_remaining_seconds": 12.92,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (1014 chars)",
+      "elapsed_seconds": 38.89,
+      "estimated_remaining_seconds": 12.96,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (1181 chars)",
+      "elapsed_seconds": 39.09,
+      "estimated_remaining_seconds": 13.03,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (1434 chars)",
+      "elapsed_seconds": 39.33,
+      "estimated_remaining_seconds": 13.11,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (1662 chars)",
+      "elapsed_seconds": 39.43,
+      "estimated_remaining_seconds": 13.14,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (1830 chars)",
+      "elapsed_seconds": 39.58,
+      "estimated_remaining_seconds": 13.19,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (2003 chars)",
+      "elapsed_seconds": 39.81,
+      "estimated_remaining_seconds": 13.27,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (2251 chars)",
+      "elapsed_seconds": 39.93,
+      "estimated_remaining_seconds": 13.31,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (2464 chars)",
+      "elapsed_seconds": 40.07,
+      "estimated_remaining_seconds": 13.36,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (2648 chars)",
+      "elapsed_seconds": 40.27,
+      "estimated_remaining_seconds": 13.42,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (2918 chars)",
+      "elapsed_seconds": 40.4,
+      "estimated_remaining_seconds": 13.47,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (3085 chars)",
+      "elapsed_seconds": 40.55,
+      "estimated_remaining_seconds": 13.52,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (3279 chars)",
+      "elapsed_seconds": 40.72,
+      "estimated_remaining_seconds": 13.57,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (3548 chars)",
+      "elapsed_seconds": 40.94,
+      "estimated_remaining_seconds": 13.65,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (3739 chars)",
+      "elapsed_seconds": 41.05,
+      "estimated_remaining_seconds": 13.68,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (3995 chars)",
+      "elapsed_seconds": 41.25,
+      "estimated_remaining_seconds": 13.75,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (4190 chars)",
+      "elapsed_seconds": 41.38,
+      "estimated_remaining_seconds": 13.79,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (4414 chars)",
+      "elapsed_seconds": 41.55,
+      "estimated_remaining_seconds": 13.85,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (4647 chars)",
+      "elapsed_seconds": 41.76,
+      "estimated_remaining_seconds": 13.92,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (4884 chars)",
+      "elapsed_seconds": 41.86,
+      "estimated_remaining_seconds": 13.95,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (5060 chars)",
+      "elapsed_seconds": 42.06,
+      "estimated_remaining_seconds": 14.02,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (5211 chars)",
+      "elapsed_seconds": 42.27,
+      "estimated_remaining_seconds": 14.09,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (5429 chars)",
+      "elapsed_seconds": 42.36,
+      "estimated_remaining_seconds": 14.12,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (5638 chars)",
+      "elapsed_seconds": 42.51,
+      "estimated_remaining_seconds": 14.17,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (5863 chars)",
+      "elapsed_seconds": 42.78,
+      "estimated_remaining_seconds": 14.26,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (6095 chars)",
+      "elapsed_seconds": 42.88,
+      "estimated_remaining_seconds": 14.29,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (6274 chars)",
+      "elapsed_seconds": 43.06,
+      "estimated_remaining_seconds": 14.35,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (6532 chars)",
+      "elapsed_seconds": 43.22,
+      "estimated_remaining_seconds": 14.41,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (6763 chars)",
+      "elapsed_seconds": 43.37,
+      "estimated_remaining_seconds": 14.46,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (6986 chars)",
+      "elapsed_seconds": 43.54,
+      "estimated_remaining_seconds": 14.51,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (7215 chars)",
+      "elapsed_seconds": 43.71,
+      "estimated_remaining_seconds": 14.57,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (7398 chars)",
+      "elapsed_seconds": 43.88,
+      "estimated_remaining_seconds": 14.63,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (7606 chars)",
+      "elapsed_seconds": 44.15,
+      "estimated_remaining_seconds": 14.72,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (7803 chars)",
+      "elapsed_seconds": 44.21,
+      "estimated_remaining_seconds": 14.74,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (8029 chars)",
+      "elapsed_seconds": 44.39,
+      "estimated_remaining_seconds": 14.8,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (8232 chars)",
+      "elapsed_seconds": 44.54,
+      "estimated_remaining_seconds": 14.85,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (8433 chars)",
+      "elapsed_seconds": 44.83,
+      "estimated_remaining_seconds": 14.94,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (8617 chars)",
+      "elapsed_seconds": 44.86,
+      "estimated_remaining_seconds": 14.95,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (8843 chars)",
+      "elapsed_seconds": 45.02,
+      "estimated_remaining_seconds": 15.01,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (9070 chars)",
+      "elapsed_seconds": 45.23,
+      "estimated_remaining_seconds": 15.08,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (9258 chars)",
+      "elapsed_seconds": 45.35,
+      "estimated_remaining_seconds": 15.12,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (9476 chars)",
+      "elapsed_seconds": 45.51,
+      "estimated_remaining_seconds": 15.17,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (9653 chars)",
+      "elapsed_seconds": 45.71,
+      "estimated_remaining_seconds": 15.24,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (9938 chars)",
+      "elapsed_seconds": 45.86,
+      "estimated_remaining_seconds": 15.29,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (10122 chars)",
+      "elapsed_seconds": 46.06,
+      "estimated_remaining_seconds": 15.35,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (10323 chars)",
+      "elapsed_seconds": 46.19,
+      "estimated_remaining_seconds": 15.4,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (10489 chars)",
+      "elapsed_seconds": 46.36,
+      "estimated_remaining_seconds": 15.45,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (10720 chars)",
+      "elapsed_seconds": 46.53,
+      "estimated_remaining_seconds": 15.51,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (10895 chars)",
+      "elapsed_seconds": 46.78,
+      "estimated_remaining_seconds": 15.59,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (11075 chars)",
+      "elapsed_seconds": 46.88,
+      "estimated_remaining_seconds": 15.63,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (11297 chars)",
+      "elapsed_seconds": 47.04,
+      "estimated_remaining_seconds": 15.68,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (11479 chars)",
+      "elapsed_seconds": 47.18,
+      "estimated_remaining_seconds": 15.73,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (11688 chars)",
+      "elapsed_seconds": 47.39,
+      "estimated_remaining_seconds": 15.8,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (11893 chars)",
+      "elapsed_seconds": 47.51,
+      "estimated_remaining_seconds": 15.84,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (12101 chars)",
+      "elapsed_seconds": 47.67,
+      "estimated_remaining_seconds": 15.89,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (12336 chars)",
+      "elapsed_seconds": 47.88,
+      "estimated_remaining_seconds": 15.96,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (12518 chars)",
+      "elapsed_seconds": 48.0,
+      "estimated_remaining_seconds": 16.0,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (12689 chars)",
+      "elapsed_seconds": 48.21,
+      "estimated_remaining_seconds": 16.07,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (12918 chars)",
+      "elapsed_seconds": 48.32,
+      "estimated_remaining_seconds": 16.11,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (13171 chars)",
+      "elapsed_seconds": 48.52,
+      "estimated_remaining_seconds": 16.17,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (13347 chars)",
+      "elapsed_seconds": 48.65,
+      "estimated_remaining_seconds": 16.22,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (13542 chars)",
+      "elapsed_seconds": 48.82,
+      "estimated_remaining_seconds": 16.27,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (13729 chars)",
+      "elapsed_seconds": 48.96,
+      "estimated_remaining_seconds": 16.32,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (13917 chars)",
+      "elapsed_seconds": 49.23,
+      "estimated_remaining_seconds": 16.41,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (14174 chars)",
+      "elapsed_seconds": 49.3,
+      "estimated_remaining_seconds": 16.43,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (14351 chars)",
+      "elapsed_seconds": 49.54,
+      "estimated_remaining_seconds": 16.51,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (14518 chars)",
+      "elapsed_seconds": 49.63,
+      "estimated_remaining_seconds": 16.54,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (14755 chars)",
+      "elapsed_seconds": 49.85,
+      "estimated_remaining_seconds": 16.62,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (15012 chars)",
+      "elapsed_seconds": 49.94,
+      "estimated_remaining_seconds": 16.65,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (15181 chars)",
+      "elapsed_seconds": 50.09,
+      "estimated_remaining_seconds": 16.7,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (15363 chars)",
+      "elapsed_seconds": 50.36,
+      "estimated_remaining_seconds": 16.79,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (15568 chars)",
+      "elapsed_seconds": 50.42,
+      "estimated_remaining_seconds": 16.81,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (15763 chars)",
+      "elapsed_seconds": 50.6,
+      "estimated_remaining_seconds": 16.87,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (15958 chars)",
+      "elapsed_seconds": 50.77,
+      "estimated_remaining_seconds": 16.92,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (16118 chars)",
+      "elapsed_seconds": 50.91,
+      "estimated_remaining_seconds": 16.97,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (16287 chars)",
+      "elapsed_seconds": 51.07,
+      "estimated_remaining_seconds": 17.02,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (16450 chars)",
+      "elapsed_seconds": 51.22,
+      "estimated_remaining_seconds": 17.07,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (16648 chars)",
+      "elapsed_seconds": 51.43,
+      "estimated_remaining_seconds": 17.14,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (16844 chars)",
+      "elapsed_seconds": 51.58,
+      "estimated_remaining_seconds": 17.19,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (17046 chars)",
+      "elapsed_seconds": 51.79,
+      "estimated_remaining_seconds": 17.26,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (17259 chars)",
+      "elapsed_seconds": 51.89,
+      "estimated_remaining_seconds": 17.3,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (17470 chars)",
+      "elapsed_seconds": 52.05,
+      "estimated_remaining_seconds": 17.35,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (17630 chars)",
+      "elapsed_seconds": 52.3,
+      "estimated_remaining_seconds": 17.43,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (17810 chars)",
+      "elapsed_seconds": 52.39,
+      "estimated_remaining_seconds": 17.46,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (17981 chars)",
+      "elapsed_seconds": 52.61,
+      "estimated_remaining_seconds": 17.54,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (18164 chars)",
+      "elapsed_seconds": 52.71,
+      "estimated_remaining_seconds": 17.57,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (18356 chars)",
+      "elapsed_seconds": 52.92,
+      "estimated_remaining_seconds": 17.64,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (18552 chars)",
+      "elapsed_seconds": 53.03,
+      "estimated_remaining_seconds": 17.68,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (18758 chars)",
+      "elapsed_seconds": 53.23,
+      "estimated_remaining_seconds": 17.74,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (18964 chars)",
+      "elapsed_seconds": 53.43,
+      "estimated_remaining_seconds": 17.81,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (19158 chars)",
+      "elapsed_seconds": 53.52,
+      "estimated_remaining_seconds": 17.84,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (19334 chars)",
+      "elapsed_seconds": 53.74,
+      "estimated_remaining_seconds": 17.91,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (19513 chars)",
+      "elapsed_seconds": 53.83,
+      "estimated_remaining_seconds": 17.94,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (19682 chars)",
+      "elapsed_seconds": 54.05,
+      "estimated_remaining_seconds": 18.02,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (19917 chars)",
+      "elapsed_seconds": 54.16,
+      "estimated_remaining_seconds": 18.05,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (20098 chars)",
+      "elapsed_seconds": 54.35,
+      "estimated_remaining_seconds": 18.12,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (20314 chars)",
+      "elapsed_seconds": 54.5,
+      "estimated_remaining_seconds": 18.17,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (20486 chars)",
+      "elapsed_seconds": 54.62,
+      "estimated_remaining_seconds": 18.21,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (20696 chars)",
+      "elapsed_seconds": 54.86,
+      "estimated_remaining_seconds": 18.29,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (20904 chars)",
+      "elapsed_seconds": 54.94,
+      "estimated_remaining_seconds": 18.31,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (21080 chars)",
+      "elapsed_seconds": 55.1,
+      "estimated_remaining_seconds": 18.37,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (21253 chars)",
+      "elapsed_seconds": 55.25,
+      "estimated_remaining_seconds": 18.42,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (21400 chars)",
+      "elapsed_seconds": 55.39,
+      "estimated_remaining_seconds": 18.46,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (21581 chars)",
+      "elapsed_seconds": 55.58,
+      "estimated_remaining_seconds": 18.53,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (21796 chars)",
+      "elapsed_seconds": 55.79,
+      "estimated_remaining_seconds": 18.6,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (21985 chars)",
+      "elapsed_seconds": 55.91,
+      "estimated_remaining_seconds": 18.64,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (22210 chars)",
+      "elapsed_seconds": 56.09,
+      "estimated_remaining_seconds": 18.7,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (22357 chars)",
+      "elapsed_seconds": 56.3,
+      "estimated_remaining_seconds": 18.77,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (22540 chars)",
+      "elapsed_seconds": 56.39,
+      "estimated_remaining_seconds": 18.8,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (22708 chars)",
+      "elapsed_seconds": 56.58,
+      "estimated_remaining_seconds": 18.86,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (22896 chars)",
+      "elapsed_seconds": 56.75,
+      "estimated_remaining_seconds": 18.92,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (23145 chars)",
+      "elapsed_seconds": 56.89,
+      "estimated_remaining_seconds": 18.96,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (23302 chars)",
+      "elapsed_seconds": 57.04,
+      "estimated_remaining_seconds": 19.01,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (23565 chars)",
+      "elapsed_seconds": 57.22,
+      "estimated_remaining_seconds": 19.07,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (23717 chars)",
+      "elapsed_seconds": 57.36,
+      "estimated_remaining_seconds": 19.12,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (23943 chars)",
+      "elapsed_seconds": 57.63,
+      "estimated_remaining_seconds": 19.21,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (24109 chars)",
+      "elapsed_seconds": 57.7,
+      "estimated_remaining_seconds": 19.23,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (24288 chars)",
+      "elapsed_seconds": 57.94,
+      "estimated_remaining_seconds": 19.31,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (24516 chars)",
+      "elapsed_seconds": 58.06,
+      "estimated_remaining_seconds": 19.35,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (24708 chars)",
+      "elapsed_seconds": 58.17,
+      "estimated_remaining_seconds": 19.39,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (24944 chars)",
+      "elapsed_seconds": 58.32,
+      "estimated_remaining_seconds": 19.44,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (25124 chars)",
+      "elapsed_seconds": 58.48,
+      "estimated_remaining_seconds": 19.49,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (25319 chars)",
+      "elapsed_seconds": 58.64,
+      "estimated_remaining_seconds": 19.55,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (25477 chars)",
+      "elapsed_seconds": 58.81,
+      "estimated_remaining_seconds": 19.6,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (25730 chars)",
+      "elapsed_seconds": 58.94,
+      "estimated_remaining_seconds": 19.65,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (25928 chars)",
+      "elapsed_seconds": 59.11,
+      "estimated_remaining_seconds": 19.7,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (26195 chars)",
+      "elapsed_seconds": 59.37,
+      "estimated_remaining_seconds": 19.79,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (26440 chars)",
+      "elapsed_seconds": 59.47,
+      "estimated_remaining_seconds": 19.82,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (26733 chars)",
+      "elapsed_seconds": 59.58,
+      "estimated_remaining_seconds": 19.86,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (26940 chars)",
+      "elapsed_seconds": 59.78,
+      "estimated_remaining_seconds": 19.93,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (27150 chars)",
+      "elapsed_seconds": 59.91,
+      "estimated_remaining_seconds": 19.97,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (27391 chars)",
+      "elapsed_seconds": 60.06,
+      "estimated_remaining_seconds": 20.02,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (27642 chars)",
+      "elapsed_seconds": 60.22,
+      "estimated_remaining_seconds": 20.07,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (27892 chars)",
+      "elapsed_seconds": 60.5,
+      "estimated_remaining_seconds": 20.17,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (28101 chars)",
+      "elapsed_seconds": 60.56,
+      "estimated_remaining_seconds": 20.19,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (28230 chars)",
+      "elapsed_seconds": 60.72,
+      "estimated_remaining_seconds": 20.24,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "completed",
+      "percentage": 75,
+      "message": "Model responded (28230 chars)",
+      "elapsed_seconds": 62.03,
+      "estimated_remaining_seconds": 20.68,
+      "details": {
+        "response_length": 28230
+      },
+      "error": null
+    },
+    {
+      "stage": "parsing_json",
+      "status": "in_progress",
+      "percentage": 90,
+      "message": "Parsing JSON response...",
+      "elapsed_seconds": 62.03,
+      "estimated_remaining_seconds": 6.89,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "parsing_json",
+      "status": "completed",
+      "percentage": 90,
+      "message": "JSON parsed and fixed successfully",
+      "elapsed_seconds": 62.03,
+      "estimated_remaining_seconds": 6.89,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "validating",
+      "status": "in_progress",
+      "percentage": 95,
+      "message": "Validating against schema...",
+      "elapsed_seconds": 62.04,
+      "estimated_remaining_seconds": 3.27,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "validating",
+      "status": "completed",
+      "percentage": 95,
+      "message": "Schema validation passed",
+      "elapsed_seconds": 62.18,
+      "estimated_remaining_seconds": 3.27,
+      "details": null,
+      "error": null
+    }
+  ],
+  "timing": {
+    "prompt_build": 0.08133292198181152,
+    "model_call": 61.951831340789795,
+    "parsing": 0.0012478828430175781,
+    "validation": 0.14490175247192383,
+    "total": 62.18005585670471
+  },
+  "tokens": {},
+  "retry_count": 0,
+  "recovery_suggestions": [],
+  "mongo_id": "691fab5077fa2f8cf9eec2a7"
+}

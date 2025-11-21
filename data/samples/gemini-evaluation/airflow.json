@@ -37,26 +37,26 @@
       "Sponsors"
     ],
     "present_categories": {
-      "what": "✔",
-      "why": "✔",
-      "how_installation": "✔",
-      "how_usage": "✖",
-      "how_config_requirements": "✔",
-      "when": "✔",
-      "who": "✔",
-      "license": "✔",
-      "contribution": "✔",
-      "references": "✔",
-      "other": "✔"
+      "what": true,
+      "why": true,
+      "how_installation": true,
+      "how_usage": false,
+      "how_config_requirements": true,
+      "when": true,
+      "who": true,
+      "license": true,
+      "contribution": true,
+      "references": true,
+      "other": true
     },
     "organization_observations": "The README is very well-organized with a clear Table of Contents (TOC) and logical sectioning. It uses a consistent heading hierarchy. Some sections, like 'User Interface', contain descriptive content with images but lack executable usage examples, which might confuse some users expecting code snippets. The placement of detailed dependency policies under 'How — Config/Requirements' is appropriate. The TOC is explicitly marked as auto-generated, indicating good maintenance practices. Several 'How' sub-sections (Getting started, Installing from PyPI, Installation, Convenience packages) are scattered, but their content is generally distinct enough."
   },
   "categories": {
     "what": {
       "checklist": {
-        "clear_description": "✔",
-        "features_scope": "✔",
-        "target_audience": "✖"
+        "clear_description": true,
+        "features_scope": true,
+        "target_audience": false
       },
       "quality": {
         "clarity": 5,
@@ -80,9 +80,9 @@
     },
     "why": {
       "checklist": {
-        "explicit_purpose": "✔",
-        "benefits_vs_alternatives": "✔",
-        "use_cases": "✔"
+        "explicit_purpose": true,
+        "benefits_vs_alternatives": true,
+        "use_cases": true
       },
       "quality": {
         "clarity": 5,
@@ -105,9 +105,9 @@
     },
     "how_installation": {
       "checklist": {
-        "reproducible_commands": "✔",
-        "compatibility_requirements": "✔",
-        "dependencies": "✔"
+        "reproducible_commands": true,
+        "compatibility_requirements": true,
+        "dependencies": true
       },
       "quality": {
         "structure": 5,
@@ -131,9 +131,9 @@
     },
     "how_usage": {
       "checklist": {
-        "minimal_working_example": "✖",
-        "examples_io": "✖",
-        "api_commands_context": "✖"
+        "minimal_working_example": false,
+        "examples_io": false,
+        "api_commands_context": false
       },
       "quality": {
         "understandability": 2,
@@ -157,9 +157,9 @@
     },
     "how_config_requirements": {
       "checklist": {
-        "documented_configuration": "✔",
-        "parameters_options": "✔",
-        "troubleshooting": "✖"
+        "documented_configuration": true,
+        "parameters_options": true,
+        "troubleshooting": false
       },
       "quality": {
         "clarity": 4,
@@ -184,9 +184,9 @@
     },
     "when": {
       "checklist": {
-        "current_status": "✔",
-        "roadmap": "✖",
-        "changelog": "✖"
+        "current_status": true,
+        "roadmap": false,
+        "changelog": false
       },
       "quality": {
         "clarity": 4,
@@ -209,9 +209,9 @@
     },
     "who": {
       "checklist": {
-        "authors_maintainers": "✔",
-        "contact_channels": "✔",
-        "code_of_conduct": "✖"
+        "authors_maintainers": true,
+        "contact_channels": true,
+        "code_of_conduct": false
       },
       "quality": {
         "clarity": 5,
@@ -233,8 +233,8 @@
     },
     "license": {
       "checklist": {
-        "license_type": "✔",
-        "license_link": "✔"
+        "license_type": true,
+        "license_link": true
       },
       "quality": {
         "clarity": 5,
@@ -252,9 +252,9 @@
     },
     "contribution": {
       "checklist": {
-        "contributing_link": "✔",
-        "contribution_steps": "✔",
-        "standards": "✔"
+        "contributing_link": true,
+        "contribution_steps": true,
+        "standards": true
       },
       "quality": {
         "structure": 5,
@@ -275,9 +275,9 @@
     },
     "references": {
       "checklist": {
-        "docs_link": "✔",
-        "relevant_references": "✔",
-        "support_faq": "✔"
+        "docs_link": true,
+        "relevant_references": true,
+        "support_faq": true
       },
       "quality": {
         "effectiveness": 5,
@@ -299,8 +299,8 @@
     },
     "other": {
       "checklist": {
-        "generic_sections": "✔",
-        "placeholders": "✖"
+        "generic_sections": true,
+        "placeholders": false
       },
       "action": {
         "reclassify": false,

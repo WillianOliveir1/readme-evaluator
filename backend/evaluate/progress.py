@@ -134,6 +134,26 @@ class ProgressTracker:
         
         self.stage_times[stage.value] = elapsed
 
+    def update_stage(self, stage: ProgressStage, message: str, details: Optional[Dict] = None) -> None:
+        """Update progress within a stage."""
+        elapsed = time.time() - self.start_time
+        
+        update = ProgressUpdate(
+            stage=stage,
+            status=ProgressStatus.IN_PROGRESS,
+            percentage=self.STAGE_PERCENTAGES[stage],
+            message=message,
+            elapsed_seconds=elapsed,
+            estimated_remaining_seconds=self._estimate_remaining(stage),
+            details=details,
+        )
+        
+        self.history.append(update)
+        # logger.debug("Progress update: %s", update.message) # Optional logging
+        
+        if self.callback:
+            self.callback(update)
+
     def complete_stage(self, stage: ProgressStage, message: str = "", details: Optional[Dict] = None) -> None:
         """Mark the completion of a stage."""
         elapsed = time.time() - self.start_time

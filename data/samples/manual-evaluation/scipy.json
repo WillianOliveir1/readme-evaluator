@@ -18,26 +18,26 @@
       "Help & Support"
     ],
     "present_categories": {
-      "what": "present",
-      "why": "absent",
-      "how_installation": "present",
-      "how_usage": "absent",
-      "how_config_requirements": "absent",
-      "when": "absent",
-      "who": "present",
-      "license": "present",
-      "contribution": "present",
-      "references": "present",
-      "other": "absent"
+      "what": true,
+      "why": false,
+      "how_installation": true,
+      "how_usage": false,
+      "how_config_requirements": false,
+      "when": false,
+      "who": true,
+      "license": true,
+      "contribution": true,
+      "references": true,
+      "other": false
     },
     "organization_notes": "Minimalist and logical portal: What → Getting Started (Install/Docs) → Contributing/Who → License → Help. Significant gaps versus richer READMEs: missing Why, Usage (MWE), Config (Dependencies), and When (Changelog/Status). Most details are delegated to external docs."
   },
   "categories": {
     "what": {
       "checklist": {
-        "clear_description": "present",
-        "scope_features": "present",
-        "target_audience": "present"
+        "clear_description": true,
+        "scope_features": true,
+        "target_audience": true
       },
       "quality": {
         "clarity": 5,
@@ -59,9 +59,9 @@
     },
     "why": {
       "checklist": {
-        "explicit_purpose": "absent",
-        "benefits_vs_alternatives": "absent",
-        "use_cases": "absent"
+        "explicit_purpose": false,
+        "benefits_vs_alternatives": false,
+        "use_cases": false
       },
       "quality": {
         "clarity": 1,
@@ -82,9 +82,9 @@
     },
     "how_installation": {
       "checklist": {
-        "reproducible_commands": "absent",
-        "compatibility_requirements": "absent",
-        "dependencies": "absent"
+        "reproducible_commands": false,
+        "compatibility_requirements": false,
+        "dependencies": false
       },
       "quality": {
         "structure": 3,
@@ -105,9 +105,9 @@
     },
     "how_usage": {
       "checklist": {
-        "minimal_working_example": "absent",
-        "io_examples": "absent",
-        "api_commands_context": "absent"
+        "minimal_working_example": false,
+        "io_examples": false,
+        "api_commands_context": false
       },
       "quality": {
         "understandability": 1,
@@ -128,9 +128,9 @@
     },
     "how_config_requirements": {
       "checklist": {
-        "documented_configuration": "absent",
-        "parameters_options": "absent",
-        "troubleshooting": "absent"
+        "documented_configuration": false,
+        "parameters_options": false,
+        "troubleshooting": false
       },
       "quality": {
         "clarity": 1,
@@ -151,9 +151,9 @@
     },
     "when": {
       "checklist": {
-        "current_status": "absent",
-        "roadmap": "absent",
-        "changelog": "absent"
+        "current_status": false,
+        "roadmap": false,
+        "changelog": false
       },
       "quality": {
         "clarity": 1,
@@ -172,9 +172,9 @@
     },
     "who": {
       "checklist": {
-        "authors_maintainers": "absent",
-        "contact_channels": "present",
-        "code_of_conduct": "present"
+        "authors_maintainers": false,
+        "contact_channels": true,
+        "code_of_conduct": true
       },
       "quality": {
         "clarity": 4,
@@ -194,8 +194,8 @@
     },
     "license": {
       "checklist": {
-        "license_type": "present",
-        "license_link": "present"
+        "license_type": true,
+        "license_link": true
       },
       "quality": {
         "clarity": 5,
@@ -213,9 +213,9 @@
     },
     "contribution": {
       "checklist": {
-        "contributing_link": "present",
-        "contribution_steps": "absent",
-        "standards": "absent"
+        "contributing_link": true,
+        "contribution_steps": false,
+        "standards": false
       },
       "quality": {
         "structure": 3,
@@ -236,9 +236,9 @@
     },
     "references": {
       "checklist": {
-        "docs_link": "present",
-        "relevant_references": "absent",
-        "faq_support": "present"
+        "docs_link": true,
+        "relevant_references": false,
+        "faq_support": true
       },
       "quality": {
         "effectiveness": 4,
@@ -257,8 +257,8 @@
     },
     "other": {
       "checklist": {
-        "generic_sections": "absent",
-        "placeholders": "absent"
+        "generic_sections": false,
+        "placeholders": false
       },
       "action": {
         "reclassify": false,

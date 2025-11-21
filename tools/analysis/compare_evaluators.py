@@ -146,8 +146,8 @@ def generate_report_by_taxonomy(gemini_path, manual_path, output_dir):
 
 # Executar comparação
 if __name__ == "__main__":
-    gemini_path = "examples/gemini-evaluation"
-    manual_path = "examples/manual-evaluation"
-    output_dir = "comparison_reports"
+    gemini_path = "data/samples/gemini-evaluation"
+    manual_path = "data/samples/manual-evaluation"
+    output_dir = "data/reports/comparison_reports"
     
     generate_report_by_taxonomy(gemini_path, manual_path, output_dir)

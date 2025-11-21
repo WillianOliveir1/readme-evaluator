@@ -73,8 +73,8 @@ CATEGORY_SCHEMAS = {
 
 def normalize_present_categories(data: Any) -> Any:
     """
-    Normaliza os valores de present_categories para '✔', '✖', ou 'N/A'
-    Aceita: 'present'/'absent', 'true'/'false', '✔'/'✖', 'sim'/'não'
+    Normaliza os valores de present_categories para booleanos ou None.
+    Aceita: 'present'/'absent', 'true'/'false', '✔'/'✖', 'sim'/'não', 1/0
     
     Args:
         data: JSON parseado
@@ -91,13 +91,18 @@ def normalize_present_categories(data: Any) -> Any:
                     val = pc[key]
                     if isinstance(val, str):
                         val_lower = val.lower()
-                        # Mapeia valores para símbolos normalizados
+                        # Mapeia valores para booleanos
                         if val_lower in ['present', 'true', 'sim', 'yes', '1', 'v', 'y', '✔']:
-                            pc[key] = '✔'
+                            pc[key] = True
                         elif val_lower in ['absent', 'false', 'não', 'no', '0', 'n', '✖']:
-                            pc[key] = '✖'
+                            pc[key] = False
                         elif val_lower in ['n/a', 'na']:
-                            pc[key] = 'N/A'
+                            pc[key] = None
+                    elif isinstance(val, int):
+                        if val == 1:
+                            pc[key] = True
+                        elif val == 0:
+                            pc[key] = False
     return data
 
 
@@ -218,7 +223,7 @@ def remove_disallowed_category_fields(data: Any) -> Any:
                 for field in fields_to_remove:
                     del category_data[field]
                 
-                # Normaliza valores do checklist (convert 'present'/'absent' to '✔'/'✖')
+                # Normaliza valores do checklist (convert 'present'/'absent' to boolean)
                 if 'checklist' in category_data and isinstance(category_data['checklist'], dict):
                     checklist = category_data['checklist']
                     for check_key in checklist.keys():
@@ -226,11 +231,16 @@ def remove_disallowed_category_fields(data: Any) -> Any:
                         if isinstance(val, str):
                             val_lower = val.lower()
                             if val_lower in ['present', 'true', 'sim', 'yes', '1', '✔']:
-                                checklist[check_key] = '✔'
+                                checklist[check_key] = True
                             elif val_lower in ['absent', 'false', 'não', 'no', '0', '✖']:
-                                checklist[check_key] = '✖'
+                                checklist[check_key] = False
                             elif val_lower in ['n/a', 'na']:
-                                checklist[check_key] = 'N/A'
+                                checklist[check_key] = None
+                        elif isinstance(val, int):
+                            if val == 1:
+                                checklist[check_key] = True
+                            elif val == 0:
+                                checklist[check_key] = False
                 
                 # Corrige a estrutura de 'quality' se necessário
                 if 'quality' in category_data and isinstance(category_data['quality'], dict):

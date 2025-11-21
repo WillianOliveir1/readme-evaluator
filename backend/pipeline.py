@@ -19,6 +19,7 @@ from backend.download.download import ReadmeDownloader
 from backend.evaluate.extractor import extract_json_from_readme
 from backend.db.mongodb_handler import MongoDBHandler
 from backend.cache_manager import get_cache_manager
+from backend.config import SCHEMA_PATH, DEFAULT_MAX_TOKENS, DEFAULT_TEMPERATURE
 
 LOG = logging.getLogger(__name__)
 
@@ -34,7 +35,7 @@ class PipelineRunner:
     """
 
     def __init__(self, jobs_dir: Optional[str] = None):
-        self.jobs_dir = jobs_dir or os.path.join(os.getcwd(), "processing", "jobs")
+        self.jobs_dir = jobs_dir or os.path.join(os.getcwd(), "data", "processing", "jobs")
         os.makedirs(self.jobs_dir, exist_ok=True)
 
     def _job_path(self, job_id: str) -> str:
@@ -107,7 +108,7 @@ class PipelineRunner:
             else:
                 # write provided readme_text to a file for bookkeeping
                 txt = params.get("readme_text", "")
-                out_dir = os.path.join(os.getcwd(), "processing")
+                out_dir = os.path.join(os.getcwd(), "data", "processing")
                 os.makedirs(out_dir, exist_ok=True)
                 readme_path = os.path.join(out_dir, f"{job_id}-readme.md")
                 with open(readme_path, "w", encoding="utf-8") as rf:
@@ -124,13 +125,13 @@ class PipelineRunner:
             step = self._start_step(job, "build_prompt")
             prompt_only = extract_json_from_readme(
                 readme_text,
-                schema_path=params.get("schema_path", "schemas/taxonomia.schema.json"),
+                schema_path=params.get("schema_path", SCHEMA_PATH),
                 example_json=params.get("example_json"),
                 model=None,
                 system_prompt=params.get("system_prompt"),
                 readme_path=readme_path,
-                max_tokens=params.get("max_tokens", 20480),
-                temperature=params.get("temperature", 0.0),
+                max_tokens=params.get("max_tokens", DEFAULT_MAX_TOKENS),
+                temperature=params.get("temperature", DEFAULT_TEMPERATURE),
             )
             # save prompt to artifact
             prompt_txt = prompt_only.get("prompt")
@@ -148,13 +149,13 @@ class PipelineRunner:
             if model and os.environ.get("GEMINI_API_KEY"):
                 called = extract_json_from_readme(
                     readme_text,
-                    schema_path=params.get("schema_path", "schemas/taxonomia.schema.json"),
+                    schema_path=params.get("schema_path", SCHEMA_PATH),
                     example_json=params.get("example_json"),
                     model=model,
                     system_prompt=params.get("system_prompt"),
                     readme_path=readme_path,
-                    max_tokens=params.get("max_tokens", 20480),
-                    temperature=params.get("temperature", 0.0),
+                    max_tokens=params.get("max_tokens", DEFAULT_MAX_TOKENS),
+                    temperature=params.get("temperature", DEFAULT_TEMPERATURE),
                 )
                 job["result"] = called
                 job["artifacts"]["model_output"] = called.get("model_output")
@@ -189,7 +190,7 @@ class PipelineRunner:
 
             # Step 5: save_results (move files to processed/ and write result JSON)
             step = self._start_step(job, "save_results")
-            processed_dir = os.path.join(os.getcwd(), "processed")
+            processed_dir = os.path.join(os.getcwd(), "data", "processed")
             os.makedirs(processed_dir, exist_ok=True)
             try:
                 if readme_path and os.path.exists(readme_path):

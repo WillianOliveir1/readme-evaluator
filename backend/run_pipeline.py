@@ -1,7 +1,7 @@
 """Small runner to build prompts (extraction + render) and optionally call Gemini (GenAI) inference.
 
 Usage examples:
-  python backend/run_pipeline.py --readme backend/examples/example1_readme.md --schema schemas/taxonomia.schema.json
+  python backend/run_pipeline.py --readme data/samples/example1_readme.md --schema schemas/taxonomia.schema.json
   python backend/run_pipeline.py --readme path/to/README.md --call-model --model qwen2.5-7b-instruct
 """
 import argparse
@@ -9,8 +9,11 @@ import json
 import os
 from pathlib import Path
 
-from backend import prompt_builder
-from pathlib import Path
+from backend.evaluate.extractor import extract_json_from_readme
+from backend.config import (
+    DEFAULT_MODEL, DEFAULT_MAX_TOKENS, DEFAULT_TEMPERATURE,
+    SCHEMA_PATH, EXAMPLE_JSON_PATH
+)
 
 # Load .env from project root when running the CLI directly so local
 # development keys are available (GEMINI_API_KEY etc.).
@@ -25,17 +28,16 @@ except Exception:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--readme", required=True, help="Path to README file to extract from")
-    parser.add_argument("--schema", default="schemas/taxonomia.schema.json", help="Path to JSON Schema file")
-    parser.add_argument("--example", default="backend/examples/example1_output.json", help="Optional example JSON (few-shot)")
-    parser.add_argument("--model", default="gemini-2.5-flash", help="Model name for Gemini/GenAI inference")
+    parser.add_argument("--schema", default=SCHEMA_PATH, help="Path to JSON Schema file")
+    parser.add_argument("--example", default=EXAMPLE_JSON_PATH, help="Optional example JSON (few-shot)")
+    parser.add_argument("--model", default=DEFAULT_MODEL, help="Model name for Gemini/GenAI inference")
     parser.add_argument("--call-model", action="store_true", help="If set, call the Gemini (GenAI) API (requires GEMINI_API_KEY env var)")
-    parser.add_argument("--max-tokens", type=int, default=1024)
-    parser.add_argument("--temperature", type=float, default=0.0)
+    parser.add_argument("--max-tokens", type=int, default=DEFAULT_MAX_TOKENS)
+    parser.add_argument("--temperature", type=float, default=DEFAULT_TEMPERATURE)
     parser.add_argument("--system-prompt-file", default=None, help="Path to a SYSTEM prompt file to include at top of prompt")
     parser.add_argument("--system-prompt", default=None, help="Inline system prompt text (alternative to file)")
     args = parser.parse_args()
 
-    schema_text = prompt_builder.PromptBuilder.load_schema_text(args.schema)
     with open(args.readme, "r", encoding="utf-8") as f:
         readme_text = f.read()
 
@@ -58,45 +60,45 @@ def main():
     elif args.system_prompt:
         system_prompt = args.system_prompt
 
-    # Prefer PromptBuilder to produce labeled sections (schema, readme, example_json)
-    pb = prompt_builder.PromptBuilder(template_header=system_prompt or None, schema=schema_text, readme=readme_text)
-    if example_json is not None:
-        try:
-            example_str = json.dumps(example_json, ensure_ascii=False, indent=2)
-        except (TypeError, ValueError):
-            example_str = str(example_json)
-        pb.add_part("example_json", example_str)
-
-    footer = (
-        "IMPORTANT: The model must output a single JSON object, valid according to the schema above. "
-        "No surrounding backticks, no markdown, no commentary."
+    print(f"--- Processing README: {args.readme} ---")
+    
+    # Use the centralized extractor logic
+    # If --call-model is NOT set, we pass model=None to extract_json_from_readme,
+    # which will build the prompt but skip the model call.
+    model_to_use = args.model if args.call_model else None
+    
+    result = extract_json_from_readme(
+        readme_text=readme_text,
+        schema_path=args.schema,
+        example_json=example_json,
+        model=model_to_use,
+        system_prompt=system_prompt,
+        readme_path=args.readme,
+        max_tokens=args.max_tokens,
+        temperature=args.temperature
     )
 
-    prompt = pb.build(instruction=None, footer=footer)
-
-    print("--- Extraction prompt preview (first 2000 chars) ---")
-    print(prompt[:2000])
+    print("\n--- Prompt Preview (first 500 chars) ---")
+    print(result.prompt[:500] + "..." if len(result.prompt) > 500 else result.prompt)
 
     if args.call_model:
-        token = os.getenv("GEMINI_API_KEY")
-        if not token:
-            print("GEMINI_API_KEY not found in environment. Aborting model call.")
-            return
-
-        # lazy import to avoid requiring GenAI client when not calling model
-        try:
-            from backend.gemini_client import GeminiClient
-        except ImportError as e:
-            print("Could not import GeminiClient:", e)
-            return
-
-        client = GeminiClient(api_key=token)
-        print("Calling model... this may take a few seconds")
-        resp = client.generate(prompt, model=args.model, max_tokens=args.max_tokens, temperature=args.temperature)
-        print("--- Model response ---")
-        print(resp)
+        print("\n--- Model Output ---")
+        if result.success:
+            if result.parsed:
+                print(json.dumps(result.parsed, indent=2, ensure_ascii=False))
+                print(f"\nValidation Status: {'OK' if result.validation_ok else 'FAILED'}")
+                if not result.validation_ok and result.validation_errors:
+                    print(f"Validation Errors: {result.validation_errors}")
+            else:
+                print("Failed to parse JSON from model output.")
+                print("Raw output:")
+                print(result.model_output)
+        else:
+            print("Extraction failed.")
+            for suggestion in result.recovery_suggestions:
+                print(f"- {suggestion}")
     else:
-        print("Run with --call-model to send the prompt to a model (requires GEMINI_API_KEY env var)")
+        print("\n[Info] Run with --call-model to execute the model inference.")
 
 
 if __name__ == "__main__":

@@ -33,8 +33,8 @@ class CacheManager:
             max_age_hours: Maximum age of cache files before cleanup (default 24 hours)
         """
         self.base_dir = base_dir or os.getcwd()
-        self.processing_dir = os.path.join(self.base_dir, "processing")
-        self.processed_dir = os.path.join(self.base_dir, "processed")
+        self.processing_dir = os.path.join(self.base_dir, "data", "processing")
+        self.processed_dir = os.path.join(self.base_dir, "data", "processed")
         self.max_age_hours = max_age_hours
         self.max_age_seconds = max_age_hours * 3600
 
@@ -140,7 +140,7 @@ class CacheManager:
         """
         result = {"deleted_files": [], "preserved": [], "errors": []}
 
-        # Clean processed/
+        # Clean processed/ directory (safe to remove entirely as it contains only finished results)
         if os.path.exists(self.processed_dir):
             try:
                 if not dry_run:
@@ -152,42 +152,33 @@ class CacheManager:
                 LOG.error(f"Error clearing {self.processed_dir}: {e}")
                 result["errors"].append(str(e))
 
-        # Clean processing/ (but keep jobs/ if requested)
+        # Clean processing/ directory
         if os.path.exists(self.processing_dir):
-            jobs_dir = os.path.join(self.processing_dir, "jobs")
-
-            # Backup jobs directory if needed
-            jobs_backup = None
-            if keep_jobs_dir and os.path.exists(jobs_dir):
-                jobs_backup = os.path.join(self.processing_dir, ".jobs_backup")
-                try:
-                    if os.path.exists(jobs_backup):
-                        shutil.rmtree(jobs_backup)
-                    shutil.copytree(jobs_dir, jobs_backup)
-                except Exception as e:
-                    LOG.warning(f"Could not backup jobs directory: {e}")
-                    jobs_backup = None
-
-            # Remove processing directory
             try:
-                if not dry_run:
-                    shutil.rmtree(self.processing_dir)
-                    os.makedirs(self.processing_dir, exist_ok=True)
-                    LOG.info(f"Cleared cache directory: {self.processing_dir}")
-                result["deleted_files"].append(self.processing_dir)
-            except Exception as e:
-                LOG.error(f"Error clearing {self.processing_dir}: {e}")
-                result["errors"].append(str(e))
+                # Iterate over items to selectively delete, avoiding risky backup/restore logic
+                for item in os.listdir(self.processing_dir):
+                    item_path = os.path.join(self.processing_dir, item)
+                    
+                    # Skip the jobs directory if requested
+                    if keep_jobs_dir and item == "jobs" and os.path.isdir(item_path):
+                        result["preserved"].append(item_path)
+                        continue
+                    
+                    # Delete everything else
+                    try:
+                        if not dry_run:
+                            if os.path.isdir(item_path):
+                                shutil.rmtree(item_path)
+                            else:
+                                os.remove(item_path)
+                        result["deleted_files"].append(item_path)
+                    except Exception as e:
+                        LOG.error(f"Error deleting {item_path}: {e}")
+                        result["errors"].append(str(e))
 
-            # Restore jobs directory
-            if jobs_backup and os.path.exists(jobs_backup):
-                try:
-                    jobs_target = os.path.join(self.processing_dir, "jobs")
-                    if not dry_run:
-                        shutil.move(jobs_backup, jobs_target)
-                    result["preserved"].append(jobs_target)
-                except Exception as e:
-                    LOG.warning(f"Could not restore jobs directory: {e}")
+            except Exception as e:
+                LOG.error(f"Error accessing {self.processing_dir}: {e}")
+                result["errors"].append(str(e))
 
         return result
 

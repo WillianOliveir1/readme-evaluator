@@ -21,26 +21,26 @@
       "License"
     ],
     "present_categories": {
-      "what": "✔",
-      "why": "✔",
-      "how_installation": "✔",
-      "how_usage": "✔",
-      "how_config_requirements": "✔",
-      "when": "✔",
-      "who": "✔",
-      "license": "✔",
-      "contribution": "✔",
-      "references": "✔",
-      "other": "✖"
+      "what": true,
+      "why": true,
+      "how_installation": true,
+      "how_usage": true,
+      "how_config_requirements": true,
+      "when": true,
+      "who": true,
+      "license": true,
+      "contribution": true,
+      "references": true,
+      "other": false
     },
     "organization_observations": "The README is well-organized with a logical flow from project overview to installation, usage, contribution, and comprehensive resources. The extensive use of badges and a build status table enhances information density and accessibility. 'Patching guidelines' could potentially be merged into 'Contribution guidelines' for a slightly more consolidated structure, but its current separation is not detrimental."
   },
   "categories": {
     "what": {
       "checklist": {
-        "clear_description": "✔",
-        "features_scope": "✔",
-        "target_audience": "✔"
+        "clear_description": true,
+        "features_scope": true,
+        "target_audience": true
       },
       "quality": {
         "clarity": 5,
@@ -62,9 +62,9 @@
     },
     "why": {
       "checklist": {
-        "explicit_purpose": "✔",
-        "benefits_vs_alternatives": "✖",
-        "use_cases": "✔"
+        "explicit_purpose": true,
+        "benefits_vs_alternatives": false,
+        "use_cases": true
       },
       "quality": {
         "clarity": 4,
@@ -87,9 +87,9 @@
     },
     "how_installation": {
       "checklist": {
-        "reproducible_commands": "✔",
-        "compatibility_requirements": "✔",
-        "dependencies": "✖"
+        "reproducible_commands": true,
+        "compatibility_requirements": true,
+        "dependencies": false
       },
       "quality": {
         "structure": 5,
@@ -113,9 +113,9 @@
     },
     "how_usage": {
       "checklist": {
-        "minimal_working_example": "✔",
-        "examples_io": "✔",
-        "api_commands_context": "✔"
+        "minimal_working_example": true,
+        "examples_io": true,
+        "api_commands_context": true
       },
       "quality": {
         "understandability": 5,
@@ -138,9 +138,9 @@
     },
     "how_config_requirements": {
       "checklist": {
-        "documented_configuration": "✔",
-        "parameters_options": "✖",
-        "troubleshooting": "✖"
+        "documented_configuration": true,
+        "parameters_options": false,
+        "troubleshooting": false
       },
       "quality": {
         "clarity": 3,
@@ -163,9 +163,9 @@
     },
     "when": {
       "checklist": {
-        "current_status": "✔",
-        "roadmap": "✔",
-        "changelog": "✖"
+        "current_status": true,
+        "roadmap": true,
+        "changelog": false
       },
       "quality": {
         "clarity": 4,
@@ -187,9 +187,9 @@
     },
     "who": {
       "checklist": {
-        "authors_maintainers": "✔",
-        "contact_channels": "✔",
-        "code_of_conduct": "✔"
+        "authors_maintainers": true,
+        "contact_channels": true,
+        "code_of_conduct": true
       },
       "quality": {
         "clarity": 4,
@@ -212,8 +212,8 @@
     },
     "license": {
       "checklist": {
-        "license_type": "✔",
-        "license_link": "✔"
+        "license_type": true,
+        "license_link": true
       },
       "quality": {
         "clarity": 5,
@@ -231,9 +231,9 @@
     },
     "contribution": {
       "checklist": {
-        "contributing_link": "✔",
-        "contribution_steps": "✔",
-        "standards": "✖"
+        "contributing_link": true,
+        "contribution_steps": true,
+        "standards": false
       },
       "quality": {
         "structure": 4,
@@ -257,9 +257,9 @@
     },
     "references": {
       "checklist": {
-        "docs_link": "✔",
-        "relevant_references": "✔",
-        "support_faq": "✔"
+        "docs_link": true,
+        "relevant_references": true,
+        "support_faq": true
       },
       "quality": {
         "effectiveness": 5,
@@ -279,8 +279,8 @@
     },
     "other": {
       "checklist": {
-        "generic_sections": "✔",
-        "placeholders": "✖"
+        "generic_sections": true,
+        "placeholders": false
       },
       "action": {
         "reclassify": false,

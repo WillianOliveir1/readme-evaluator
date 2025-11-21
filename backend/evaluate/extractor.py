@@ -126,7 +126,22 @@ def extract_json_from_readme(
             
             try:
                 client = GeminiClient()
-                raw = client.generate(prompt, model=model, max_tokens=max_tokens, temperature=temperature)
+                
+                # Streaming implementation
+                full_response = []
+                stream = client.generate_stream(prompt, model=model, max_tokens=max_tokens, temperature=temperature)
+                
+                for chunk in stream:
+                    full_response.append(chunk)
+                    # Update progress with current length
+                    current_len = sum(len(c) for c in full_response)
+                    tracker.update_stage(
+                        ProgressStage.CALLING_MODEL, 
+                        f"Generating response... ({current_len} chars)"
+                    )
+                
+                raw = "".join(full_response)
+                
                 result_obj.model_output = raw
                 timing["model_call"] = time.time() - model_start
                 

@@ -44,17 +44,24 @@ from backend.pipeline import PipelineRunner
 from fastapi.responses import StreamingResponse
 import asyncio
 import queue
+from backend.config import (
+    DEFAULT_MAX_TOKENS, DEFAULT_TEMPERATURE,
+    GENERATION_MAX_TOKENS, GENERATION_TEMPERATURE,
+    RENDER_MAX_TOKENS, RENDER_TEMPERATURE,
+    SCHEMA_PATH, SYSTEM_PROMPT_PATH,
+    CACHE_MAX_AGE_HOURS
+)
 
 
 class JobRequest(BaseModel):
     repo_url: Optional[str] = None
     readme_text: Optional[str] = None
-    schema_path: Optional[str] = "schemas/taxonomia.schema.json"
+    schema_path: Optional[str] = SCHEMA_PATH
     example_json: Optional[dict] = None
     model: Optional[str] = None
     system_prompt: Optional[str] = None
-    max_tokens: Optional[int] = 20480
-    temperature: Optional[float] = 0.0
+    max_tokens: Optional[int] = DEFAULT_MAX_TOKENS
+    temperature: Optional[float] = DEFAULT_TEMPERATURE
     branch: Optional[str] = None
 
 
@@ -69,36 +76,36 @@ class ReadmeRequest(BaseModel):
 class GenerateRequest(BaseModel):
     prompt: str
     model: Optional[str] = None
-    max_tokens: Optional[int] = 25600
-    temperature: Optional[float] = 0.1
+    max_tokens: Optional[int] = GENERATION_MAX_TOKENS
+    temperature: Optional[float] = GENERATION_TEMPERATURE
 
 
 class ExtractRequest(BaseModel):
     # Either provide `repo_url` to download, or `readme_text` directly.
     repo_url: Optional[str] = None
     readme_text: Optional[str] = None
-    schema_path: Optional[str] = "schemas/taxonomia.schema.json"
+    schema_path: Optional[str] = SCHEMA_PATH
     example_json: Optional[dict] = None
     model: Optional[str] = None
     system_prompt: Optional[str] = None
-    max_tokens: Optional[int] = 2048
-    temperature: Optional[float] = 0.0
+    max_tokens: Optional[int] = DEFAULT_MAX_TOKENS
+    temperature: Optional[float] = DEFAULT_TEMPERATURE
 
 
 class RenderRequest(BaseModel):
     json_object: dict
     model: Optional[str] = None
     style_instructions: Optional[str] = None
-    max_tokens: Optional[int] = 512
-    temperature: Optional[float] = 0.1
+    max_tokens: Optional[int] = RENDER_MAX_TOKENS
+    temperature: Optional[float] = RENDER_TEMPERATURE
 
 
 class EvaluationRequest(BaseModel):
     evaluation_json: dict
     style_instructions: Optional[str] = None
     model: Optional[str] = None
-    max_tokens: Optional[int] = 2048
-    temperature: Optional[float] = 0.1
+    max_tokens: Optional[int] = DEFAULT_MAX_TOKENS
+    temperature: Optional[float] = RENDER_TEMPERATURE
 
 
 app = FastAPI(title="Readme Downloader API")
@@ -232,7 +239,7 @@ def extract_endpoint(req: ExtractRequest):
     if req.system_prompt:
         system_prompt_text = req.system_prompt
     else:
-        local_path = os.path.join("tools", "prompt_templates", "evaluator_system_prompt.txt")
+        local_path = SYSTEM_PROMPT_PATH
         if os.path.exists(local_path):
             try:
                 with open(local_path, "r", encoding="utf-8") as spf:
@@ -252,8 +259,8 @@ def extract_endpoint(req: ExtractRequest):
             model=None,
             system_prompt=system_prompt_text,
             readme_path=path,
-            max_tokens=req.max_tokens or 20480,
-            temperature=req.temperature or 0.0,
+            max_tokens=req.max_tokens or DEFAULT_MAX_TOKENS,
+            temperature=req.temperature or DEFAULT_TEMPERATURE,
         )
         result_dict = result.to_dict()
         result_dict["model_skipped"] = True
@@ -267,8 +274,8 @@ def extract_endpoint(req: ExtractRequest):
         model=req.model,
         system_prompt=system_prompt_text,
         readme_path=path,
-        max_tokens=req.max_tokens or 20480,
-        temperature=req.temperature or 0.0,
+        max_tokens=req.max_tokens or DEFAULT_MAX_TOKENS,
+        temperature=req.temperature or DEFAULT_TEMPERATURE,
     )
 
     result_dict = result.to_dict()
@@ -284,7 +291,7 @@ def extract_endpoint(req: ExtractRequest):
     # resulting JSON there for auditability. Only act when a downloaded file
     # path is available (i.e., repo_url was used).
     try:
-        processed_dir = os.path.join(os.getcwd(), "processed")
+        processed_dir = os.path.join(os.getcwd(), "data", "processed")
         os.makedirs(processed_dir, exist_ok=True)
 
         # If a downloaded README file exists, move it to processed/
@@ -339,6 +346,10 @@ async def extract_stream_endpoint(req: ExtractRequest):
             
             if req.repo_url:
                 logging.info("extract-stream: received repo_url=%s", req.repo_url)
+                
+                # Yield initial download progress
+                yield f"data: {_json.dumps({'type': 'progress', 'stage': 'downloading', 'status': 'in_progress', 'percentage': 10, 'message': 'Downloading README...'})}\n\n"
+                
                 # Extract owner/repo from URL
                 import re
                 match = re.match(r"https?://github\.com/(?P<owner>[^/]+)/(?P<repo>[^/]+)(?:\.git)?(?:/(?:tree|blob)/[^/]+)?", req.repo_url)
@@ -350,8 +361,13 @@ async def extract_stream_endpoint(req: ExtractRequest):
                 dl = ReadmeDownloader()
                 try:
                     logging.info("extract-stream: starting download for %s", req.repo_url)
-                    path = dl.download(req.repo_url, branch=None)
+                    # Run download in executor to avoid blocking the loop
+                    path = await loop.run_in_executor(None, dl.download, req.repo_url, None)
                     logging.info("extract-stream: downloaded README to %s", path)
+                    
+                    # Yield download complete progress
+                    yield f"data: {_json.dumps({'type': 'progress', 'stage': 'downloading', 'status': 'completed', 'percentage': 20, 'message': 'Download complete'})}\n\n"
+                    
                     # Construct raw GitHub link for the README
                     if owner and repo:
                         readme_raw_link = f"https://raw.githubusercontent.com/{owner}/{repo}/main/{os.path.basename(path)}"
@@ -377,7 +393,7 @@ async def extract_stream_endpoint(req: ExtractRequest):
             if req.system_prompt:
                 system_prompt_text = req.system_prompt
             else:
-                local_path = os.path.join("tools", "prompt_templates", "evaluator_system_prompt.txt")
+                local_path = SYSTEM_PROMPT_PATH
                 if os.path.exists(local_path):
                     try:
                         with open(local_path, "r", encoding="utf-8") as spf:
@@ -386,7 +402,8 @@ async def extract_stream_endpoint(req: ExtractRequest):
                         pass
             
             # Run extraction with progress callback
-            result = await loop.run_in_executor(
+            # We use run_in_executor but we don't await it immediately so we can poll the queue
+            future = loop.run_in_executor(
                 None,
                 extract_json_from_readme,
                 readme_text,
@@ -395,21 +412,34 @@ async def extract_stream_endpoint(req: ExtractRequest):
                 req.model,
                 system_prompt_text,
                 path,
-                req.max_tokens or 20480,
-                req.temperature or 0.0,
+                req.max_tokens or DEFAULT_MAX_TOKENS,
+                req.temperature or DEFAULT_TEMPERATURE,
                 on_progress,
                 owner,
                 repo,
                 readme_raw_link,
             )
             
-            # Yield all progress updates from queue
+            # Poll queue while future is running
+            while not future.done():
+                while not progress_queue.empty():
+                    try:
+                        update = progress_queue.get_nowait()
+                        yield f"data: {_json.dumps({'type': 'progress', **update})}\n\n"
+                    except queue.Empty:
+                        break
+                await asyncio.sleep(0.1)
+            
+            # Yield any remaining updates after future completes
             while not progress_queue.empty():
                 try:
                     update = progress_queue.get_nowait()
                     yield f"data: {_json.dumps({'type': 'progress', **update})}\n\n"
                 except queue.Empty:
                     break
+            
+            # Get result (or raise exception if failed)
+            result = await future
             
             # Yield final result
             result_dict = result.to_dict()
@@ -450,8 +480,8 @@ async def extract_stream_endpoint(req: ExtractRequest):
                 
                 # Save to file as backup with proper naming
                 try:
-                    processed_dir = Path("processed")
-                    processed_dir.mkdir(exist_ok=True)
+                    processed_dir = Path("data/processed")
+                    processed_dir.mkdir(exist_ok=True, parents=True)
                     file_path = processed_dir / filename
                     with open(file_path, "w", encoding="utf-8") as f:
                         _json.dump(result_dict, f, indent=2, ensure_ascii=False)
@@ -481,8 +511,8 @@ async def extract_stream_endpoint(req: ExtractRequest):
                         result_dict['parsed'],
                         style_instructions=default_style,
                         model=req.model,
-                        max_tokens=20480,
-                        temperature=0.1,
+                        max_tokens=DEFAULT_MAX_TOKENS,
+                        temperature=RENDER_TEMPERATURE,
                     )
                     
                     # Yield rendered text as final step
@@ -548,8 +578,8 @@ def render_evaluation_endpoint(req: EvaluationRequest):
             req.evaluation_json,
             style_instructions=style,
             model=req.model,
-            max_tokens=req.max_tokens or 20480,
-            temperature=req.temperature or 0.1,
+            max_tokens=req.max_tokens or DEFAULT_MAX_TOKENS,
+            temperature=req.temperature or RENDER_TEMPERATURE,
         )
         return result
     except Exception as exc:
@@ -566,12 +596,12 @@ def create_job_endpoint(req: JobRequest, background_tasks: BackgroundTasks):
     job_id = job["id"]
     # schedule background execution
     background_tasks.add_task(runner.run, job_id, params)
-    return {"job_id": job_id, "status_path": os.path.join("processing", "jobs", f"{job_id}.json")}
+    return {"job_id": job_id, "status_path": os.path.join("data", "processing", "jobs", f"{job_id}.json")}
 
 
 @app.get("/jobs/{job_id}")
 def get_job_status(job_id: str):
-    path = os.path.join(os.getcwd(), "processing", "jobs", f"{job_id}.json")
+    path = os.path.join(os.getcwd(), "data", "processing", "jobs", f"{job_id}.json")
     if not os.path.exists(path):
         raise HTTPException(status_code=404, detail="Job not found")
     try:
@@ -597,7 +627,7 @@ def get_cache_stats():
 
 
 @app.post("/cache/cleanup")
-def cleanup_cache(older_than_hours: int = 24, keep_jobs: bool = True):
+def cleanup_cache(older_than_hours: int = CACHE_MAX_AGE_HOURS, keep_jobs: bool = True):
     """Clean up old cache files (default: older than 24 hours).
 
     Args:
@@ -705,8 +735,8 @@ def save_result_to_file(request: SaveFileRequest):
     """
     try:
         # Create processed directory if it doesn't exist
-        processed_dir = Path("processed")
-        processed_dir.mkdir(exist_ok=True)
+        processed_dir = Path("data/processed")
+        processed_dir.mkdir(exist_ok=True, parents=True)
         
         # Determine filename
         if request.custom_filename:

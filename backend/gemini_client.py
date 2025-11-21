@@ -11,12 +11,9 @@ from __future__ import annotations
 
 import os
 from typing import Optional
-
-try:
-    from google import genai
-except Exception:  # pragma: no cover - runtime dependency may be missing in some envs
-    genai = None
-
+from google import genai
+from google.genai import types
+from backend.config import DEFAULT_MODEL
 
 class GeminiClient:
     """Minimal client for Google Gemini (GenAI).
@@ -26,12 +23,9 @@ class GeminiClient:
     - The generate(...) method returns a single string with the model output.
     """
 
-    def __init__(self, api_key: Optional[str] = None, default_model: Optional[str] = "gemini-2.5-flash"):
+    def __init__(self, api_key: Optional[str] = None, default_model: Optional[str] = DEFAULT_MODEL):
         self.api_key = api_key or os.environ.get("GEMINI_API_KEY")
         self.default_model = default_model
-
-        if genai is None:
-            raise RuntimeError("google-genai package is not installed. Install 'google-genai' to use GeminiClient.")
 
         # The GenAI client will read configuration (like API key) from the
         # environment by default. If an explicit API key was passed, ensure it
@@ -49,37 +43,53 @@ class GeminiClient:
             raise RuntimeError("Failed to initialize GenAI client: %s" % exc)
 
     def generate(self, prompt: str, model: Optional[str] = None, max_tokens: int = 512, temperature: float = 0.0) -> str:
-        """Generate text for the given prompt.
-
-        Returns the generated text as a string. Raises RuntimeError on failure.
-        """
+        """Generate text for the given prompt."""
         model_id = model or self.default_model
         if not model_id:
             raise ValueError("model must be provided either via constructor or argument")
 
         try:
-            resp = self._client.models.generate_content(model=model_id, contents=prompt)
+            config = types.GenerateContentConfig(
+                max_output_tokens=max_tokens,
+                temperature=temperature
+            )
+            
+            response = self._client.models.generate_content(
+                model=model_id,
+                contents=prompt,
+                config=config
+            )
+            return response.text
         except Exception as exc:
             raise RuntimeError(f"Gemini API error: {exc}")
 
-        # The SDK response shapes can vary across versions. Prefer a `.text`
-        # attribute if present (used in our test harness). Otherwise, try
-        # common fallbacks like .output or converting to str().
-        if hasattr(resp, "text"):
-            return getattr(resp, "text")
-        if hasattr(resp, "output"):
-            out = getattr(resp, "output")
-            try:
-                # if output is a structured object, try to extract text
-                if isinstance(out, (list, tuple)) and out:
-                    first = out[0]
-                    if isinstance(first, dict) and "text" in first:
-                        return first["text"]
-                return str(out)
-            except Exception:
-                return str(out)
+    def generate_stream(self, prompt: str, model: Optional[str] = None, max_tokens: int = 512, temperature: float = 0.0):
+        """Generate text for the given prompt, yielding chunks of text as they are generated."""
+        model_id = model or self.default_model
+        if not model_id:
+            raise ValueError("model must be provided either via constructor or argument")
 
-        return str(resp)
+        try:
+            config = types.GenerateContentConfig(
+                max_output_tokens=max_tokens,
+                temperature=temperature
+            )
+            
+            response_stream = self._client.models.generate_content_stream(
+                model=model_id,
+                contents=prompt,
+                config=config
+            )
+            
+            for chunk in response_stream:
+                if hasattr(chunk, "text") and chunk.text:
+                    yield chunk.text
+                elif hasattr(chunk, "parts"):
+                     for part in chunk.parts:
+                         if hasattr(part, "text"):
+                             yield part.text
+        except Exception as exc:
+            raise RuntimeError(f"Gemini API streaming error: {exc}")
 
 
 __all__ = ["GeminiClient"]

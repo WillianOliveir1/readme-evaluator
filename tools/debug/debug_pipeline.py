@@ -21,12 +21,12 @@ from typing import Optional
 from pathlib import Path
 
 # Add backend to path
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 # Carregar .env
 def load_env():
     """Carrega variáveis do arquivo .env"""
-    env_path = Path(__file__).parent.parent / ".env"
+    env_path = Path(__file__).parent.parent.parent / ".env"
     if env_path.exists():
         with open(env_path, "r", encoding="utf-8") as f:
             for line in f:
@@ -427,7 +427,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     
     # Mudar para diretório raiz
-    os.chdir(os.path.join(os.path.dirname(__file__), ".."))
+    os.chdir(os.path.join(os.path.dirname(__file__), "..", ".."))
     
     if args.mode == "full":
         test_full_pipeline()
