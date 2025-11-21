@@ -7,6 +7,7 @@ from typing import Optional, Any, Dict, Callable
 import jsonschema
 
 from backend import prompt_builder
+from backend.config import DEFAULT_MAX_TOKENS, DEFAULT_TEMPERATURE
 from backend.gemini_client import GeminiClient
 from backend.evaluate.progress import ProgressTracker, ProgressStage, EvaluationResult
 from backend.evaluate.json_postprocessor import fix_string_arrays_in_json, remove_disallowed_category_fields
@@ -22,8 +23,8 @@ def extract_json_from_readme(
     model: Optional[str] = None,
     system_prompt: Optional[str] = None,
     readme_path: Optional[str] = None,
-    max_tokens: int = 20480,
-    temperature: float = 0.0,
+    max_tokens: int = DEFAULT_MAX_TOKENS,
+    temperature: float = DEFAULT_TEMPERATURE,
     progress_callback: Optional[Callable] = None,
     owner: Optional[str] = None,
     repo: Optional[str] = None,
@@ -39,6 +40,9 @@ def extract_json_from_readme(
       - timing: dict with timing information
       - tokens: dict with token usage
     """
+    # Log received arguments for debugging
+    logging.info(f"extract_json_from_readme called with: owner={owner}, repo={repo}, readme_raw_link={readme_raw_link}")
+
     # Initialize progress tracker
     tracker = ProgressTracker(callback=progress_callback)
     timing = {}
@@ -237,6 +241,8 @@ def extract_json_from_readme(
                             if model:
                                 metadata["evaluator"] = model
                                 logging.info(f"Set evaluator to model: {model}")
+                        else:
+                            logging.warning("No valid metadata found in parsed JSON")
                     except json.JSONDecodeError as e:
                         result_obj.parsed = None
                         timing["parsing"] = time.time() - parse_start

@@ -1,294 +1,127 @@
 # README Evaluator
 
-Ferramenta para avaliar READMEs de repositórios GitHub usando IA. Extrai uma taxonomia JSON estruturada baseada em um esquema canônico e renderiza um resumo legível da avaliação.
+**README Evaluator** is an AI-powered tool designed to analyze and evaluate GitHub repository README files. It leverages the Google Gemini API to extract structured data based on a comprehensive taxonomy and generates a human-readable report, helping developers improve their project documentation.
 
-## 🚀 Quick Start
+## ❓ Why README Evaluator?
 
-### Pré-requisitos
+Documentation is often the first interaction a user has with a project. A poor README can turn away potential users and contributors. This tool provides:
+-   **Automated Quality Assessment**: Objective evaluation against a strict schema.
+-   **Structured Feedback**: Identifies missing sections (e.g., Installation, Usage, License).
+-   **Actionable Improvements**: Suggests specific changes to enhance clarity and completeness.
 
-- **Python 3.10+** (backend)
-- **Node.js 18+** e npm (frontend)
-- **GEMINI_API_KEY** (chave da API Google Gemini)
+## 🚀 Installation
 
-### Setup (5 minutos)
+### Prerequisites
 
-#### 1. Backend (Python + FastAPI)
+-   **Python 3.10+**
+-   **Node.js 18+** & npm
+-   **Google Gemini API Key**
 
-```cmd
-# Crie um virtualenv
-python -m venv .venv
-.venv\Scripts\activate
+### Backend Setup
 
-# Instale dependências
-pip install --upgrade pip
-pip install -r backend/requirements.txt
-```
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/WillianOliveir1/readme-evaluator.git
+    cd readme-evaluator
+    ```
 
-#### 2. Configure a API Key
+2.  **Create and activate a virtual environment:**
+    ```bash
+    # Windows
+    python -m venv .venv
+    .venv\Scripts\activate
 
-Crie um arquivo `.env` na raiz do projeto:
+    # Linux/Mac
+    python3 -m venv .venv
+    source .venv/bin/activate
+    ```
 
-```
-GEMINI_API_KEY=sua_chave_aqui
-```
+3.  **Install dependencies:**
+    ```bash
+    pip install --upgrade pip
+    pip install -r backend/requirements.txt
+    ```
 
-Ou export no terminal:
+### Frontend Setup
 
-```cmd
-set GEMINI_API_KEY=sua_chave_aqui
-```
+1.  **Navigate to the frontend directory:**
+    ```bash
+    cd frontend
+    ```
 
-#### 2.5. (Opcional) Configure MongoDB Atlas
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-Para salvar resultados em MongoDB Atlas:
+## ⚙️ Configuration
 
-```
-# Veja MONGODB_SETUP.md para instruções completas
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/?retryWrites=true&w=majority
+Create a `.env` file in the root directory of the project. You can use the following template:
+
+```env
+# Required: Google Gemini API Key
+GEMINI_API_KEY=your_gemini_api_key_here
+
+# Optional: MongoDB Atlas Configuration (for saving evaluations)
+MONGODB_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/?retryWrites=true&w=majority
 MONGODB_DB=readme_evaluator
 MONGODB_COLLECTION=evaluations
 ```
 
-Test a conexão:
-```cmd
-python tools/test_mongodb.py --full
-```
+> **Note:** If MongoDB variables are not set, the application will default to local storage (saving JSON files in `data/processed/`).
 
-#### 3. Inicie o Backend
+## 💻 Usage
 
-```cmd
-python -m uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000
-```
+1.  **Start the Backend:**
+    From the root directory (with virtual environment activated):
+    ```bash
+    python -m uvicorn backend.main:app --reload --host 127.0.0.1 --port 8000
+    ```
 
-Backend estará em `http://localhost:8000`
+2.  **Start the Frontend:**
+    From the `frontend` directory:
+    ```bash
+    npm run dev
+    ```
 
-#### 4. Inicie o Frontend
+3.  **Evaluate a Repository:**
+    -   Open your browser and go to `http://localhost:3000`.
+    -   Paste the URL of a public GitHub repository (e.g., `https://github.com/pandas-dev/pandas`).
+    -   Click **"Evaluate README"**.
+    -   View the real-time progress and the final generated report.
 
-```cmd
-cd frontend
-npm install
-npm run dev
-```
+## 📅 Status & Roadmap
 
-Frontend estará em `http://localhost:3000`
+**Current Status:** Active Development (Beta).
 
----
+**Roadmap:**
+-   [x] Core extraction pipeline with Gemini.
+-   [x] Streaming response (SSE) for real-time feedback.
+-   [x] MongoDB integration for persistence.
+-   [ ] Support for local LLMs (e.g., Ollama).
+-   [ ] Batch processing for multiple repositories.
+-   [ ] PDF export of reports.
 
-## 📋 Como Usar
+## 👥 Authors
 
-1. Abra `http://localhost:3000` no navegador
-2. Cole a URL de um repositório GitHub (ex: `https://github.com/owner/repo`)
-3. Clique em "Evaluate README"
-4. Aguarde o processamento:
-   - **Extração**: README é processado e avaliado
-   - **Renderização**: Resultado é convertido para linguagem natural legível
-5. Veja o resumo executivo na seção **"Evaluation Summary"**
-6. Explore os detalhes técnicos (JSON estruturado, prompt usado, etc.)
+-   **Willian Oliveira** - *Initial work* - [WillianOliveir1](https://github.com/WillianOliveir1)
 
----
+## 🤝 Contribution
 
-## 🏗️ Arquitetura
+Contributions are welcome! Please follow these steps:
+1.  Fork the repository.
+2.  Create a feature branch (`git checkout -b feature/AmazingFeature`).
+3.  Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4.  Push to the branch (`git push origin feature/AmazingFeature`).
+5.  Open a Pull Request.
 
-```
-readme-evaluator/
-├── backend/
-│   ├── main.py                 # FastAPI app com endpoints
-│   ├── pipeline.py             # Orquestração do pipeline
-│   ├── gemini_client.py        # Cliente da API Gemini
-│   ├── prompt_builder.py       # Construção de prompts
-│   ├── evaluate/
-│   │   ├── extractor.py        # Extração de JSON
-│   │   ├── json_postprocessor.py # Correção de tipos
-│   │   └── progress.py         # Rastreamento de progresso
-│   ├── present/
-│   │   └── renderer.py         # Renderização para texto
-│   └── requirements.txt
-├── frontend/
-│   ├── pages/index.js          # UI principal (Next.js)
-│   └── package.json
-├── schemas/
-│   └── taxonomia.schema.json   # Schema JSON canônico
-└── README.md
-```
+## 📄 License
 
----
+This project is licensed under the MIT License.
 
-## 🔌 API Endpoints
+## 📚 References
 
-### `POST /extract-json-stream`
+-   **FastAPI Documentation**: https://fastapi.tiangolo.com/
+-   **Next.js Documentation**: https://nextjs.org/docs
+-   **Google AI Studio**: https://aistudio.google.com/
 
-Avalia um README e retorna a taxonomia JSON + texto renderizado via Server-Sent Events (SSE).
-
-**Request:**
-```json
-{
-  "readme_text": "# Project Name\n...",
-  "model": "gemini-2.5-flash",
-  "max_tokens": 2048,
-  "temperature": 0.1
-}
-```
-
-**Response (SSE):**
-- `type: "progress"` — Atualizações de progresso
-- `type: "result"` — JSON estruturado (taxonomia)
-- `type: "rendered"` — Texto renderizado em linguagem natural
-- `type: "error"` — Erro durante processamento
-
----
-
-### `POST /readme`
-
-Baixa o README de um repositório GitHub.
-
-**Request:**
-```json
-{
-  "repo_url": "https://github.com/owner/repo"
-}
-```
-
-**Response:**
-```json
-{
-  "content": "# Project\n...",
-  "filename": "README.md"
-}
-```
-
----
-
-## 💾 Persistência de Dados
-
-### Armazenamento Local (Padrão)
-Todos os resultados são salvos automaticamente em:
-```
-processed/
-├── result-*.json                  # Resultado JSON estruturado
-├── result-*-backup.jsonl          # Backup em JSONL (linha por linha)
-└── README-*.md                    # README original (se download)
-```
-
-### MongoDB Atlas (Opcional)
-Configure `MONGODB_URI` em `.env` para salvar também em nuvem:
-
-```bash
-# 1. Crie conta em https://www.mongodb.com/cloud/atlas (gratuito)
-# 2. Configure em .env:
-MONGODB_URI=mongodb+srv://user:pass@cluster.mongodb.net/...
-# 3. Results são salvos automaticamente em MongoDB
-
-# 4. Test:
-python tools/test_mongodb.py --full
-```
-
-**Benefícios:**
-- ✓ Backup em nuvem automático
-- ✓ Query histórico de avaliações
-- ✓ Sem limite de armazenamento (tier gratuito: 512MB)
-- ✓ Integração com dashboards (MongoDB Charts)
-
-**Veja**: [MONGODB_SETUP.md](MONGODB_SETUP.md) para guia completo
-
----
-
-O schema (`schemas/taxonomia.schema.json`) define 11 categorias:
-
-1. **what** — O que é o projeto?
-2. **why** — Por que existe?
-3. **how_installation** — Como instalar?
-4. **how_usage** — Como usar?
-5. **how_config_requirements** — Configuração e requisitos?
-6. **when** — Status e versão?
-7. **who** — Autores e mantenedores?
-8. **license** — Licença?
-9. **contribution** — Como contribuir?
-10. **references** — Documentação e referências?
-11. **other** — Outras seções detectadas?
-
-Cada categoria contém:
-- **checklist** — Itens específicos presentes/ausentes
-- **quality** — Notas de 1-5 (para maioria das categorias)
-- **evidences** — Trechos encontrados no README
-- **justifications** — Por que recebeu essa avaliação
-- **suggested_improvements** — Sugestões
-
----
-
-## 🔧 Post-Processing
-
-O backend aplica automaticamente:
-
-1. **Fix de Arrays** — Converte strings para arrays em campos como `evidences`, `justifications`, `suggested_improvements`
-2. **Fix de Booleanos** — Converte strings para booleanos em `reclassify`, `suggest_removal`
-3. **Remoção de Campos Inválidos** — Remove campos não permitidos por categoria (ex: `justifications` não existe em `other`)
-4. **Validação** — Valida contra schema JSON
-
----
-
-## 🐛 Debugging
-
-**Ver logs do backend:**
-```cmd
-# Terminal onde backend está rodando mostra logs em tempo real
-```
-
-**DevTools do frontend (F12):**
-- Console: vê eventos SSE e logs
-- Network: vê requests para `/extract-json-stream`
-
-**Testar endpoint direto:**
-```cmd
-curl -X POST http://localhost:8000/readme ^
-  -H "Content-Type: application/json" ^
-  -d "{\"repo_url\":\"https://github.com/owner/repo\"}"
-```
-
----
-
-## 🌍 Variáveis de Ambiente
-
-| Variável | Obrigatória | Descrição |
-|----------|-----------|-----------|
-| `GEMINI_API_KEY` | ✅ | Chave da API Google Gemini |
-| `BACKEND_PORT` | ❌ | Porta do backend (padrão: 8000) |
-| `FRONTEND_PORT` | ❌ | Porta do frontend (padrão: 3000) |
-
----
-
-## 📦 Dependências
-
-### Backend (`backend/requirements.txt`)
-- fastapi >= 0.121.2
-- uvicorn >= 0.38.0
-- google-genai >= 1.50.1
-- jsonschema >= 4.25.1
-- pydantic >= 2.12.4
-- python-dotenv >= 1.2.1
-
-### Frontend (`frontend/package.json`)
-- next >= 16.0.1
-- react >= 18.2.0
-- react-dom >= 18.2.0
-
----
-
-## ✅ Testes
-
-Execute testes do backend:
-
-```cmd
-pytest tests/
-```
-
----
-
-## 📄 Licença
-
-MIT
-
----
-
-## 👥 Contribuições
-
-Abra uma issue ou PR para sugestões e melhorias!

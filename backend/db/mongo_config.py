@@ -16,6 +16,8 @@ from typing import Optional, Dict, Any
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure, ServerSelectionTimeoutError
 
+from backend.config import MONGODB_URI, MONGODB_DB_NAME, MONGODB_COLLECTION_NAME
+
 LOG = logging.getLogger(__name__)
 
 
@@ -37,9 +39,9 @@ class MongoDBConfig:
             collection_name: Collection name. If None, defaults to 'evaluations'.
             timeout_seconds: Connection timeout in seconds.
         """
-        self.uri = uri or os.getenv("MONGODB_URI")
-        self.db_name = db_name or os.getenv("MONGODB_DB", "readme-evaluator")
-        self.collection_name = collection_name or os.getenv("MONGODB_COLLECTION", "evaluations")
+        self.uri = uri or MONGODB_URI
+        self.db_name = db_name or MONGODB_DB_NAME
+        self.collection_name = collection_name or MONGODB_COLLECTION_NAME
         self.timeout_seconds = timeout_seconds
         self._client: Optional[MongoClient] = None
         self._is_connected = False
@@ -138,9 +140,9 @@ class MongoDBConfig:
             MongoDBConfig instance.
         """
         return MongoDBConfig(
-            uri=os.getenv("MONGODB_URI"),
-            db_name=os.getenv("MONGODB_DB", "readme-evaluator"),
-            collection_name=os.getenv("MONGODB_COLLECTION", "evaluations"),
+            uri=MONGODB_URI,
+            db_name=MONGODB_DB_NAME,
+            collection_name=MONGODB_COLLECTION_NAME,
         )
 
 

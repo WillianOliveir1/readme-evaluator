@@ -384,12 +384,11 @@ def validate_and_fix_json(json_obj: dict, schema_path: str) -> tuple[bool, str]:
     try:
         jsonschema.validate(instance=json_obj, schema=schema)
         return True, "JSON validado com sucesso na primeira tentativa!"
-    except jsonschema.ValidationError as e:
-        print(f"❌ Erro inicial: {e.message}")
-        print(f"   Path: {list(e.path)}")
+    except jsonschema.ValidationError:
+        # Não imprime erro aqui para não poluir logs, apenas tenta corrigir
+        pass
     
     # Aplica fix
-    print("\n🔧 Aplicando correções automáticas...")
     fixed_json = normalize_present_categories(json_obj)
     fixed_json = remove_disallowed_category_fields(fixed_json)
     fixed_json = fix_string_arrays_in_json(fixed_json)

@@ -80,8 +80,12 @@ export default function Home() {
                 setResult(merged);
                 setCurrentPercentage(100);
               } else if (data.type === "rendered") {
-                console.log("Rendered text type:", typeof data.rendered);
-                setRenderedText(data.rendered);
+                console.log("Rendered data received:", data.rendered);
+                // Handle both string (legacy) and object (new) formats
+                const text = typeof data.rendered === 'string' 
+                  ? data.rendered 
+                  : data.rendered.text;
+                setRenderedText(text);
               } else if (data.type === "error") {
                 throw new Error(data.error);
               }
@@ -109,45 +113,102 @@ export default function Home() {
     return colors[stage] || "#9e9e9e";
   };
 
+  // Simple Markdown Renderer (Dependency-free)
+  const renderMarkdown = (text) => {
+    if (!text) return null;
+    
+    // Escape HTML to prevent XSS (basic)
+    let html = text
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+
+    // Headers
+    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
+    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
+    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
+
+    // Bold
+    html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
+    
+    // Lists (basic)
+    html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
+    html = html.replace(/^- (.*$)/gim, '<li>$1</li>');
+    
+    // Wrap lists (naive)
+    html = html.replace(/(<li>.*<\/li>)/gim, '<ul>$1</ul>');
+    // Fix multiple ul tags
+    html = html.replace(/<\/ul><ul>/gim, '');
+
+    // Line breaks
+    html = html.replace(/\n/gim, '<br>');
+
+    return <div dangerouslySetInnerHTML={{ __html: html }} />;
+  };
+
   return (
-    <main style={{ padding: 24, fontFamily: "Arial, sans-serif", maxWidth: "1200px", margin: "0 auto" }}>
-      <h1>README Evaluator</h1>
-      <form onSubmit={handleSubmit} style={{ marginBottom: 12 }}>
+    <main style={{ padding: "40px 24px", fontFamily: "'Segoe UI', Roboto, Helvetica, Arial, sans-serif", maxWidth: "1000px", margin: "0 auto", color: "#333", lineHeight: "1.6" }}>
+      <h1 style={{ textAlign: "center", marginBottom: "40px", color: "#2c3e50" }}>README Evaluator</h1>
+      
+      <form onSubmit={handleSubmit} style={{ marginBottom: 32, display: "flex", gap: "12px", justifyContent: "center" }}>
         <input
           type="text"
           placeholder="https://github.com/owner/repo"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          style={{ width: "60%", padding: 8, marginRight: 8 }}
+          style={{ 
+            width: "60%", 
+            padding: "12px 16px", 
+            fontSize: "16px", 
+            border: "1px solid #ddd", 
+            borderRadius: "8px",
+            outline: "none",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
+          }}
         />
-        <button type="submit" disabled={loading} style={{ padding: "8px 12px", cursor: loading ? "not-allowed" : "pointer" }}>
-          {loading ? "Processing..." : "Evaluate README"}
+        <button 
+          type="submit" 
+          disabled={loading} 
+          style={{ 
+            padding: "12px 24px", 
+            fontSize: "16px", 
+            fontWeight: "600",
+            cursor: loading ? "not-allowed" : "pointer",
+            background: loading ? "#b0bec5" : "#1976d2",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+            transition: "background 0.2s"
+          }}
+        >
+          {loading ? "Processing..." : "Evaluate"}
         </button>
       </form>
 
       {error && (
-        <div style={{ color: "#b00020", marginBottom: 12, padding: 12, background: "#ffebee", border: "1px solid #ef5350" }}>
+        <div style={{ color: "#d32f2f", marginBottom: 24, padding: "16px", background: "#ffebee", border: "1px solid #ef5350", borderRadius: "8px" }}>
           <strong>Error:</strong> {error}
         </div>
       )}
 
       {/* Real-time Progress Display */}
       {loading && (
-        <div style={{ marginBottom: 24, padding: 16, background: "#f5f5f5", border: "1px solid #ddd", borderRadius: "4px" }}>
-          <h3 style={{ marginTop: 0, marginBottom: 12 }}>Processing Progress</h3>
+        <div style={{ marginBottom: 40, padding: "24px", background: "#fff", border: "1px solid #e0e0e0", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
+          <h3 style={{ marginTop: 0, marginBottom: 16, fontSize: "18px", color: "#555" }}>Processing Pipeline</h3>
 
           {/* Progress Bar */}
-          <div style={{ marginBottom: 16 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-              <span style={{ fontSize: "14px", fontWeight: "bold" }}>Progress</span>
-              <span style={{ fontSize: "14px" }}>{currentPercentage}%</span>
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
+              <span style={{ fontSize: "14px", fontWeight: "600", color: "#666" }}>Progress</span>
+              <span style={{ fontSize: "14px", fontWeight: "600", color: "#1976d2" }}>{currentPercentage}%</span>
             </div>
-            <div style={{ width: "100%", height: "24px", background: "#e0e0e0", borderRadius: "4px", overflow: "hidden" }}>
+            <div style={{ width: "100%", height: "8px", background: "#f0f0f0", borderRadius: "4px", overflow: "hidden" }}>
               <div
                 style={{
                   width: `${currentPercentage}%`,
                   height: "100%",
-                  background: `linear-gradient(90deg, #1976d2 0%, #2196f3 50%, #03a9f4 100%)`,
+                  background: `linear-gradient(90deg, #1976d2 0%, #42a5f5 100%)`,
                   transition: "width 0.3s ease",
                 }}
               />
@@ -155,186 +216,157 @@ export default function Home() {
           </div>
 
           {/* Stage Timeline */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 8 }}>
+          <div style={{ display: "flex", gap: "12px", overflowX: "auto", paddingBottom: "8px" }}>
             {progress.map((update, idx) => (
               <div
                 key={idx}
                 style={{
-                  padding: 12,
-                  background: "#fff",
-                  border: `2px solid ${getStageColor(update.stage)}`,
+                  minWidth: "140px",
+                  padding: "12px",
+                  background: "#f8f9fa",
+                  borderLeft: `4px solid ${getStageColor(update.stage)}`,
                   borderRadius: "4px",
-                  fontSize: "12px",
+                  fontSize: "13px",
                 }}
               >
-                <div style={{ fontWeight: "bold", color: getStageColor(update.stage), marginBottom: 4 }}>
+                <div style={{ fontWeight: "700", color: getStageColor(update.stage), marginBottom: 4, fontSize: "11px", textTransform: "uppercase" }}>
                   {update.stage}
                 </div>
-                <div style={{ color: "#555", marginBottom: 4 }}>{update.message}</div>
+                <div style={{ color: "#333", marginBottom: 4 }}>{update.message}</div>
                 {update.elapsed_time && (
-                  <div style={{ color: "#999", fontSize: "11px" }}>
+                  <div style={{ color: "#757575", fontSize: "11px" }}>
                     ⏱ {update.elapsed_time.toFixed(2)}s
-                  </div>
-                )}
-                {update.estimated_remaining_time && (
-                  <div style={{ color: "#999", fontSize: "11px" }}>
-                    ⏳ ~{update.estimated_remaining_time.toFixed(1)}s left
                   </div>
                 )}
               </div>
             ))}
           </div>
-
-          {/* Latest Status */}
-          {progress.length > 0 && (
-            <div style={{ marginTop: 12, padding: 8, background: "#fff", borderRadius: "4px", fontSize: "13px", color: "#333" }}>
-              <strong>Latest:</strong> {progress[progress.length - 1].message}
-            </div>
-          )}
         </div>
       )}
 
       {/* Result Display */}
       {result && (
         <section>
-          <h2>Result — {result.filename || "README"}</h2>
-
-          {/* Rendered Evaluation (Main Display) */}
+          {/* 1. Main Report (Rendered) */}
           {renderedText && typeof renderedText === "string" && (
-            <div style={{ marginBottom: 24, padding: 16, background: "#e8f5e9", border: "2px solid #4caf50", borderRadius: "4px" }}>
-              <h3 style={{ marginTop: 0, marginBottom: 12, color: "#2e7d32" }}>📋 Evaluation Summary</h3>
-              <div
-                style={{
-                  whiteSpace: "pre-wrap",
-                  wordWrap: "break-word",
-                  background: "#fff",
-                  padding: 12,
-                  borderRadius: "4px",
-                  fontSize: "14px",
-                  lineHeight: "1.6",
-                  color: "#333",
-                }}
-              >
-                {renderedText}
+            <div style={{ 
+              marginBottom: 40, 
+              padding: "40px", 
+              background: "#fff", 
+              borderRadius: "12px", 
+              boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+              border: "1px solid #eee"
+            }}>
+              <div style={{ 
+                fontSize: "16px", 
+                lineHeight: "1.8", 
+                color: "#2c3e50" 
+              }} className="markdown-body">
+                {renderMarkdown(renderedText)}
               </div>
             </div>
           )}
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
-            {/* Left: Prompt */}
-            <div style={{ border: "1px solid #ddd", padding: 12, background: "#fff", borderRadius: "4px" }}>
-              <h3 style={{ marginTop: 0 }}>Prompt Built</h3>
-              {result.prompt ? (
-                <pre
-                  style={{
-                    whiteSpace: "pre-wrap",
-                    maxHeight: "50vh",
-                    overflow: "auto",
-                    background: "#f5f5f5",
-                    padding: 8,
-                    borderRadius: "4px",
-                    fontSize: "12px",
-                  }}
-                >
-                  {result.prompt}
-                </pre>
-              ) : (
-                <div style={{ color: "#666" }}>No prompt generated</div>
-              )}
-            </div>
-
-            {/* Right: Model Output / Parsed JSON */}
-            <div style={{ border: "1px solid #ddd", padding: 12, background: "#fafafa", borderRadius: "4px" }}>
-              <h3 style={{ marginTop: 0 }}>Extraction Result</h3>
-
-              {result.model_output ? (
-                <>
-                  <h4 style={{ marginBottom: 6, marginTop: 0 }}>Model Response</h4>
+          {/* 2. Debug Details (Collapsible) */}
+          <details style={{ 
+            background: "#f8f9fa", 
+            borderRadius: "8px", 
+            border: "1px solid #e0e0e0",
+            overflow: "hidden"
+          }}>
+            <summary style={{ 
+              padding: "16px 24px", 
+              cursor: "pointer", 
+              fontWeight: "600", 
+              color: "#555",
+              userSelect: "none",
+              outline: "none"
+            }}>
+              Show Debug Details (JSON, Prompt, Timing)
+            </summary>
+            
+            <div style={{ padding: "24px", borderTop: "1px solid #e0e0e0" }}>
+              <h2 style={{ marginTop: 0, fontSize: "18px", marginBottom: 16 }}>Technical Details — {result.filename || "README"}</h2>
+              
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 24 }}>
+                {/* Left: Prompt */}
+                <div style={{ border: "1px solid #ddd", borderRadius: "6px", background: "#fff", overflow: "hidden" }}>
+                  <div style={{ padding: "8px 12px", background: "#f5f5f5", borderBottom: "1px solid #ddd", fontWeight: "600", fontSize: "12px", color: "#666" }}>PROMPT BUILT</div>
                   <pre
                     style={{
+                      margin: 0,
                       whiteSpace: "pre-wrap",
-                      maxHeight: "30vh",
+                      maxHeight: "400px",
                       overflow: "auto",
-                      background: "#fff",
-                      padding: 8,
-                      borderRadius: "4px",
+                      padding: "12px",
                       fontSize: "12px",
+                      fontFamily: "Consolas, monospace",
+                      color: "#444"
                     }}
                   >
-                    {result.model_output}
+                    {result.prompt || "No prompt data available."}
                   </pre>
-                </>
-              ) : (
-                <div style={{ color: "#666" }}>Model failed to produce output (check server logs or API key)</div>
-              )}
-
-              {result.parsed ? (
-                <>
-                  <h4 style={{ marginTop: 12, marginBottom: 6 }}>
-                    Parsed JSON {result.validation_ok === true && "✓"}
-                    {result.validation_ok === false && "✗"}
-                  </h4>
-                  <pre
-                    style={{
-                      whiteSpace: "pre-wrap",
-                      maxHeight: "25vh",
-                      overflow: "auto",
-                      background: "#fff",
-                      padding: 8,
-                      borderRadius: "4px",
-                      fontSize: "12px",
-                    }}
-                  >
-                    {JSON.stringify(result.parsed, null, 2)}
-                  </pre>
-                </>
-              ) : (
-                <div style={{ color: "#666" }}>
-                  No JSON parsed. Check the model output above for errors.
                 </div>
-              )}
 
-              {result.validation_errors && (
-                <div style={{ marginTop: 12, padding: 8, background: "#ffebee", border: "1px solid #ef5350", borderRadius: "4px" }}>
-                  <strong>Validation Error:</strong>
-                  <div style={{ fontSize: "12px", marginTop: 4 }}>{result.validation_errors.message}</div>
-                  {result.validation_errors.path && (
-                    <div style={{ fontSize: "12px", color: "#666" }}>Path: {result.validation_errors.path.join(".")}</div>
-                  )}
-                </div>
-              )}
-
-              {result.recovery_suggestions && result.recovery_suggestions.length > 0 && (
-                <div style={{ marginTop: 12, padding: 8, background: "#fff3e0", border: "1px solid #ffb74d", borderRadius: "4px" }}>
-                  <strong>Suggestions:</strong>
-                  <ul style={{ margin: "4px 0 0 20px", padding: 0 }}>
-                    {result.recovery_suggestions.map((sug, i) => (
-                      <li key={i} style={{ fontSize: "12px", marginBottom: 4 }}>
-                        {sug}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Timing Summary */}
-          {result.timing && Object.keys(result.timing).length > 0 && (
-            <div style={{ marginTop: 12, padding: 12, background: "#e3f2fd", border: "1px solid #90caf9", borderRadius: "4px" }}>
-              <h4 style={{ marginTop: 0 }}>Timing Summary</h4>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
-                {Object.entries(result.timing).map(([key, value]) => (
-                  <div key={key} style={{ padding: 8, background: "#fff", borderRadius: "4px", textAlign: "center" }}>
-                    <div style={{ fontSize: "12px", color: "#666" }}>{key}</div>
-                    <div style={{ fontSize: "14px", fontWeight: "bold", color: "#1976d2" }}>
-                      {typeof value === "number" ? `${value.toFixed(3)}s` : value}
-                    </div>
+                {/* Right: Parsed JSON */}
+                <div style={{ border: "1px solid #ddd", borderRadius: "6px", background: "#fff", overflow: "hidden" }}>
+                  <div style={{ padding: "8px 12px", background: "#f5f5f5", borderBottom: "1px solid #ddd", fontWeight: "600", fontSize: "12px", color: "#666" }}>
+                    PARSED JSON {result.validation_ok ? "✅" : "⚠️"}
                   </div>
-                ))}
+                  <pre
+                    style={{
+                      margin: 0,
+                      whiteSpace: "pre-wrap",
+                      maxHeight: "400px",
+                      overflow: "auto",
+                      padding: "12px",
+                      fontSize: "12px",
+                      fontFamily: "Consolas, monospace",
+                      color: "#2e7d32"
+                    }}
+                  >
+                    {result.parsed ? JSON.stringify(result.parsed, null, 2) : "No JSON parsed."}
+                  </pre>
+                </div>
               </div>
+
+              {/* Model Output (Raw) */}
+              <div style={{ marginBottom: 24, border: "1px solid #ddd", borderRadius: "6px", background: "#fff", overflow: "hidden" }}>
+                 <div style={{ padding: "8px 12px", background: "#f5f5f5", borderBottom: "1px solid #ddd", fontWeight: "600", fontSize: "12px", color: "#666" }}>RAW MODEL OUTPUT</div>
+                 <pre
+                    style={{
+                      margin: 0,
+                      whiteSpace: "pre-wrap",
+                      maxHeight: "200px",
+                      overflow: "auto",
+                      padding: "12px",
+                      fontSize: "12px",
+                      fontFamily: "Consolas, monospace",
+                      color: "#555"
+                    }}
+                  >
+                    {result.model_output || "No raw output available."}
+                  </pre>
+              </div>
+
+              {/* Timing Summary */}
+              {result.timing && Object.keys(result.timing).length > 0 && (
+                <div style={{ padding: "16px", background: "#e3f2fd", border: "1px solid #90caf9", borderRadius: "6px" }}>
+                  <h4 style={{ marginTop: 0, marginBottom: 12, color: "#1565c0" }}>Timing Summary</h4>
+                  <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+                    {Object.entries(result.timing).map(([key, value]) => (
+                      <div key={key} style={{ padding: "8px 16px", background: "#fff", borderRadius: "4px", textAlign: "center", boxShadow: "0 1px 2px rgba(0,0,0,0.1)" }}>
+                        <div style={{ fontSize: "11px", color: "#666", textTransform: "uppercase", marginBottom: 4 }}>{key}</div>
+                        <div style={{ fontSize: "16px", fontWeight: "bold", color: "#1976d2" }}>
+                          {typeof value === "number" ? `${value.toFixed(3)}s` : value}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+          </details>
         </section>
       )}
     </main>

@@ -130,7 +130,7 @@ class PromptBuilder:
             parts.append(text)
             parts.append("")
 
-        if footer:
+        if footer is not None:
             parts.append(footer)
         else:
             parts.append(
@@ -176,4 +176,4 @@ if __name__ == "__main__":
         pb.add_part("example_json", ex_text)
 
     prompt = pb.build()
-    print(prompt[:4000])
+    print(prompt)

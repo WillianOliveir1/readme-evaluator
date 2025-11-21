@@ -82,6 +82,8 @@ class EvaluationResult:
         """Convert to dictionary for JSON serialization."""
         return {
             "success": self.success,
+            "prompt": self.prompt,
+            "model_output": self.model_output,
             "prompt_length": len(self.prompt),
             "model_output_length": len(self.model_output) if self.model_output else 0,
             "parsed": self.parsed,

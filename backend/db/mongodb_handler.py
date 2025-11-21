@@ -38,6 +38,8 @@ from pymongo.errors import (
 from pymongo.collection import Collection
 from bson.objectid import ObjectId
 
+from backend.config import MONGODB_URI, MONGODB_DB_NAME, MONGODB_COLLECTION_NAME
+
 LOG = logging.getLogger(__name__)
 
 
@@ -64,11 +66,9 @@ class MongoDBHandler:
         Raises:
             ValueError: If MongoDB URI is not provided and MONGODB_URI env var is not set.
         """
-        self.uri = uri or os.getenv("MONGODB_URI")
-        self.db_name = db_name or os.getenv("MONGODB_DB", "readme-evaluator")
-        self.collection_name = (
-            collection_name or os.getenv("MONGODB_COLLECTION", "evaluations")
-        )
+        self.uri = uri or MONGODB_URI
+        self.db_name = db_name or MONGODB_DB_NAME
+        self.collection_name = collection_name or MONGODB_COLLECTION_NAME
         self.timeout_seconds = timeout_seconds
 
         self._client: Optional[MongoClient] = None

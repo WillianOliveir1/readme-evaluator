@@ -352,11 +352,25 @@ async def extract_stream_endpoint(req: ExtractRequest):
                 
                 # Extract owner/repo from URL
                 import re
-                match = re.match(r"https?://github\.com/(?P<owner>[^/]+)/(?P<repo>[^/]+)(?:\.git)?(?:/(?:tree|blob)/[^/]+)?", req.repo_url)
+                # Clean URL
+                clean_url = req.repo_url.strip().rstrip("/")
+                # Regex to match owner and repo, handling optional .git and subpaths
+                # Matches:
+                # https://github.com/owner/repo
+                # https://github.com/owner/repo.git
+                # https://github.com/owner/repo/tree/main
+                # https://github.com/owner/repo/blob/main/README.md
+                match = re.match(r"https?://github\.com/(?P<owner>[^/]+)/(?P<repo>[^/]+)", clean_url)
+                
                 if match:
                     owner = match.group("owner")
                     repo = match.group("repo")
+                    # Remove .git if present in repo name
+                    if repo.endswith(".git"):
+                        repo = repo[:-4]
                     logging.info("Extracted owner=%s, repo=%s", owner, repo)
+                else:
+                    logging.warning("Failed to extract owner/repo from URL: %s", req.repo_url)
                 
                 dl = ReadmeDownloader()
                 try:
@@ -368,8 +382,11 @@ async def extract_stream_endpoint(req: ExtractRequest):
                     # Yield download complete progress
                     yield f"data: {_json.dumps({'type': 'progress', 'stage': 'downloading', 'status': 'completed', 'percentage': 20, 'message': 'Download complete'})}\n\n"
                     
-                    # Construct raw GitHub link for the README
-                    if owner and repo:
+                    # Use the actual URL from the downloader if available
+                    if dl.readme_url:
+                        readme_raw_link = dl.readme_url
+                    elif owner and repo:
+                        # Fallback construction
                         readme_raw_link = f"https://raw.githubusercontent.com/{owner}/{repo}/main/{os.path.basename(path)}"
                 except Exception as exc:
                     logging.exception("extract-stream: failed to download: %s", exc)
@@ -403,6 +420,7 @@ async def extract_stream_endpoint(req: ExtractRequest):
             
             # Run extraction with progress callback
             # We use run_in_executor but we don't await it immediately so we can poll the queue
+            logging.info(f"Calling extract_json_from_readme with owner={owner}, repo={repo}, readme_raw_link={readme_raw_link}")
             future = loop.run_in_executor(
                 None,
                 extract_json_from_readme,
@@ -495,11 +513,12 @@ async def extract_stream_endpoint(req: ExtractRequest):
                 logging.exception("Error in save process: %s", db_exc)
                 yield f"data: {_json.dumps({'type': 'database_error', 'error': str(db_exc)})}\n\n"
             
-            yield f"data: {_json.dumps({'type': 'result', 'result': result_dict})}\n\n"
-            
             # Auto-render the evaluation to natural language as final step
             if result_dict.get('validation_ok') and result_dict.get('parsed'):
                 try:
+                    # Yield rendering progress
+                    yield f"data: {_json.dumps({'type': 'progress', 'stage': 'rendering', 'status': 'in_progress', 'percentage': 90, 'message': 'Generating report...'})}\n\n"
+
                     # Use the same style as render-evaluation
                     default_style = (
                         "Create a professional, clear summary of this README evaluation. "
@@ -515,11 +534,14 @@ async def extract_stream_endpoint(req: ExtractRequest):
                         temperature=RENDER_TEMPERATURE,
                     )
                     
-                    # Yield rendered text as final step
+                    # Yield rendered text
                     yield f"data: {_json.dumps({'type': 'rendered', 'rendered': rendered})}\n\n"
                 except Exception as render_exc:
                     logging.exception("Error rendering evaluation in extract-stream")
                     yield f"data: {_json.dumps({'type': 'render_error', 'error': str(render_exc)})}\n\n"
+            
+            # Yield final result LAST so progress hits 100% only when everything is done
+            yield f"data: {_json.dumps({'type': 'result', 'result': result_dict})}\n\n"
             
         except Exception as exc:
             logging.exception("Error in extract-stream")

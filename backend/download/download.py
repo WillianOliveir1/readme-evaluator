@@ -15,6 +15,8 @@ import logging
 
 import requests
 
+from backend.config import GITHUB_TOKEN
+
 
 class ReadmeDownloader:
     """Download README from a GitHub repository.
@@ -28,13 +30,14 @@ class ReadmeDownloader:
     RAW_BASE = "https://raw.githubusercontent.com"
 
     def __init__(self, github_token: Optional[str] = None, session: Optional[requests.Session] = None):
-        self.github_token = github_token or os.environ.get("GITHUB_TOKEN")
+        self.github_token = github_token or GITHUB_TOKEN
         self.session = session or requests.Session()
         if self.github_token:
             self.session.headers.update({"Authorization": f"token {self.github_token}"})
         
         # Automatically create temporary directory for all downloads
         self.temp_dir = tempfile.mkdtemp(prefix="readme_download_")
+        self.readme_url = None  # Store the URL of the downloaded README
         logging.debug("Using temp directory: %s", self.temp_dir)
 
     def _parse_repo(self, url: str) -> Tuple[str, str, Optional[str]]:
@@ -61,7 +64,7 @@ class ReadmeDownloader:
             return data.get("default_branch")
         return None
 
-    def _get_readme_api(self, owner: str, repo: str) -> Optional[Tuple[str, bytes]]:
+    def _get_readme_api(self, owner: str, repo: str) -> Optional[Tuple[str, bytes, str]]:
         url = f"{self.GITHUB_API}/repos/{owner}/{repo}/readme"
         r = self.session.get(url, headers={"Accept": "application/vnd.github.v3+json"})
         if r.status_code == 200:
@@ -69,9 +72,10 @@ class ReadmeDownloader:
             content = data.get("content")
             encoding = data.get("encoding")
             name = data.get("name") or "README"
+            download_url = data.get("download_url")
             if content and encoding == "base64":
                 raw = base64.b64decode(content)
-                return name, raw
+                return name, raw, download_url
         return None
 
     def _get_tree(self, owner: str, repo: str, branch: str) -> Optional[list]:
@@ -106,7 +110,7 @@ class ReadmeDownloader:
         readme_files.sort(key=lambda p: p.count('/'))
         return readme_files[0]
 
-    def _get_content_by_path(self, owner: str, repo: str, path: str, ref: Optional[str]) -> Optional[Tuple[str, bytes]]:
+    def _get_content_by_path(self, owner: str, repo: str, path: str, ref: Optional[str]) -> Optional[Tuple[str, bytes, str]]:
         params = {"ref": ref} if ref else None
         url = f"{self.GITHUB_API}/repos/{owner}/{repo}/contents/{path}"
         r = self.session.get(url, params=params, headers={"Accept": "application/vnd.github.v3+json"})
@@ -115,11 +119,12 @@ class ReadmeDownloader:
             content = data.get("content")
             encoding = data.get("encoding")
             name = data.get("name") or os.path.basename(path)
+            download_url = data.get("download_url")
             if content and encoding == "base64":
-                return name, base64.b64decode(content)
+                return name, base64.b64decode(content), download_url
         return None
 
-    def _try_raw_fallback(self, owner: str, repo: str, branch: Optional[str]) -> Optional[Tuple[str, bytes]]:
+    def _try_raw_fallback(self, owner: str, repo: str, branch: Optional[str]) -> Optional[Tuple[str, bytes, str]]:
         if branch is None:
             branch = "main"
         candidates = [
@@ -135,7 +140,7 @@ class ReadmeDownloader:
             url = f"{self.RAW_BASE}/{owner}/{repo}/{branch}/{name}"
             r = self.session.get(url)
             if r.status_code == 200:
-                return name, r.content
+                return name, r.content, url
         return None
 
     def download(self, repo_url: str, prefer_api: bool = True, branch: Optional[str] = None) -> str:
@@ -185,7 +190,8 @@ class ReadmeDownloader:
                         logging.debug("Found README at: %s", readme_path)
                         res = self._get_content_by_path(owner, repo, readme_path, ref=branch_to_use)
                         if res:
-                            filename, content = res
+                            filename, content, url = res
+                            self.readme_url = url
                             logging.info("README downloaded via tree method: %s", filename)
                     except requests.RequestException as e:
                         logging.warning("Failed to fetch content by path: %s", e)
@@ -199,10 +205,25 @@ class ReadmeDownloader:
                 logging.debug("Trying GitHub API endpoint...")
                 res = self._get_readme_api(owner, repo)
                 if res:
-                    filename, content = res
+                    filename, content, url = res
+                    self.readme_url = url
                     logging.info("README downloaded via API method: %s", filename)
             except requests.RequestException as e:
                 logging.warning("Failed to fetch via API: %s", e)
+                filename = None
+                content = None
+
+        # Fallback to raw content if API methods failed
+        if not content:
+            try:
+                logging.debug("Trying raw content fallback...")
+                res = self._try_raw_fallback(owner, repo, branch_to_use)
+                if res:
+                    filename, content, url = res
+                    self.readme_url = url
+                    logging.info("README downloaded via raw fallback: %s", filename)
+            except requests.RequestException as e:
+                logging.warning("Failed to fetch via raw fallback: %s", e)
                 filename = None
                 content = None
 

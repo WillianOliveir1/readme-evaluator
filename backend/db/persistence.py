@@ -15,6 +15,8 @@ import logging
 import os
 from typing import Any, Dict, Optional, Tuple
 
+from backend.config import MONGODB_URI, MONGODB_DB_NAME, MONGODB_COLLECTION_NAME
+
 LOG = logging.getLogger(__name__)
 
 
@@ -97,21 +99,23 @@ def save_to_mongo(
 
 def save_with_mongo_fallback(
     document: Dict[str, Any], file_path: str, mongo_uri: Optional[str] = None,
-    db_name: str = "readme_evaluator", collection: str = "evaluations"
+    db_name: Optional[str] = None, collection: Optional[str] = None
 ) -> Tuple[Optional[str], str]:
     """Save document to MongoDB first, fallback to file if MongoDB fails.
 
     Args:
         document: Dictionary to save
         file_path: Fallback file path
-        mongo_uri: MongoDB URI (reads from MONGODB_URI env var if not provided)
-        db_name: MongoDB database name
-        collection: MongoDB collection name
+        mongo_uri: MongoDB URI (reads from config if not provided)
+        db_name: MongoDB database name (reads from config if not provided)
+        collection: MongoDB collection name (reads from config if not provided)
 
     Returns:
         Tuple[Optional[str], str]: (mongo_id or None, file_path)
     """
-    mongo_uri = mongo_uri or os.getenv("MONGODB_URI")
+    mongo_uri = mongo_uri or MONGODB_URI
+    db_name = db_name or MONGODB_DB_NAME
+    collection = collection or MONGODB_COLLECTION_NAME
     mongo_id = None
 
     # Try MongoDB first
