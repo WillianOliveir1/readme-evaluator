@@ -5,6 +5,7 @@ import json
 import time
 from typing import Optional, Any, Dict, Callable
 import jsonschema
+import os
 
 from backend import prompt_builder
 from backend.config import DEFAULT_MAX_TOKENS, DEFAULT_TEMPERATURE
@@ -52,6 +53,21 @@ def extract_json_from_readme(
         tracker.start_stage(ProgressStage.BUILDING_PROMPT, "Loading schema and building prompt...")
         build_start = time.time()
         
+        # Load strict evaluation prompt instruction
+        prompts_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "prompts")
+        strict_prompt_path = os.path.join(prompts_dir, "strict_evaluation_prompt.txt")
+        
+        instruction_text = None
+        try:
+            if os.path.exists(strict_prompt_path):
+                with open(strict_prompt_path, "r", encoding="utf-8") as f:
+                    instruction_text = f.read().strip()
+                logging.info(f"Loaded instruction from {strict_prompt_path}")
+            else:
+                logging.warning(f"Strict evaluation prompt not found at {strict_prompt_path}")
+        except Exception as e:
+            logging.warning(f"Failed to load strict evaluation prompt: {e}")
+
         schema_text = prompt_builder.PromptBuilder.load_schema_text(schema_path)
         # Try to parse the schema text into a JSON object for validation later
         schema_obj = None
@@ -99,12 +115,39 @@ def extract_json_from_readme(
                 example_str = str(example_json)
             pb.add_part("example_json", example_str)
 
-        footer = (
-            "IMPORTANT: The model must output a single JSON object, valid according to the schema above. "
-            "No surrounding backticks, no markdown, no commentary."
-        )
+        # Load few-shot examples from data/samples
+        try:
+            project_root = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+            samples_dir = os.path.join(project_root, "data", "samples")
+            
+            if os.path.exists(samples_dir):
+                # Find matching .md and .json files
+                files = os.listdir(samples_dir)
+                md_files = {f[:-3] for f in files if f.endswith('.md')}
+                json_files = {f[:-5] for f in files if f.endswith('.json')}
+                
+                common_bases = md_files.intersection(json_files)
+                
+                for i, base in enumerate(sorted(common_bases)):
+                    md_path = os.path.join(samples_dir, f"{base}.md")
+                    json_path = os.path.join(samples_dir, f"{base}.json")
+                    
+                    try:
+                        with open(md_path, "r", encoding="utf-8") as f:
+                            sample_md = f.read()
+                        with open(json_path, "r", encoding="utf-8") as f:
+                            sample_json = f.read()
+                            
+                        # Add as named parts
+                        pb.add_part(f"example_{i+1}_readme", sample_md)
+                        pb.add_part(f"example_{i+1}_json", sample_json)
+                        logging.info(f"Added few-shot example from {base}")
+                    except Exception as e:
+                        logging.warning(f"Failed to load sample {base}: {e}")
+        except Exception as e:
+            logging.warning(f"Error loading samples: {e}")
 
-        prompt = pb.build(instruction=None, footer=footer)
+        prompt = pb.build(instruction=instruction_text)
         timing["prompt_build"] = time.time() - build_start
         
         # Log prompt info

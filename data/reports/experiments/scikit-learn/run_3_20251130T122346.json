@@ -1,0 +1,639 @@
+{
+  "metadata": {
+    "repository_name": "scikit-learn",
+    "repository_link": "https://github.com/scikit-learn/scikit-learn",
+    "readme_raw_link": "https://raw.githubusercontent.com/scikit-learn/scikit-learn/main/README.rst",
+    "evaluation_date": "2025-11-30",
+    "evaluator": "gemini-2.5-flash",
+    "general_notes": "The README is well-structured and provides comprehensive information on installation, dependencies, development, and support. Key strengths include clear installation instructions, detailed contribution guidelines, and extensive links to documentation and community channels. However, it lacks a minimal working usage example and a dedicated section explaining the project's core benefits or use cases."
+  },
+  "structural_summary": {
+    "detected_sections": [
+      "Installation",
+      "Dependencies",
+      "User installation",
+      "Changelog",
+      "Development",
+      "Important links",
+      "Source code",
+      "Contributing",
+      "Testing",
+      "Submitting a Pull Request",
+      "Project History",
+      "Help and Support",
+      "Documentation",
+      "Communication",
+      "Main Channels",
+      "Developer & Support",
+      "Social Media Platforms",
+      "Resources",
+      "Citation"
+    ],
+    "present_categories": {
+      "what": true,
+      "why": true,
+      "how_installation": true,
+      "how_usage": false,
+      "how_config_requirements": true,
+      "when": true,
+      "who": true,
+      "license": true,
+      "contribution": true,
+      "references": true,
+      "other": false
+    },
+    "organization_notes": "The README is well-organized with clear headings and subheadings. Information is logically grouped, making it easy to navigate. However, the 'What' and 'Why' aspects are somewhat brief and could be more prominent. The absence of a usage example is a notable gap."
+  },
+  "categories": {
+    "what": {
+      "checklist": {
+        "clear_description": true,
+        "features_scope": true,
+        "target_audience": false
+      },
+      "quality": {
+        "clarity": {
+          "note": 4,
+          "evidences": [
+            "L30: **scikit-learn** is a Python module for machine learning built on top of SciPy"
+          ],
+          "justifications": [
+            "Provides a clear, concise definition of the project's core function and its foundation."
+          ]
+        },
+        "understandability": {
+          "note": 4,
+          "evidences": [
+            "L30: **scikit-learn** is a Python module for machine learning built on top of SciPy"
+          ],
+          "justifications": [
+            "The description is straightforward and easy to comprehend for anyone familiar with Python and machine learning concepts."
+          ]
+        },
+        "conciseness": {
+          "note": 5,
+          "evidences": [
+            "L30-L31: **scikit-learn** is a Python module for machine learning built on top of SciPy and is distributed under the 3-Clause BSD license."
+          ],
+          "justifications": [
+            "The 'what' is stated very briefly and directly, without unnecessary elaboration."
+          ]
+        },
+        "consistency": {
+          "note": 5,
+          "evidences": [
+            "L30: **scikit-learn** is a Python module for machine learning"
+          ],
+          "justifications": [
+            "The project's name and core function are consistently referred to throughout the README."
+          ]
+        }
+      },
+      "evidences": [
+        "L30: **scikit-learn** is a Python module for machine learning built on top of SciPy"
+      ],
+      "justifications": [
+        "The README clearly states what scikit-learn is and its general scope (machine learning). However, it does not explicitly define its target audience."
+      ],
+      "suggested_improvements": [
+        "Expand on key features or link to a dedicated features section if available. Consider explicitly stating the target audience."
+      ]
+    },
+    "why": {
+      "checklist": {
+        "explicit_purpose": true,
+        "benefits_vs_alternatives": false,
+        "use_cases": false
+      },
+      "quality": {
+        "clarity": {
+          "note": 3,
+          "evidences": [
+            "L30: **scikit-learn** is a Python module for machine learning"
+          ],
+          "justifications": [
+            "The purpose (machine learning) is clear, but the specific benefits or unique selling points are not elaborated upon."
+          ]
+        },
+        "effectiveness": {
+          "note": 2,
+          "evidences": [
+            "L30: **scikit-learn** is a Python module for machine learning"
+          ],
+          "justifications": [
+            "While the purpose is stated, the README does not effectively convey why a user should choose scikit-learn over other alternatives or what specific problems it solves."
+          ]
+        },
+        "appeal": {
+          "note": 2,
+          "evidences": [
+            "L30: **scikit-learn** is a Python module for machine learning"
+          ],
+          "justifications": [
+            "The README lacks compelling reasons, benefits, or specific use cases that would appeal to potential users and motivate them to adopt the library."
+          ]
+        }
+      },
+      "evidences": [
+        "L30: **scikit-learn** is a Python module for machine learning"
+      ],
+      "justifications": [
+        "The explicit purpose of being a 'Python module for machine learning' is stated. However, the README does not detail specific benefits, compare it to alternatives, or provide concrete use cases."
+      ],
+      "suggested_improvements": [
+        "Add a dedicated 'Why' section explaining the benefits of using scikit-learn, its advantages, and typical use cases or problem domains it addresses."
+      ]
+    },
+    "how_installation": {
+      "checklist": {
+        "reproducible_commands": true,
+        "compatibility_requirements": true,
+        "dependencies": true
+      },
+      "quality": {
+        "structure": {
+          "note": 5,
+          "evidences": [
+            "L36: Installation",
+            "L38: Dependencies",
+            "L49: User installation"
+          ],
+          "justifications": [
+            "The installation section is logically structured with clear subsections for dependencies and user installation methods."
+          ]
+        },
+        "readability": {
+          "note": 5,
+          "evidences": [
+            "L51: pip install -U scikit-learn",
+            "L54: conda install -c conda-forge scikit-learn",
+            "L55: The documentation includes more detailed `installation instructions`."
+          ],
+          "justifications": [
+            "Commands are presented in clear code blocks, and the text is easy to read, with links to more detailed documentation."
+          ]
+        },
+        "clarity": {
+          "note": 5,
+          "evidences": [
+            "L40-L47: Python (>= |PythonMinVersion|), NumPy (>= |NumPyMinVersion|), SciPy (>= |SciPyMinVersion|), joblib (>= |JoblibMinVersion|), threadpoolctl (>= |ThreadpoolctlMinVersion|), Matplotlib (>= |MatplotlibMinVersion|), scikit-image (>= |Scikit-ImageMinVersion|), pandas (>= |PandasMinVersion|), seaborn (>= |SeabornMinVersion|) and Plotly (>= |PlotlyMinVersion|).",
+            "L51: pip install -U scikit-learn",
+            "L54: conda install -c conda-forge scikit-learn"
+          ],
+          "justifications": [
+            "All required and optional dependencies are clearly listed with minimum versions. Installation commands for pip and conda are explicit and unambiguous."
+          ]
+        }
+      },
+      "evidences": [
+        "L40-L47: Python (>= |PythonMinVersion|), NumPy (>= |NumPyMinVersion|), SciPy (>= |SciPyMinVersion|), joblib (>= |JoblibMinVersion|), threadpoolctl (>= |ThreadpoolctlMinVersion|), Matplotlib (>= |MatplotlibMinVersion|), scikit-image (>= |Scikit-ImageMinVersion|), pandas (>= |PandasMinVersion|), seaborn (>= |SeabornMinVersion|) and Plotly (>= |PlotlyMinVersion|).",
+        "L51: pip install -U scikit-learn",
+        "L54: conda install -c conda-forge scikit-learn",
+        "L55: The documentation includes more detailed `installation instructions <https://scikit-learn.org/stable/install.html>`_."
+      ],
+      "justifications": [
+        "The README provides clear, reproducible installation commands for common package managers (pip, conda). It lists all required and optional dependencies with their minimum compatible versions. A link to more detailed installation instructions is also present."
+      ],
+      "suggested_improvements": []
+    },
+    "how_usage": {
+      "checklist": {
+        "minimal_working_example": false,
+        "io_examples": false,
+        "api_commands_context": false
+      },
+      "quality": {
+        "understandability": {
+          "note": 1,
+          "evidences": [
+            "No direct usage examples or code snippets are provided in the README."
+          ],
+          "justifications": [
+            "Without a minimal working example, users cannot immediately understand how to use the library from the README, requiring them to consult external documentation."
+          ]
+        },
+        "code_readability": {
+          "note": 1,
+          "evidences": [
+            "No code snippets demonstrating usage are present in the README."
+          ],
+          "justifications": [
+            "It is impossible to assess code readability as no usage code is provided within the README."
+          ]
+        },
+        "effectiveness": {
+          "note": 1,
+          "evidences": [
+            "No direct usage examples or code snippets are provided in the README."
+          ],
+          "justifications": [
+            "The README is not effective in demonstrating how to use the library, as it completely lacks usage examples, input/output demonstrations, or API command context."
+          ]
+        }
+      },
+      "evidences": [
+        "No direct usage examples or code snippets are provided in the README.",
+        "L84: pytest sklearn (This is a testing command, not a general usage example)."
+      ],
+      "justifications": [
+        "The README completely lacks any minimal working example, input/output examples, or context for API commands. Users must navigate to external documentation to understand basic usage."
+      ],
+      "suggested_improvements": [
+        "Add a 'Quick Start' or 'Usage' section with a minimal, runnable code example demonstrating a common machine learning task (e.g., data loading, model training, prediction)."
+      ]
+    },
+    "how_config_requirements": {
+      "checklist": {
+        "documented_configuration": false,
+        "parameters_options": false,
+        "troubleshooting": false
+      },
+      "quality": {
+        "clarity": {
+          "note": 2,
+          "evidences": [
+            "L40-L47: lists required and optional dependencies with minimum versions."
+          ],
+          "justifications": [
+            "While dependencies are clear, there is no information on configuration options, parameters, or troubleshooting specific to the library's runtime."
+          ]
+        },
+        "structure": {
+          "note": 3,
+          "evidences": [
+            "L38: Dependencies"
+          ],
+          "justifications": [
+            "The 'Dependencies' section is well-structured for listing requirements, but the README does not contain dedicated sections for configuration or troubleshooting."
+          ]
+        },
+        "conciseness": {
+          "note": 4,
+          "evidences": [
+            "L40-L47: lists required and optional dependencies with minimum versions."
+          ],
+          "justifications": [
+            "The information provided (dependencies) is concise, but the overall category is largely unaddressed."
+          ]
+        }
+      },
+      "evidences": [
+        "L40-L47: lists required and optional dependencies with minimum versions."
+      ],
+      "justifications": [
+        "The README clearly lists software dependencies and their minimum versions. However, it does not provide information on configuration options, parameters, or troubleshooting specific to the library's runtime or environment."
+      ],
+      "suggested_improvements": [
+        "If applicable, add a section for common configuration parameters or environment variables. Include a link to a troubleshooting guide if one exists."
+      ]
+    },
+    "when": {
+      "checklist": {
+        "current_status": true,
+        "roadmap": false,
+        "changelog": true
+      },
+      "quality": {
+        "clarity": {
+          "note": 4,
+          "evidences": [
+            "L34: It is currently maintained by a team of volunteers.",
+            "L57: See the `changelog <https://scikit-learn.org/dev/whats_new.html>`__ for a history of notable changes to scikit-learn."
+          ],
+          "justifications": [
+            "The current maintenance status is clear, and a direct link to the changelog is provided. A formal roadmap is not present."
+          ]
+        },
+        "consistency": {
+          "note": 5,
+          "evidences": [
+            "L57: See the `changelog <https://scikit-learn.org/dev/whats_new.html>`__ for a history of notable changes to scikit-learn."
+          ],
+          "justifications": [
+            "The link to the changelog is consistently provided, indicating a transparent approach to version history."
+          ]
+        }
+      },
+      "evidences": [
+        "L34: It is currently maintained by a team of volunteers.",
+        "L57: See the `changelog <https://scikit-learn.org/dev/whats_new.html>`__ for a history of notable changes to scikit-learn."
+      ],
+      "justifications": [
+        "The README indicates the project's active maintenance and provides a clear link to the changelog for historical changes. However, there is no explicit roadmap for future development."
+      ],
+      "suggested_improvements": [
+        "Consider adding a brief statement about the project's current development phase or future directions, or a link to a public roadmap if available."
+      ]
+    },
+    "who": {
+      "checklist": {
+        "authors_maintainers": true,
+        "contact_channels": true,
+        "code_of_conduct": false
+      },
+      "quality": {
+        "clarity": {
+          "note": 5,
+          "evidences": [
+            "L32: The project was started in 2007 by David Cournapeau",
+            "L34: It is currently maintained by a team of volunteers.",
+            "L96: See the `About us <https://scikit-learn.org/dev/about.html#authors>`__ page for a list of core contributors.",
+            "L107-L126: Communication section lists various channels (Website, Blog, Mailing list, GitHub Discussions, Stack Overflow, Discord, Social Media Platforms)."
+          ],
+          "justifications": [
+            "Clearly identifies the founder, current maintainers, and provides links to a list of contributors. Multiple contact channels are listed and well-organized."
+          ]
+        },
+        "consistency": {
+          "note": 5,
+          "evidences": [
+            "L32: The project was started in 2007 by David Cournapeau",
+            "L94: The project was started in 2007 by David Cournapeau",
+            "L107-L126: Communication section lists various channels."
+          ],
+          "justifications": [
+            "Information about the project's origin and maintainers is consistent. The communication channels are clearly defined and consistently presented."
+          ]
+        }
+      },
+      "evidences": [
+        "L32: The project was started in 2007 by David Cournapeau as a Google Summer of Code project, and since then many volunteers have contributed.",
+        "L34: It is currently maintained by a team of volunteers.",
+        "L96: See the `About us <https://scikit-learn.org/dev/about.html#authors>`__ page for a list of core contributors.",
+        "L107-L126: Communication section lists various channels (Website, Blog, Mailing list, GitHub Discussions, Stack Overflow, Discord, Social Media Platforms)."
+      ],
+      "justifications": [
+        "The README clearly identifies the project's founder and states that it is maintained by volunteers, with a link to a list of core contributors. A comprehensive list of contact and communication channels is provided. However, there is no explicit mention or link to a Code of Conduct."
+      ],
+      "suggested_improvements": [
+        "Add a link to the project's Code of Conduct, if one exists, to foster a welcoming and inclusive community."
+      ]
+    },
+    "license": {
+      "checklist": {
+        "license_type": true,
+        "license_link": false
+      },
+      "quality": {
+        "clarity": 4,
+        "consistency": 5
+      },
+      "evidences": [
+        "L31: distributed under the 3-Clause BSD license."
+      ],
+      "justifications": [
+        "The type of license (3-Clause BSD) is explicitly stated. However, a direct link to the license file within the repository is not provided in the README."
+      ],
+      "suggested_improvements": [
+        "Add a direct link to the LICENSE file in the repository for easy access and verification."
+      ]
+    },
+    "contribution": {
+      "checklist": {
+        "contributing_link": true,
+        "contribution_steps": true,
+        "standards": true
+      },
+      "quality": {
+        "structure": {
+          "note": 5,
+          "evidences": [
+            "L61: Development",
+            "L63: The `Development Guide` has detailed information about contributing code, documentation, tests, and more.",
+            "L77: Contributing",
+            "L81: Testing",
+            "L89: Submitting a Pull Request"
+          ],
+          "justifications": [
+            "The contribution information is well-structured with dedicated sections and clear links to comprehensive guides, covering various aspects of contribution."
+          ]
+        },
+        "clarity": {
+          "note": 5,
+          "evidences": [
+            "L63: The `Development Guide <https://scikit-learn.org/stable/developers/index.html>`_ has detailed information about contributing code, documentation, tests, and more.",
+            "L78: To learn more about making a contribution to scikit-learn, please see our `Contributing guide <https://scikit-learn.org/dev/developers/contributing.html>`_.",
+            "L90: Before opening a Pull Request, have a look at the full Contributing page to make sure your code complies with our guidelines: https://scikit-learn.org/stable/developers/index.html"
+          ],
+          "justifications": [
+            "Clear instructions and multiple links to detailed contributing guides are provided, making it easy for potential contributors to understand expectations and processes."
+          ]
+        },
+        "readability": {
+          "note": 5,
+          "evidences": [
+            "L61-L92: Sections like 'Development', 'Contributing', 'Testing', and 'Submitting a Pull Request' are clearly delineated with concise text and links."
+          ],
+          "justifications": [
+            "The text is easy to read, with good use of headings, subheadings, and links to external resources, facilitating a smooth understanding of the contribution process."
+          ]
+        }
+      },
+      "evidences": [
+        "L63: The `Development Guide <https://scikit-learn.org/stable/developers/index.html>`_ has detailed information about contributing code, documentation, tests, and more.",
+        "L78: To learn more about making a contribution to scikit-learn, please see our `Contributing guide <https://scikit-learn.org/dev/developers/contributing.html>`_.",
+        "L81: Testing",
+        "L89: Submitting a Pull Request",
+        "L90: make sure your code complies with our guidelines"
+      ],
+      "justifications": [
+        "The README provides clear links to comprehensive contributing guides, outlines steps for testing and submitting pull requests, and emphasizes compliance with project guidelines and standards."
+      ],
+      "suggested_improvements": []
+    },
+    "references": {
+      "checklist": {
+        "docs_link": true,
+        "relevant_references": true,
+        "faq_support": true
+      },
+      "quality": {
+        "effectiveness": {
+          "note": 5,
+          "evidences": [
+            "L103: HTML documentation (stable release): https://scikit-learn.org",
+            "L105: FAQ: https://scikit-learn.org/stable/faq.html",
+            "L115: GitHub Discussions: https://github.com/scikit-learn/scikit-learn/discussions",
+            "L132: Citation: https://scikit-learn.org/stable/about.html#citing-scikit-learn",
+            "L69-L71: Official source code repo, Download releases, Issue tracker."
+          ],
+          "justifications": [
+            "Provides a comprehensive set of links to official documentation (stable and development), FAQ, citation information, source code repository, release downloads, and various support channels, making it highly effective for users seeking more information."
+          ]
+        },
+        "clarity": {
+          "note": 5,
+          "evidences": [
+            "L103: HTML documentation (stable release): https://scikit-learn.org",
+            "L105: FAQ: https://scikit-learn.org/stable/faq.html",
+            "L132: Citation: https://scikit-learn.org/stable/about.html#citing-scikit-learn"
+          ],
+          "justifications": [
+            "All links are clearly labeled with self-explanatory titles, making it very easy for users to locate the specific resource they need."
+          ]
+        }
+      },
+      "evidences": [
+        "L103: HTML documentation (stable release): https://scikit-learn.org",
+        "L104: HTML documentation (development version): https://scikit-learn.org/dev/",
+        "L105: FAQ: https://scikit-learn.org/stable/faq.html",
+        "L132: Citation: https://scikit-learn.org/stable/about.html#citing-scikit-learn",
+        "L69: Official source code repo: https://github.com/scikit-learn/scikit-learn",
+        "L70: Download releases: https://pypi.org/project/scikit-learn/",
+        "L71: Issue tracker: https://github.com/scikit-learn/scikit-learn/issues"
+      ],
+      "justifications": [
+        "The README provides extensive links to official documentation (stable and development versions), a FAQ section, citation guidelines, the source code repository, release downloads, and the issue tracker, covering a wide range of relevant references and support channels."
+      ],
+      "suggested_improvements": []
+    },
+    "other": {
+      "checklist": {
+        "generic_sections": false,
+        "placeholders": false
+      },
+      "action": {
+        "reclassify": false,
+        "suggest_removal": false
+      },
+      "evidences": [],
+      "suggested_improvements": []
+    }
+  },
+  "dimensions_summary": {
+    "quality": {
+      "note": 4,
+      "evidences": [
+        "L36: Installation",
+        "L61: Development",
+        "L100: Help and Support",
+        "No usage examples in README."
+      ],
+      "justifications": [
+        "The README is of good quality, providing comprehensive information for installation, development, and support. However, the absence of usage examples and a more explicit 'Why' section prevents a higher score."
+      ]
+    },
+    "appeal": {
+      "note": 3,
+      "evidences": [
+        "L30: **scikit-learn** is a Python module for machine learning",
+        "No explicit benefits or use cases."
+      ],
+      "justifications": [
+        "The README appeals to users already familiar with machine learning and Python. However, it could be more engaging for newcomers by explicitly highlighting benefits and compelling use cases."
+      ]
+    },
+    "readability": {
+      "note": 5,
+      "evidences": [
+        "L36: Installation",
+        "L38: Dependencies",
+        "L51: pip install -U scikit-learn"
+      ],
+      "justifications": [
+        "The README is highly readable, utilizing clear headings, subheadings, code blocks, and lists effectively. The language is straightforward and easy to follow."
+      ]
+    },
+    "understandability": {
+      "note": 4,
+      "evidences": [
+        "L30: **scikit-learn** is a Python module for machine learning",
+        "No usage examples in README."
+      ],
+      "justifications": [
+        "Most sections are easy to understand, particularly installation and contribution. The core purpose is clear. However, the lack of usage examples makes immediate practical understanding difficult."
+      ]
+    },
+    "structure": {
+      "note": 5,
+      "evidences": [
+        "L36: Installation",
+        "L57: Changelog",
+        "L61: Development",
+        "L100: Help and Support"
+      ],
+      "justifications": [
+        "The README exhibits excellent structural organization with a logical flow of information, clear headings, and effective use of subsections, making it easy to navigate."
+      ]
+    },
+    "cohesion": {
+      "note": 4,
+      "evidences": [
+        "L30: **scikit-learn** is a Python module for machine learning",
+        "L36: Installation",
+        "L61: Development"
+      ],
+      "justifications": [
+        "The sections generally flow well and are related. However, the 'What' and 'Why' aspects could be more cohesively integrated and expanded upon to provide a stronger initial context."
+      ]
+    },
+    "conciseness": {
+      "note": 5,
+      "evidences": [
+        "L30-L34: Brief introduction to scikit-learn.",
+        "L51-L54: Direct installation commands."
+      ],
+      "justifications": [
+        "The README is concise, presenting information directly and without unnecessary verbosity. It effectively uses links to offload detailed information to external documentation."
+      ]
+    },
+    "effectiveness": {
+      "note": 4,
+      "evidences": [
+        "L36: Installation",
+        "L61: Development",
+        "No usage examples in README."
+      ],
+      "justifications": [
+        "The README is highly effective for installation, development, and finding support. Its effectiveness is slightly reduced by the absence of direct usage examples, which would significantly aid quick onboarding."
+      ]
+    },
+    "consistency": {
+      "note": 5,
+      "evidences": [
+        "Consistent use of headings and subheadings.",
+        "Consistent linking strategy to external documentation."
+      ],
+      "justifications": [
+        "The README maintains high consistency in formatting, terminology, and the presentation of information across all sections, contributing to a professional and reliable feel."
+      ]
+    },
+    "clarity": {
+      "note": 4,
+      "evidences": [
+        "L36: Installation",
+        "L61: Development",
+        "No explicit 'Why' section."
+      ],
+      "justifications": [
+        "Most information is presented clearly, especially installation and contribution details. However, the 'Why' and 'How to Use' sections could benefit from greater clarity and directness."
+      ]
+    },
+    "global_notes": "The README is well-structured and provides comprehensive information on installation, dependencies, development, and support. Key strengths include clear installation instructions, detailed contribution guidelines, and extensive links to documentation and community channels. However, it lacks a minimal working usage example and a dedicated section explaining the project's core benefits or use cases."
+  },
+  "executive_summary": {
+    "strengths": [
+      "Exemplary structure and organization with clear headings and subheadings, making navigation intuitive.",
+      "Comprehensive and clear installation instructions for various methods (pip, conda) with detailed dependency lists and version requirements.",
+      "Extensive documentation and community support links, including stable/development docs, FAQ, mailing lists, GitHub discussions, and social media.",
+      "Detailed and well-structured guidelines for contributing, covering development, testing, and pull request submission.",
+      "Transparent project history and changelog, providing insight into the project's evolution."
+    ],
+    "weaknesses": [
+      "Absence of a minimal working usage example directly in the README, hindering quick onboarding for new users.",
+      "Lack of a dedicated section explicitly outlining the project's core benefits, unique selling points, or compelling use cases ('Why').",
+      "No direct link to the license file within the repository, only the license type is mentioned.",
+      "No explicit mention or link to a Code of Conduct, which is important for fostering an inclusive community."
+    ],
+    "critical_gaps": [
+      "A minimal working example (MWE) for quick understanding of basic library usage directly within the README.",
+      "An explicit 'Why' section to articulate the value proposition and motivate potential users."
+    ],
+    "priority_recommendations": [
+      "Add a 'Quick Start' or 'Usage' section with a simple, runnable code snippet demonstrating core functionality (e.g., data loading, model training, prediction).",
+      "Introduce a concise 'Why scikit-learn?' section highlighting key benefits, advantages over alternatives, and typical applications.",
+      "Include a direct link to the `LICENSE` file in the repository for easy access and verification.",
+      "Add a link to the project's Code of Conduct to promote a welcoming and respectful community environment."
+    ]
+  }
+}

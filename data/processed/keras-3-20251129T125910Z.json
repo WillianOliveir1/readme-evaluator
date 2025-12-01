@@ -1,0 +1,2146 @@
+{
+  "success": true,
+  "prompt": "You are a JSON extraction assistant.\nINSTRUCTIONS:\nSTRICT EVALUATION PROMPT (AUTOMAT, COMPACT ENGLISH, BOOLEAN/0/1/NULL CHECKS)\n\n\nAim: Evaluate the provided README strictly against the defined taxonomy and produce ONLY a valid JSON that conforms exactly to the canonical structure and the strict JSON Schema. Use the README text only. If information is missing, mark checklist items using boolean/0/1/NULL rules. Include short literal evidence snippets when an item is present. No creativity, no explanations, no text outside JSON.\n\n\nUsers: Auditors and automated systems requiring deterministic, schema-valid JSON with traceable evidence.\n\n\nTask: Read the line-numbered README. Fill all required fields of the JSON output exactly per the canonical schema. Checklist fields use boolean/null as follows:\n\n\n * Presence/Yes → true\n * Absence/No → false\n * Not applicable → null\n   Quality scores must be integers 1–5. Evidence strings must be literal substrings cited from the README, preferably with line tags. If a claim cannot be supported by a literal substring, mark the corresponding checklist false (or null if truly not applicable). Return ONLY the final JSON.\n\n\nOutput: A single JSON object that:\n\n\n * Matches the canonical structure (keys, nesting, arrays, objects).\n * Validates against the strict JSON Schema.\n * Uses checklist values strictly as true, false, or null.\n * Uses 1–5 integers for all quality scores.\n * Includes short literal evidence lines where applicable.\n * Contains concise observations based ONLY on the README.\n   Prohibited: any text outside JSON, commentary, or extra fields.\n\n\nMethod: Follow instructions literally; temperature should be “cold”. Use only README content. Prefer conservative judgments: if unsure and no literal evidence, use false or null (not applicable). Do not add fields not defined by the schema. Ensure all required fields exist. Evidence must be short literal excerpts; include “Lxxxx:” when possible.\n\n\nAssessment: The JSON must parse, satisfy all required fields and types, enforce checklist values in {true,false,null}, and quality scores in [1..5]. Evidence must be found as substrings of the README. No content outside JSON.\n\n\nTraceability: Canonical structure (for shape reference) and strict schema (for constraints) are shown below. Follow them exactly. After that, the example README content is provided.\n\n\n----------------------------------------\n\n\nCanonical structure (schemas/taxonomia.json; condensed for shape)\n\n\n{\n  \"metadata\": {\n    \"repository_name\": \"\",\n    \"repository_link\": \"\",\n    \"readme_raw_link\": \"\",\n    \"evaluation_date\": \"\",\n    \"evaluator\": \"\",\n    \"general_notes\": \"\"\n  },\n  \"structural_summary\": {\n    \"detected_sections\": [],\n    \"present_categories\": {\n      \"what\": \"\", \"why\": \"\", \"how_installation\": \"\", \"how_usage\": \"\",\n      \"how_config_requirements\": \"\", \"when\": \"\", \"who\": \"\",\n      \"license\": \"\", \"contribution\": \"\", \"references\": \"\", \"other\": \"\"\n    },\n    \"organization_notes\": \"\"\n  },\n  \"categories\": { /* condensed - follow schema/taxonomia.json exactly */ }\n}\n\n\n----------------------------------------\n\n\nStrict schema (schemas/taxonomia.schema.json; constraints summary)\n\n\n * Top-level required keys: metadata, structural_summary, categories, dimensions_summary, executive_summary\n * All objects: \"additionalProperties\": false\n * Checklists: each key must be one of 0, 1, or NULL\n * Quality fields: integers 1..5\n * Arrays of strings for evidencias/justificativas/melhorias_sugeridas\n * Boolean flags in other.acao\n   Note: You must format checklist fields as numbers or null in the final JSON. Do not use symbols.\n\nschema:\n{\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"required\": [\n    \"metadata\",\n    \"structural_summary\",\n    \"categories\",\n    \"dimensions_summary\",\n    \"executive_summary\"\n  ],\n  \"properties\": {\n    \"metadata\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\n        \"repository_name\",\n        \"repository_link\",\n        \"readme_raw_link\",\n        \"evaluation_date\",\n        \"evaluator\",\n        \"general_notes\"\n      ],\n      \"properties\": {\n        \"repository_name\": {\n          \"type\": \"string\"\n        },\n        \"repository_link\": {\n          \"type\": \"string\"\n        },\n        \"readme_raw_link\": {\n          \"type\": \"string\"\n        },\n        \"evaluation_date\": {\n          \"type\": \"string\"\n        },\n        \"evaluator\": {\n          \"type\": \"string\"\n        },\n        \"general_notes\": {\n          \"type\": \"string\"\n        }\n      }\n    },\n    \"structural_summary\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\n        \"detected_sections\",\n        \"present_categories\",\n        \"organization_notes\"\n      ],\n      \"properties\": {\n        \"detected_sections\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          }\n        },\n        \"present_categories\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"what\",\n            \"why\",\n            \"how_installation\",\n            \"how_usage\",\n            \"how_config_requirements\",\n            \"when\",\n            \"who\",\n            \"license\",\n            \"contribution\",\n            \"references\",\n            \"other\"\n          ],\n          \"properties\": {\n            \"what\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"why\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"how_installation\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"how_usage\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"how_config_requirements\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"when\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"who\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"license\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"contribution\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"references\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"other\": {\n              \"type\": [\"boolean\", \"null\"]\n            }\n          }\n        },\n        \"organization_notes\": {\n          \"type\": \"string\"\n        }\n      }\n    },\n    \"categories\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\n        \"what\",\n        \"why\",\n        \"how_installation\",\n        \"how_usage\",\n        \"how_config_requirements\",\n        \"when\",\n        \"who\",\n        \"license\",\n        \"contribution\",\n        \"references\",\n        \"other\"\n      ],\n      \"properties\": {\n        \"what\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"clear_description\",\n                \"features_scope\",\n                \"target_audience\"\n              ],\n              \"properties\": {\n                \"clear_description\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"features_scope\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"target_audience\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"clarity\",\n                \"understandability\",\n                \"conciseness\",\n                \"consistency\"\n              ],\n              \"properties\": {\n                \"clarity\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"understandability\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"conciseness\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"consistency\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"why\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"explicit_purpose\",\n                \"benefits_vs_alternatives\",\n                \"use_cases\"\n              ],\n              \"properties\": {\n                \"explicit_purpose\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"benefits_vs_alternatives\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"use_cases\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"clarity\",\n                \"effectiveness\",\n                \"appeal\"\n              ],\n              \"properties\": {\n                \"clarity\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"effectiveness\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"appeal\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"how_installation\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"reproducible_commands\",\n                \"compatibility_requirements\",\n                \"dependencies\"\n              ],\n              \"properties\": {\n                \"reproducible_commands\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"compatibility_requirements\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"dependencies\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"structure\",\n                \"readability\",\n                \"clarity\"\n              ],\n              \"properties\": {\n                \"structure\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"readability\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"clarity\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"how_usage\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"minimal_working_example\",\n                \"io_examples\",\n                \"api_commands_context\"\n              ],\n              \"properties\": {\n                \"minimal_working_example\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"io_examples\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"api_commands_context\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"understandability\",\n                \"code_readability\",\n                \"effectiveness\"\n              ],\n              \"properties\": {\n                \"understandability\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"code_readability\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"effectiveness\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"how_config_requirements\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"documented_configuration\",\n                \"parameters_options\",\n                \"troubleshooting\"\n              ],\n              \"properties\": {\n                \"documented_configuration\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"parameters_options\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"troubleshooting\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"clarity\",\n                \"structure\",\n                \"conciseness\"\n              ],\n              \"properties\": {\n                \"clarity\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"structure\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"conciseness\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"when\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"current_status\",\n                \"roadmap\",\n                \"changelog\"\n              ],\n              \"properties\": {\n                \"current_status\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"roadmap\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"changelog\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"clarity\",\n                \"consistency\"\n              ],\n              \"properties\": {\n                \"clarity\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"consistency\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"who\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"authors_maintainers\",\n                \"contact_channels\",\n                \"code_of_conduct\"\n              ],\n              \"properties\": {\n                \"authors_maintainers\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"contact_channels\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"code_of_conduct\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"clarity\",\n                \"consistency\"\n              ],\n              \"properties\": {\n                \"clarity\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"consistency\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"license\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"license_type\",\n                \"license_link\"\n              ],\n              \"properties\": {\n                \"license_type\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"license_link\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"clarity\",\n                \"consistency\"\n              ],\n              \"properties\": {\n                \"clarity\": {\n                  \"type\": \"integer\",\n                  \"minimum\": 1,\n                  \"maximum\": 5\n                },\n                \"consistency\": {\n                  \"type\": \"integer\",\n                  \"minimum\": 1,\n                  \"maximum\": 5\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"contribution\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"contributing_link\",\n                \"contribution_steps\",\n                \"standards\"\n              ],\n              \"properties\": {\n                \"contributing_link\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"contribution_steps\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"standards\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"structure\",\n                \"clarity\",\n                \"readability\"\n              ],\n              \"properties\": {\n                \"structure\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"clarity\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"readability\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"references\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"docs_link\",\n                \"relevant_references\",\n                \"faq_support\"\n              ],\n              \"properties\": {\n                \"docs_link\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"relevant_references\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"faq_support\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"effectiveness\",\n                \"clarity\"\n              ],\n              \"properties\": {\n                \"effectiveness\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"clarity\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"other\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"action\",\n            \"evidences\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"generic_sections\",\n                \"placeholders\"\n              ],\n              \"properties\": {\n                \"generic_sections\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"placeholders\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"action\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"reclassify\",\n                \"suggest_removal\"\n              ],\n              \"properties\": {\n                \"reclassify\": {\n                  \"type\": \"boolean\"\n                },\n                \"suggest_removal\": {\n                  \"type\": \"boolean\"\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        }\n      }\n    },\n    \"dimensions_summary\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\n        \"quality\",\n        \"appeal\",\n        \"readability\",\n        \"understandability\",\n        \"structure\",\n        \"cohesion\",\n        \"conciseness\",\n        \"effectiveness\",\n        \"consistency\",\n        \"clarity\",\n        \"global_notes\"\n      ],\n      \"properties\": {\n        \"quality\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"appeal\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"readability\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"understandability\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"structure\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"cohesion\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"conciseness\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"effectiveness\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"consistency\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"clarity\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"global_notes\": {\n          \"type\": \"string\"\n        }\n      }\n    },\n    \"executive_summary\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\n        \"strengths\",\n        \"weaknesses\",\n        \"critical_gaps\",\n        \"priority_recommendations\"\n      ],\n      \"properties\": {\n        \"strengths\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          }\n        },\n        \"weaknesses\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          }\n        },\n        \"critical_gaps\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          }\n        },\n        \"priority_recommendations\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}\n\nreadme:\n# Keras 3: Deep Learning for Humans\n\nKeras 3 is a multi-backend deep learning framework, with support for JAX, TensorFlow, PyTorch, and OpenVINO (for inference-only).\nEffortlessly build and train models for computer vision, natural language processing, audio processing,\ntimeseries forecasting, recommender systems, etc.\n\n- **Accelerated model development**: Ship deep learning solutions faster thanks to the high-level UX of Keras\nand the availability of easy-to-debug runtimes like PyTorch or JAX eager execution.\n- **State-of-the-art performance**: By picking the backend that is the fastest for your model architecture (often JAX!),\nleverage speedups ranging from 20% to 350% compared to other frameworks. [Benchmark here](https://keras.io/getting_started/benchmarks/).\n- **Datacenter-scale training**: Scale confidently from your laptop to large clusters of GPUs or TPUs.\n\nJoin nearly three million developers, from burgeoning startups to global enterprises, in harnessing the power of Keras 3.\n\n\n## Installation\n\n### Install with pip\n\nKeras 3 is available on PyPI as `keras`. Note that Keras 2 remains available as the `tf-keras` package.\n\n1. Install `keras`:\n\n```\npip install keras --upgrade\n```\n\n2. Install backend package(s).\n\nTo use `keras`, you should also install the backend of choice: `tensorflow`, `jax`, or `torch`. Additionally,\nThe `openvino` backend is available with support for model inference only.\n\n### Local installation\n\n#### Minimal installation\n\nKeras 3 is compatible with Linux and macOS systems. For Windows users, we recommend using WSL2 to run Keras.\nTo install a local development version:\n\n1. Install dependencies:\n\n```\npip install -r requirements.txt\n```\n\n2. Run installation command from the root directory.\n\n```\npython pip_build.py --install\n```\n\n3. Run API generation script when creating PRs that update `keras_export` public APIs:\n\n```\n./shell/api_gen.sh\n```\n\n## Backend Compatibility Table\n\nThe following table lists the minimum supported versions of each backend for the latest stable release of Keras (v3.x):\n\n| Backend    | Minimum Supported Version |\n|------------|---------------------------|\n| TensorFlow | 2.16.1                    |\n| JAX        | 0.4.20                    |\n| PyTorch    | 2.1.0                     |\n| OpenVINO   | 2025.3.0                  |\n\n#### Adding GPU support\n\nThe `requirements.txt` file will install a CPU-only version of TensorFlow, JAX, and PyTorch. For GPU support, we also\nprovide a separate `requirements-{backend}-cuda.txt` for TensorFlow, JAX, and PyTorch. These install all CUDA\ndependencies via `pip` and expect a NVIDIA driver to be pre-installed. We recommend a clean Python environment for each\nbackend to avoid CUDA version mismatches. As an example, here is how to create a JAX GPU environment with `conda`:\n\n```shell\nconda create -y -n keras-jax python=3.10\nconda activate keras-jax\npip install -r requirements-jax-cuda.txt\npython pip_build.py --install\n```\n\n## Configuring your backend\n\nYou can export the environment variable `KERAS_BACKEND` or you can edit your local config file at `~/.keras/keras.json`\nto configure your backend. Available backend options are: `\"tensorflow\"`, `\"jax\"`, `\"torch\"`, `\"openvino\"`. Example:\n\n```\nexport KERAS_BACKEND=\"jax\"\n```\n\nIn Colab, you can do:\n\n```python\nimport os\nos.environ[\"KERAS_BACKEND\"] = \"jax\"\n\nimport keras\n```\n\n**Note:** The backend must be configured before importing `keras`, and the backend cannot be changed after\nthe package has been imported.\n\n**Note:** The OpenVINO backend is an inference-only backend, meaning it is designed only for running model\npredictions using `model.predict()` method.\n\n## Backwards compatibility\n\nKeras 3 is intended to work as a drop-in replacement for `tf.keras` (when using the TensorFlow backend). Just take your\nexisting `tf.keras` code, make sure that your calls to `model.save()` are using the up-to-date `.keras` format, and you're\ndone.\n\nIf your `tf.keras` model does not include custom components, you can start running it on top of JAX or PyTorch immediately.\n\nIf it does include custom components (e.g. custom layers or a custom `train_step()`), it is usually possible to convert it\nto a backend-agnostic implementation in just a few minutes.\n\nIn addition, Keras models can consume datasets in any format, regardless of the backend you're using:\nyou can train your models with your existing `tf.data.Dataset` pipelines or PyTorch `DataLoaders`.\n\n## Why use Keras 3?\n\n- Run your high-level Keras workflows on top of any framework -- benefiting at will from the advantages of each framework,\ne.g. the scalability and performance of JAX or the production ecosystem options of TensorFlow.\n- Write custom components (e.g. layers, models, metrics) that you can use in low-level workflows in any framework.\n    - You can take a Keras model and train it in a training loop written from scratch in native TF, JAX, or PyTorch.\n    - You can take a Keras model and use it as part of a PyTorch-native `Module` or as part of a JAX-native model function.\n- Make your ML code future-proof by avoiding framework lock-in.\n- As a PyTorch user: get access to power and usability of Keras, at last!\n- As a JAX user: get access to a fully-featured, battle-tested, well-documented modeling and training library.\n\n\nRead more in the [Keras 3 release announcement](https://keras.io/keras_3/).\n\n\nexample_1_readme:\n````markdown\n<picture align=\"center\">\n  <source media=\"(prefers-color-scheme: dark)\" srcset=\"https://pandas.pydata.org/static/img/pandas_white.svg\">\n  <img alt=\"Pandas Logo\" src=\"https://pandas.pydata.org/static/img/pandas.svg\">\n</picture>\n\n-----------------\n\n# pandas: A Powerful Python Data Analysis Toolkit\n\n| | |\n| --- | --- |\n| Testing | [![CI - Test](https://github.com/pandas-dev/pandas/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/pandas-dev/pandas/actions/workflows/unit-tests.yml) [![Coverage](https://codecov.io/github/pandas-dev/pandas/coverage.svg?branch=main)](https://codecov.io/gh/pandas-dev/pandas) |\n| Package | [![PyPI Latest Release](https://img.shields.io/pypi/v/pandas.svg)](https://pypi.org/project/pandas/) [![PyPI Downloads](https://img.shields.io/pypi/dm/pandas.svg?label=PyPI%20downloads)](https://pypi.org/project/pandas/) [![Conda Latest Release](https://anaconda.org/conda-forge/pandas/badges/version.svg)](https://anaconda.org/conda-forge/pandas) [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/pandas.svg?label=Conda%20downloads)](https://anaconda.org/conda-forge/pandas) |\n| Meta | [![Powered by NumFOCUS](https://img.shields.io/badge/powered%20by-NumFOCUS-orange.svg?style=flat&colorA=E1523D&colorB=007D8A)](https://numfocus.org) [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3509134.svg)](https://doi.org/10.5281/zenodo.3509134) [![License - BSD 3-Clause](https://img.shields.io/pypi/l/pandas.svg)](https://github.com/pandas-dev/pandas/blob/main/LICENSE) [![Slack](https://img.shields.io/badge/join_Slack-information-brightgreen.svg?logo=slack)](https://pandas.pydata.org/docs/dev/development/community.html?highlight=slack#community-slack) [![LFX Health Score](https://insights.linuxfoundation.org/api/badge/health-score?project=pandas-dev-pandas)](https://insights.linuxfoundation.org/project/pandas-dev-pandas) |\n\n\n## What is it?\n\n**pandas** is a Python package that provides fast, flexible, and expressive data\nstructures designed to make working with \"relational\" or \"labeled\" data both\neasy and intuitive. It aims to be the fundamental high-level building block for\ndoing practical, **real-world** data analysis in Python. Additionally, it has\nthe broader goal of becoming **the most powerful and flexible open-source data\nanalysis/manipulation tool available in any language**. It is already well on\nits way towards this goal.\n\n## Table of Contents\n\n- [Main Features](#main-features)\n- [Where to get it](#where-to-get-it)\n- [Dependencies](#dependencies)\n- [Installation from sources](#installation-from-sources)\n- [License](#license)\n- [Documentation](#documentation)\n- [Background](#background)\n- [Getting Help](#getting-help)\n- [Discussion and Development](#discussion-and-development)\n- [Contributing to pandas](#contributing-to-pandas)\n\n## Main Features\nHere are just a few of the things that pandas does well:\n\n  - Easy handling of [**missing data**][missing-data] (represented as\n    `NaN`, `NA`, or `NaT`) in floating point as well as non-floating point data\n  - Size mutability: columns can be [**inserted and\n    deleted**][insertion-deletion] from DataFrame and higher dimensional\n    objects\n  - Automatic and explicit [**data alignment**][alignment]: objects can\n    be explicitly aligned to a set of labels, or the user can simply\n    ignore the labels and let `Series`, `DataFrame`, etc. automatically\n    align the data for you in computations\n  - Powerful, flexible [**group by**][groupby] functionality to perform\n    split-apply-combine operations on data sets, for both aggregating\n    and transforming data\n  - Make it [**easy to convert**][conversion] ragged,\n    differently-indexed data in other Python and NumPy data structures\n    into DataFrame objects\n  - Intelligent label-based [**slicing**][slicing], [**fancy\n    indexing**][fancy-indexing], and [**subsetting**][subsetting] of\n    large data sets\n  - Intuitive [**merging**][merging] and [**joining**][joining] data\n    sets\n  - Flexible [**reshaping**][reshape] and [**pivoting**][pivot-table] of\n    data sets\n  - [**Hierarchical**][mi] labeling of axes (possible to have multiple\n    labels per tick)\n  - Robust I/O tools for loading data from [**flat files**][flat-files]\n    (CSV and delimited), [**Excel files**][excel], [**databases**][db],\n    and saving/loading data from the ultrafast [**HDF5 format**][hdfstore]\n  - [**Time series**][timeseries]-specific functionality: date range\n    generation and frequency conversion, moving window statistics,\n    date shifting and lagging\n\n\n   [missing-data]: https://pandas.pydata.org/pandas-docs/stable/user_guide/missing_data.html\n   [insertion-deletion]: https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html#column-selection-addition-deletion\n   [alignment]: https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html?highlight=alignment#intro-to-data-structures\n   [groupby]: https://pandas.pydata.org/pandas-docs/stable/user_guide/groupby.html#group-by-split-apply-combine\n   [conversion]: https://pandas.pydata.org/pandas-docs/stable/user_guide/dsintro.html#dataframe\n   [slicing]: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#slicing-ranges\n   [fancy-indexing]: https://pandas.pydata.org/pandas-docs/stable/user_guide/advanced.html#advanced\n   [subsetting]: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#boolean-indexing\n   [merging]: https://pandas.pydata.org/pandas-docs/stable/user_guide/merging.html#database-style-dataframe-or-named-series-joining-merging\n   [joining]: https://pandas.pydata.org/pandas-docs/stable/user_guide/merging.html#joining-on-index\n   [reshape]: https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html\n   [pivot-table]: https://pandas.pydata.org/pandas-docs/stable/user_guide/reshaping.html\n   [mi]: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#hierarchical-indexing-multiindex\n   [flat-files]: https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html#csv-text-files\n   [excel]: https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html#excel-files\n   [db]: https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html#sql-queries\n   [hdfstore]: https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html#hdf5-pytables\n   [timeseries]: https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#time-series-date-functionality\n\n## Where to get it\nThe source code is currently hosted on GitHub at:\nhttps://github.com/pandas-dev/pandas\n\nBinary installers for the latest released version are available at the [Python\nPackage Index (PyPI)](https://pypi.org/project/pandas) and on [Conda](https://anaconda.org/conda-forge/pandas).\n\n```sh\n# conda\nconda install -c conda-forge pandas\n```\n\n```sh\n# or PyPI\npip install pandas\n```\n\nThe list of changes to pandas between each release can be found\n[here](https://pandas.pydata.org/pandas-docs/stable/whatsnew/index.html). For full\ndetails, see the commit logs at https://github.com/pandas-dev/pandas.\n\n## Dependencies\n- [NumPy - Adds support for large, multi-dimensional arrays, matrices and high-level mathematical functions to operate on these arrays](https://www.numpy.org)\n- [python-dateutil - Provides powerful extensions to the standard datetime module](https://dateutil.readthedocs.io/en/stable/index.html)\n- [tzdata - Provides an IANA time zone database](https://tzdata.readthedocs.io/en/latest/)\n\nSee the [full installation instructions](https://pandas.pydata.org/pandas-docs/stable/install.html#dependencies) for minimum supported versions of required, recommended and optional dependencies.\n\n## Installation from sources\nTo install pandas from source you need [Cython](https://cython.org/) in addition to the normal\ndependencies above. Cython can be installed from PyPI:\n\n```sh\npip install cython\n```\n\nIn the `pandas` directory (same one where you found this file after\ncloning the git repo), execute:\n\n```sh\npip install .\n```\n\nor for installing in [development mode](https://pip.pypa.io/en/latest/cli/pip_install/#install-editable):\n\n\n```sh\npython -m pip install -ve . --no-build-isolation --config-settings editable-verbose=true\n```\n\nSee the full instructions for [installing from source](https://pandas.pydata.org/docs/dev/development/contributing_environment.html).\n\n## License\n[BSD 3](LICENSE)\n\n## Documentation\nThe official documentation is hosted on [PyData.org](https://pandas.pydata.org/pandas-docs/stable/).\n\n## Background\nWork on ``pandas`` started at [AQR](https://www.aqr.com/) (a quantitative hedge fund) in 2008 and\nhas been under active development since then.\n\n## Getting Help\n\nFor usage questions, the best place to go to is [Stack Overflow](https://stackoverflow.com/questions/tagged/pandas).\nFurther, general questions and discussions can also take place on the [pydata mailing list](https://groups.google.com/forum/?fromgroups#!forum/pydata).\n\n## Discussion and Development\nMost development discussions take place on GitHub in this repo, via the [GitHub issue tracker](https://github.com/pandas-dev/pandas/issues).\n\nFurther, the [pandas-dev mailing list](https://mail.python.org/mailman/listinfo/pandas-dev) can also be used for specialized discussions or design issues, and a [Slack channel](https://pandas.pydata.org/docs/dev/development/community.html?highlight=slack#community-slack) is available for quick development related questions.\n\nThere are also frequent [community meetings](https://pandas.pydata.org/docs/dev/development/community.html#community-meeting) for project maintainers open to the community as well as monthly [new contributor meetings](https://pandas.pydata.org/docs/dev/development/community.html#new-contributor-meeting) to help support new contributors.\n\nAdditional information on the communication channels can be found on the [contributor community](https://pandas.pydata.org/pandas-docs/stable/development/community.html) page.\n\n## Contributing to pandas\n\n[![Open Source Helpers](https://www.codetriage.com/pandas-dev/pandas/badges/users.svg)](https://www.codetriage.com/pandas-dev/pandas/badges/users.svg)\n\nAll contributions, bug reports, bug fixes, documentation improvements, enhancements, and ideas are welcome.\n\nA detailed overview on how to contribute can be found in the **[contributing guide](https://pandas.pydata.org/docs/dev/development/contributing.html)**.\n\nIf you are simply looking to start working with the pandas codebase, navigate to the [GitHub \"issues\" tab](https://github.com/pandas-dev/pandas/issues) and start looking through interesting issues. There are a number of issues listed under [Docs](https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#slicing-ranges) and [good first issue](https://github.com/pandas-dev/pandas/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22%20sort%3Aupdated-desc) where you could start out.\n\n## (rest of file omitted for brevity)\n\n````\n\n\nexample_1_json:\n{\n  \"metadata\": {\n    \"repository_name\": \"pandas\",\n    \"repository_url\": \"https://github.com/pandas-dev/pandas\",\n    \"readme_raw_url\": \"https://github.com/pandas-dev/pandas/blob/main/README.md\",\n    \"evaluation_date\": \"2025-10-28\",\n    \"evaluator\": \"Willian de Jesus Oliveira\",\n    \"general_notes\": \"Comprehensive and mature README: clear What, rich Main Features, installation via conda/pip and from source, dependencies, license, docs, background, help, discussion/development, contributing, and community. Includes badges, TOC, and 'Go to Top'.\"\n  },\n  \"structural_summary\": {\n    \"detected_sections\": [\n      \"pandas: A Powerful Python Data Analysis Toolkit\",\n      \"What is it?\",\n      \"Table of Contents\",\n      \"Main Features\",\n      \"Where to get it\",\n      \"Dependencies\",\n      \"Installation from sources\",\n      \"License\",\n      \"Documentation\",\n      \"Background\",\n      \"Getting Help\",\n      \"Discussion and Development\",\n      \"Contributing to pandas\"\n    ],\n    \"present_categories\": {\n      \"what\": true,\n      \"why\": true,\n      \"how_installation\": true,\n      \"how_usage\": false,\n      \"how_config_requirements\": true,\n      \"when\": true,\n      \"who\": true,\n      \"license\": true,\n      \"contribution\": true,\n      \"references\": true,\n      \"other\": false\n    },\n    \"organization_notes\": \"Solid structure with TOC; excellent coverage of essential topics. Gap: no minimal runnable example in README; Why is distributed across sections.\"\n  },\n  \"categories\": {\n    \"what\": {\n      \"checklist\": {\n        \"clear_description\": 1,\n        \"scope_features\": 1,\n        \"target_audience\": 1\n      },\n      \"quality\": {\n        \"clarity\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"Pandas is a Python package that provides fast, flexible, and expressive data structures...\"\n          ],\n          \"justifications\": [\n            \"direct and unambiguous definition of what it is.\"\n          ]\n        },\n        \"understandability\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"\\\"relational\\\" or \\\"labeled\\\" data; \\\"real-world data analysis in Python\\\".\"\n          ],\n          \"justifications\": [\n            \"purpose/component is immediately comprehensible.\"\n          ]\n        },\n        \"conciseness\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"short and direct paragraphs.\"\n          ],\n          \"justifications\": [\n            \"covers essentials without redundancy.\"\n          ]\n        },\n        \"consistency\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"stable terminology (\\\"DataFrame\\\", \\\"Series\\\", \\\"data analysis\\\").\"\n          ],\n          \"justifications\": [\n            \"stable terminology and professional standard.\"\n          ]\n        }\n      },\n      \"evidence\": [\n        \"pandas is a Python package that provides fast, flexible, and expressive data structures...\",\n        \"aims to be the fundamental high-level building block...\"\n      ],\n      \"justifications\": [\n        \"Clear definition and goals in concise paragraphs.\",\n        \"Terminology is consistent.\"\n      ],\n      \"suggested_improvements\": []\n    },\n    \"why\": {\n      \"checklist\": {\n        \"explicit_purpose\": 1,\n        \"benefits_vs_alternatives\": 1,\n        \"use_cases\": 1\n      },\n      \"quality\": {\n        \"clarity\": {\n          \"note\": 4,\n          \"evidences\": [\n            \"aims to be the fundamental high-level building block… the most powerful and flexible…\"\n          ],\n          \"justifications\": [\n            \"benefits are clear but scattered; no dedicated \\\"Why\\\" section.\"\n          ]\n        },\n        \"effectiveness\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"Main Features lists robust capabilities (I/O, groupby, time series, merging, reshape…)\"\n          ],\n          \"justifications\": [\n            \"concrete technical benefits with links to docs.\"\n          ]\n        },\n        \"appeal\": {\n          \"note\": 4,\n          \"evidences\": [\n            \"strong institutional narrative; lacks storytelling/real cases.\"\n          ],\n          \"justifications\": [\n            \"good engagement, could be more \\\"motivational\\\".\"\n          ]\n        }\n      },\n      \"evidence\": [\n        \"the most powerful and flexible open-source data analysis/manipulation tool...\",\n        \"Main Features list robust capabilities (I/O, groupby, time series, merging, reshape)\"\n      ],\n      \"justifications\": [\n        \"Benefits are clear though distributed across sections.\",\n        \"Feature list shows practical value.\"\n      ],\n      \"suggested_improvements\": [\n        \"Add a short dedicated 'Why' section with key benefits.\"\n      ]\n    },\n    \"how_installation\": {\n      \"checklist\": {\n        \"reproducible_commands\": 1,\n        \"requirements_compatibility\": 1,\n        \"dependencies\": 1\n      },\n      \"quality\": {\n        \"structure\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"Where to get it with conda/pip, then Dependencies; Installation from sources.\"\n          ],\n          \"justifications\": [\n            \"logical progression from simple to advanced with well-organized subtitles.\"\n          ]\n        },\n        \"readability\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"code blocks for conda/pip; links to PyPI/Conda.\"\n          ],\n          \"justifications\": [\n            \"format facilitates scannability and faithful command execution.\"\n          ]\n        },\n        \"clarity\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"explicit commands; links to complete instructions.\"\n          ],\n          \"justifications\": [\n            \"unambiguous for different installation methods.\"\n          ]\n        }\n      },\n      \"evidence\": [\n        \"conda install -c conda-forge pandas\",\n        \"pip install pandas\",\n        \"Dependencies: NumPy, python-dateutil, tzdata\",\n        \"Installation from sources: pip install cython; pip install .\"\n      ],\n      \"justifications\": [\n        \"Clear commands, dependencies, and source build steps.\"\n      ],\n      \"suggested_improvements\": []\n    },\n    \"how_usage\": {\n      \"checklist\": {\n        \"mwe\": 0,\n        \"examples_io\": 0,\n        \"commands_api_context\": 0\n      },\n      \"quality\": {\n        \"understandability\": {\n          \"note\": 2,\n          \"evidences\": [\n            \"no usage snippet in README.\"\n          ],\n          \"justifications\": [\n            \"without an MWE, reader must leave README to understand basic usage flow.\"\n          ]\n        },\n        \"code_readability\": {\n          \"note\": 1,\n          \"evidences\": [\n            \"no usage example blocks.\"\n          ],\n          \"justifications\": [\n            \"impossible to assess code readability if no usage code is present.\"\n          ]\n        },\n        \"effectiveness\": {\n          \"note\": 2,\n          \"evidences\": [\n            \"reference to docs, but does not demonstrate direct use here.\"\n          ],\n          \"justifications\": [\n            \"reference to docs, but lacks direct usage demonstration here.\"\n          ]\n        }\n      },\n      \"evidence\": [\n        \"No usage snippet is included in the README; documentation link is provided.\"\n      ],\n      \"justifications\": [\n        \"Lack of a minimal example reduces immediate practical comprehension.\"\n      ],\n      \"suggested_improvements\": [\n        \"Add a minimal working example (read CSV → DataFrame → basic ops → output).\"\n      ]\n    },\n    \"how_config_requirements\": {\n      \"checklist\": {\n        \"documented_configuration\": 1,\n        \"parameters_options\": 1,\n        \"troubleshooting\": 1\n      },\n      \"quality\": {\n        \"clarity\": {\n          \"note\": 4,\n          \"evidences\": [\n            \"dependencies listed with links; full installation instructions for minimum/optional versions.\"\n          ],\n          \"justifications\": [\n            \"clear, but delegates details to docs (appropriate).\"\n          ]\n        },\n        \"structure\": {\n          \"note\": 4,\n          \"evidences\": [\n            \"dependencies and source installation section.\"\n          ],\n          \"justifications\": [\n            \"well organizes requirements and local build.\"\n          ]\n        },\n        \"conciseness\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"direct instructions, link with details.\"\n          ],\n          \"justifications\": [\n            \"lean and sufficient text.\"\n          ]\n        }\n      },\n      \"evidence\": [\n        \"Dependencies listed with link to full installation instructions.\",\n        \"Source install steps are documented.\"\n      ],\n      \"justifications\": [\n        \"Most details are delegated to external docs; concise and adequate.\"\n      ],\n      \"suggested_improvements\": []\n    },\n    \"when\": {\n      \"checklist\": {\n        \"current_status\": 1,\n        \"roadmap\": 0,\n        \"changelog\": 1\n      },\n      \"quality\": {\n        \"clarity\": {\n          \"note\": 4,\n          \"evidences\": [\n            \"The list of changes … here (what's new).\"\n          ],\n          \"justifications\": [\n            \"clear changelog; roadmap not in README.\"\n          ]\n        },\n        \"consistency\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"consistent pattern of links to what's new.\"\n          ],\n          \"justifications\": [\n            \"transparent versioning process.\"\n          ]\n        }\n      },\n      \"evidence\": [\n        \"Changelog link: https://pandas.pydata.org/pandas-docs/stable/whatsnew/index.html\",\n        \"Distribution via PyPI and Conda suggests stable releases.\"\n      ],\n      \"justifications\": [\n        \"Changelog is clear; roadmap is not present in the README.\"\n      ],\n      \"suggested_improvements\": [\n        \"Link milestones/roadmap if publicly available.\"\n      ]\n    },\n    \"who\": {\n      \"checklist\": {\n        \"authors_maintainers\": 1,\n        \"contact_channels\": 1,\n        \"code_of_conduct\": 1\n      },\n      \"quality\": {\n        \"clarity\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"\\\"Getting Help\\\", \\\"Discussion and Development\\\", links to Slack, mailing list, issues, meetings.\"\n          ],\n          \"justifications\": [\n            \"easy to discover where to get help and participate.\"\n          ]\n        },\n        \"consistency\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"organized and standardized communication.\"\n          ],\n          \"justifications\": [\n            \"well-defined official channels.\"\n          ]\n        }\n      },\n      \"evidence\": [\n        \"Getting Help: Stack Overflow; pydata mailing list.\",\n        \"Discussion and Development: GitHub issues; mailing list; Slack; community meetings.\",\n        \"Contributing to pandas: contributing guide and entry points.\"\n      ],\n      \"justifications\": [\n        \"Clear communication channels and community guidance.\"\n      ],\n      \"suggested_improvements\": []\n    },\n    \"license\": {\n      \"checklist\": {\n        \"license_type\": 1,\n        \"license_link\": 1\n      },\n      \"quality\": {\n        \"clarity\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"BSD 3 (LICENSE)\"\n          ],\n          \"justifications\": [\n            \"type and direct link provided.\"\n          ]\n        },\n        \"consistency\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"badge and link to LICENSE.\"\n          ],\n          \"justifications\": [\n            \"consistent communication.\"\n          ]\n        }\n      },\n      \"evidence\": [\n        \"BSD 3 (LICENSE)\"\n      ],\n      \"justifications\": [\n        \"License type and link are explicit and consistent.\"\n      ],\n      \"suggested_improvements\": []\n    },\n    \"contribution\": {\n      \"checklist\": {\n        \"contributing_link\": 1,\n        \"contribution_steps\": 1,\n        \"standards\": 1\n      },\n      \"quality\": {\n        \"structure\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"\\\"Contributing to pandas\\\" section with detailed guide.\"\n          ],\n          \"justifications\": [\n            \"clear flow for new contributors.\"\n          ]\n        },\n        \"clarity\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"links to \\\"good first issue\\\", Docs, CodeTriage, contribution guide.\"\n          ],\n          \"justifications\": [\n            \"easy to start and understand expectations.\"\n          ]\n        },\n        \"readability\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"segmented text, links, calls-to-action.\"\n          ],\n          \"justifications\": [\n            \"smooth reading.\"\n          ]\n        }\n      },\n      \"evidence\": [\n        \"Contributing guide; good first issues; CodeTriage.\"\n      ],\n      \"justifications\": [\n        \"Clear entry points and standards; well structured.\"\n      ],\n      \"suggested_improvements\": []\n    },\n    \"references\": {\n      \"checklist\": {\n        \"docs_link\": 1,\n        \"relevant_references\": 1,\n        \"faq_support\": 1\n      },\n      \"quality\": {\n        \"effectiveness\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"links to stable docs, what's new, PyPI/Conda, community.\"\n          ],\n          \"justifications\": [\n            \"complete coverage of useful references.\"\n          ]\n        },\n        \"clarity\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"self-explanatory titles and links.\"\n          ],\n          \"justifications\": [\n            \"easy to locate any resource.\"\n          ]\n        }\n      },\n      \"evidence\": [\n        \"Official documentation: https://pandas.pydata.org/pandas-docs/stable/\",\n        \"Getting Help references: Stack Overflow; pydata mailing list.\",\n        \"PyPI and Conda links in 'Where to get it'; changelog link.\"\n      ],\n      \"justifications\": [\n        \"Comprehensive references and support links.\"\n      ],\n      \"suggested_improvements\": []\n    },\n    \"other\": {\n      \"checklist\": {\n        \"generic_sections\": 0,\n        \"placeholders\": 0\n      },\n      \"action\": {\n        \"reclassify\": false,\n        \"suggest_removal\": false\n      },\n      \"evidence\": [],\n      \"suggested_improvements\": []\n    }\n  },\n  \"dimensions_summary\": {\n    \"quality\": 5,\n    \"appeal\": 4,\n    \"readability\": 5,\n    \"understandability\": 4,\n    \"structure\": 5,\n    \"cohesion\": 5,\n    \"conciseness\": 5,\n    \"effectiveness\": 4,\n    \"consistency\": 5,\n    \"clarity\": 5,\n    \"global_notes\": \"Strong in What, Main Features, installation (pip/conda/source), dependencies, license, docs, what's new, help, community, and contributing. Missing a minimal usage example in the README; Why is scattered rather than dedicated.\"\n  },\n  \"executive_summary\": {\n    \"strengths\": [\n      \"Exemplary structure and coverage: installation, dependencies, docs, what's new, help/community, contributing, license.\",\n      \"Main Features with deep capability links.\",\n      \"Navigation aids (TOC, badges, 'Go to Top').\"\n    ],\n    \"weaknesses\": [\n      \"No minimal working usage example in README.\",\n      \"No dedicated Why section.\"\n    ],\n    \"critical_gaps\": [\n      \"Usage examples (MWE) directly in README.\"\n    ],\n    \"priority_recommendations\": [\n      \"Add a short MWE (read CSV → DataFrame → basic ops → output).\",\n      \"Optionally add a compact Why section with key benefits.\",\n      \"Keep essential links near the top for faster onboarding.\"\n    ]\n  }\n}\n\nIMPORTANT: The model must output a single JSON object, valid according to the schema above. No surrounding backticks, no markdown, no commentary.",
+  "model_output": "```json\n{\n  \"metadata\": {\n    \"repository_name\": \"Keras 3\",\n    \"repository_link\": \"\",\n    \"readme_raw_link\": \"\",\n    \"evaluation_date\": \"2023-10-27\",\n    \"evaluator\": \"AI Assistant\",\n    \"general_notes\": \"The README provides a clear overview of Keras 3, its features, installation methods, backend configuration, and rationale. It lacks explicit sections for usage examples, authors, license, and contribution guidelines.\"\n  },\n  \"structural_summary\": {\n    \"detected_sections\": [\n      \"Keras 3: Deep Learning for Humans\",\n      \"Installation\",\n      \"Install with pip\",\n      \"Local installation\",\n      \"Minimal installation\",\n      \"Adding GPU support\",\n      \"Configuring your backend\",\n      \"Backwards compatibility\",\n      \"Why use Keras 3?\"\n    ],\n    \"present_categories\": {\n      \"what\": 1,\n      \"why\": 1,\n      \"how_installation\": 1,\n      \"how_usage\": 0,\n      \"how_config_requirements\": 1,\n      \"when\": 1,\n      \"who\": 0,\n      \"license\": 0,\n      \"contribution\": 0,\n      \"references\": 1,\n      \"other\": 0\n    },\n    \"organization_notes\": \"The README is well-structured with clear headings for installation, backend configuration, and purpose. It could benefit from a dedicated usage section and explicit information on license, authors, and contribution.\"\n  },\n  \"categories\": {\n    \"what\": {\n      \"checklist\": {\n        \"clear_description\": 1,\n        \"features_scope\": 1,\n        \"target_audience\": 1\n      },\n      \"quality\": {\n        \"clarity\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"L3: Keras 3 is a multi-backend deep learning framework, with support for JAX, TensorFlow, PyTorch, and OpenVINO (for inference-only).\",\n            \"L4-L6: Effortlessly build and train models for computer vision, natural language processing, audio processing, timeseries forecasting, recommender systems, etc.\"\n          ],\n          \"justifications\": [\n            \"Provides a clear and concise definition of the project.\",\n            \"Clearly outlines the capabilities and application domains.\"\n          ]\n        },\n        \"understandability\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"L3: Keras 3 is a multi-backend deep learning framework...\",\n            \"L4-L6: Effortlessly build and train models for computer vision, natural language processing...\"\n          ],\n          \"justifications\": [\n            \"The description is straightforward and uses common terminology, making it easy to grasp.\"\n          ]\n        },\n        \"conciseness\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"L3-L6: Keras 3 is a multi-backend deep learning framework... Effortlessly build and train models for computer vision, natural language processing...\"\n          ],\n          \"justifications\": [\n            \"The introduction is brief yet comprehensive, covering the core aspects without unnecessary verbosity.\"\n          ]\n        },\n        \"consistency\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"L3: Keras 3 is a multi-backend deep learning framework...\",\n            \"L80: Why use Keras 3?\"\n          ],\n          \"justifications\": [\n            \"Consistent terminology is used throughout the README when referring to Keras 3 and its functionalities.\"\n          ]\n        }\n      },\n      \"evidences\": [\n        \"L3: Keras 3 is a multi-backend deep learning framework...\",\n        \"L4-L6: Effortlessly build and train models for computer vision, natural language processing, audio processing, timeseries forecasting, recommender systems, etc.\",\n        \"L13: Join nearly three million developers, from burgeoning startups to global enterprises, in harnessing the power of Keras 3.\"\n      ],\n      \"justifications\": [\n        \"Provides a clear and concise definition of the project and its capabilities.\",\n        \"Clearly outlines the target audience and application domains.\"\n      ],\n      \"suggested_improvements\": []\n    },\n    \"why\": {\n      \"checklist\": {\n        \"explicit_purpose\": 1,\n        \"benefits_vs_alternatives\": 1,\n        \"use_cases\": 1\n      },\n      \"quality\": {\n        \"clarity\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"L80: Why use Keras 3?\",\n            \"L81-L91: Run your high-level Keras workflows on top of any framework -- benefiting at will from the advantages of each framework...\"\n          ],\n          \"justifications\": [\n            \"The dedicated 'Why use Keras 3?' section clearly articulates the benefits and value proposition.\"\n          ]\n        },\n        \"effectiveness\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"L8-L13: Accelerated model development, State-of-the-art performance, Datacenter-scale training\",\n            \"L81-L91: Run your high-level Keras workflows on top of any framework -- benefiting at will from the advantages of each framework...\"\n          ],\n          \"justifications\": [\n            \"The benefits are compelling and address common pain points for developers, highlighting performance, flexibility, and future-proofing.\"\n          ]\n        },\n        \"appeal\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"L13: Join nearly three million developers, from burgeoning startups to global enterprises...\",\n            \"L88-L91: As a PyTorch user: get access to power and usability of Keras, at last! As a JAX user: get access to a fully-featured, battle-tested, well-documented modeling and training library.\"\n          ],\n          \"justifications\": [\n            \"The language is engaging and highlights significant advantages, appealing to a broad audience including existing PyTorch and JAX users.\"\n          ]\n        }\n      },\n      \"evidences\": [\n        \"L80: Why use Keras 3?\",\n        \"L8-L13: Accelerated model development, State-of-the-art performance, Datacenter-scale training\",\n        \"L81-L91: Run your high-level Keras workflows on top of any framework -- benefiting at will from the advantages of each framework...\"\n      ],\n      \"justifications\": [\n        \"Dedicated section clearly states the purpose and benefits.\",\n        \"Highlights key advantages and specific use cases for different backend users.\"\n      ],\n      \"suggested_improvements\": []\n    },\n    \"how_installation\": {\n      \"checklist\": {\n        \"reproducible_commands\": 1,\n        \"compatibility_requirements\": 1,\n        \"dependencies\": 1\n      },\n      \"quality\": {\n        \"structure\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"L15: ## Installation\",\n            \"L17: ### Install with pip\",\n            \"L26: ### Local installation\",\n            \"L46: #### Adding GPU support\"\n          ],\n          \"justifications\": [\n            \"The installation instructions are well-organized into logical sections and sub-sections, covering different scenarios.\"\n          ]\n        },\n        \"readability\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"L20-L21: ```pip install keras --upgrade```\",\n            \"L32-L33: ```pip install -r requirements.txt```\"\n          ],\n          \"justifications\": [\n            \"Clear code blocks and concise explanations make the instructions easy to read and follow.\"\n          ]\n        },\n        \"clarity\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"L20-L21: pip install keras --upgrade\",\n            \"L23-L24: To use `keras`, you should also install the backend of choice: `tensorflow`, `jax`, or `torch`.\",\n            \"L28-L29: Keras 3 is compatible with Linux and macOS systems. For Windows users, we recommend using WSL2 to run Keras.\"\n          ],\n          \"justifications\": [\n            \"Instructions are precise, unambiguous, and cover various installation methods and compatibility notes.\"\n          ]\n        }\n      },\n      \"evidences\": [\n        \"L20-L21: pip install keras --upgrade\",\n        \"L23-L24: To use `keras`, you should also install the backend of choice: `tensorflow`, `jax`, or `torch`.\",\n        \"L28-L29: Keras 3 is compatible with Linux and macOS systems. For Windows users, we recommend using WSL2 to run Keras.\",\n        \"L46-L55: Adding GPU support with `requirements-{backend}-cuda.txt` and `conda` example.\"\n      ],\n      \"justifications\": [\n        \"Provides clear, reproducible commands for pip and local installations.\",\n        \"Explicitly states system compatibility and backend dependencies, including GPU setup.\"\n      ],\n      \"suggested_improvements\": []\n    },\n    \"how_usage\": {\n      \"checklist\": {\n        \"minimal_working_example\": 0,\n        \"io_examples\": 0,\n        \"api_commands_context\": 0\n      },\n      \"quality\": {\n        \"understandability\": {\n          \"note\": 1,\n          \"evidences\": [\n            \"No explicit 'Usage' section or code examples are provided in the README.\"\n          ],\n          \"justifications\": [\n            \"Without a minimal working example, a new user cannot immediately understand how to use the library from the README alone.\"\n          ]\n        },\n        \"code_readability\": {\n          \"note\": 1,\n          \"evidences\": [\n            \"No code snippets demonstrating usage are present in the README.\"\n          ],\n          \"justifications\": [\n            \"It is impossible to assess code readability as no usage code is provided.\"\n          ]\n        },\n        \"effectiveness\": {\n          \"note\": 1,\n          \"evidences\": [\n            \"L76-L77: Mentions `model.save()` and `model.predict()` but without context or examples.\"\n          ],\n          \"justifications\": [\n            \"The README does not effectively demonstrate how to use the library for common tasks, requiring users to seek external documentation immediately.\"\n          ]\n        }\n      },\n      \"evidences\": [\n        \"No explicit 'Usage' section or code examples are provided in the README.\",\n        \"L76-L77: Mentions `model.save()` and `model.predict()` but without context or examples.\"\n      ],\n      \"justifications\": [\n        \"The README lacks a dedicated section or code snippets demonstrating how to use Keras 3 for common tasks.\",\n        \"Mentions API methods without providing a runnable example or context.\"\n      ],\n      \"suggested_improvements\": [\n        \"Add a 'Usage' section with a minimal working example, e.g., defining, compiling, and training a simple model.\",\n        \"Include examples of common I/O operations or model prediction with code snippets.\"\n      ]\n    },\n    \"how_config_requirements\": {\n      \"checklist\": {\n        \"documented_configuration\": 1,\n        \"parameters_options\": 1,\n        \"troubleshooting\": 1\n      },\n      \"quality\": {\n        \"clarity\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"L57-L60: You can export the environment variable `KERAS_BACKEND` or you can edit your local config file at `~/.keras/keras.json` to configure your backend.\",\n            \"L59: Available backend options are: \\\"tensorflow\\\", \\\"jax\\\", \\\"torch\\\", \\\"openvino\\\".\"\n          ],\n          \"justifications\": [\n            \"Provides clear and unambiguous instructions on how to configure the backend.\"\n          ]\n        },\n        \"structure\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"L40: ## Backend Compatibility Table\",\n            \"L57: ## Configuring your backend\"\n          ],\n          \"justifications\": [\n            \"The information is well-organized into dedicated sections, making it easy to find configuration details.\"\n          ]\n        },\n        \"conciseness\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"L57-L60: You can export the environment variable `KERAS_BACKEND` or you can edit your local config file at `~/.keras/keras.json` to configure your backend.\",\n            \"L67-L68: The backend must be configured before importing `keras`, and the backend cannot be changed after the package has been imported.\"\n          ],\n          \"justifications\": [\n            \"Instructions are direct and to the point, providing essential information without unnecessary detail.\"\n          ]\n        }\n      },\n      \"evidences\": [\n        \"L57-L60: You can export the environment variable `KERAS_BACKEND` or you can edit your local config file at `~/.keras/keras.json` to configure your backend.\",\n        \"L59: Available backend options are: \\\"tensorflow\\\", \\\"jax\\\", \\\"torch\\\", \\\"openvino\\\".\",\n        \"L67-L68: The backend must be configured before importing `keras`, and the backend cannot be changed after the package has been imported.\",\n        \"L70-L78: Backwards compatibility section provides migration guidance, which can serve as troubleshooting for existing `tf.keras` users.\"\n      ],\n      \"justifications\": [\n        \"Provides clear instructions for backend configuration, including environment variables and config files.\",\n        \"Lists available backend options and important notes regarding configuration timing.\",\n        \"The 'Backwards compatibility' section offers guidance for migrating from `tf.keras`, addressing potential issues.\"\n      ],\n      \"suggested_improvements\": []\n    },\n    \"when\": {\n      \"checklist\": {\n        \"current_status\": 1,\n        \"roadmap\": 0,\n        \"changelog\": 0\n      },\n      \"quality\": {\n        \"clarity\": {\n          \"note\": 3,\n          \"evidences\": [\n            \"L70-L78: Keras 3 is intended to work as a drop-in replacement for `tf.keras` (when using the TensorFlow backend).\"\n          ],\n          \"justifications\": [\n            \"The current status regarding `tf.keras` replacement is clear, but there's no explicit information on versioning or release cycles.\"\n          ]\n        },\n        \"consistency\": {\n          \"note\": 3,\n          \"evidences\": [\n            \"L70-L78: Keras 3 is intended to work as a drop-in replacement for `tf.keras`...\"\n          ],\n          \"justifications\": [\n            \"The information provided is consistent, but its scope is limited to compatibility rather than a broader project timeline.\"\n          ]\n        }\n      },\n      \"evidences\": [\n        \"L70-L78: Keras 3 is intended to work as a drop-in replacement for `tf.keras` (when using the TensorFlow backend).\"\n      ],\n      \"justifications\": [\n        \"Clearly states the current compatibility and migration path from `tf.keras`.\",\n        \"Lacks information on future development (roadmap) or detailed release history (changelog).\"\n      ],\n      \"suggested_improvements\": [\n        \"Add a link to a changelog or release notes if available.\",\n        \"Consider including a brief roadmap or future plans section to inform users about upcoming features or directions.\"\n      ]\n    },\n    \"who\": {\n      \"checklist\": {\n        \"authors_maintainers\": 0,\n        \"contact_channels\": 0,\n        \"code_of_conduct\": 0\n      },\n      \"quality\": {\n        \"clarity\": {\n          \"note\": 1,\n          \"evidences\": [\n            \"No information about authors, maintainers, or contact channels is present in the README.\"\n          ],\n          \"justifications\": [\n            \"No information is provided, making it impossible to assess clarity.\"\n          ]\n        },\n        \"consistency\": {\n          \"note\": 1,\n          \"evidences\": [\n            \"No information about authors, maintainers, or contact channels is present in the README.\"\n          ],\n          \"justifications\": [\n            \"No information is provided, making it impossible to assess consistency.\"\n          ]\n        }\n      },\n      \"evidences\": [\n        \"No information about authors, maintainers, contact channels, or a code of conduct is present in the README.\"\n      ],\n      \"justifications\": [\n        \"Crucial information about project ownership, support, and community guidelines is entirely missing.\"\n      ],\n      \"suggested_improvements\": [\n        \"Add a section for authors/maintainers and how to contact them for support or inquiries.\",\n        \"Include a link to a code of conduct if one exists, to foster a welcoming community.\"\n      ]\n    },\n    \"license\": {\n      \"checklist\": {\n        \"license_type\": 0,\n        \"license_link\": 0\n      },\n      \"quality\": {\n        \"clarity\": {\n          \"note\": 1,\n          \"evidences\": [\n            \"No license information is present in the README.\"\n          ],\n          \"justifications\": [\n            \"No information is provided, making it impossible to assess clarity.\"\n          ]\n        },\n        \"consistency\": {\n          \"note\": 1,\n          \"evidences\": [\n            \"No license information is present in the README.\"\n          ],\n          \"justifications\": [\n            \"No information is provided, making it impossible to assess consistency.\"\n          ]\n        }\n      },\n      \"evidences\": [\n        \"No license information is present in the README.\"\n      ],\n      \"justifications\": [\n        \"The license under which the project is distributed is not stated, which is a significant omission for open-source projects.\"\n      ],\n      \"suggested_improvements\": [\n        \"Clearly state the license type (e.g., MIT, Apache 2.0) and provide a link to the full license text (e.g., LICENSE file).\"\n      ]\n    },\n    \"contribution\": {\n      \"checklist\": {\n        \"contributing_link\": 0,\n        \"contribution_steps\": 0,\n        \"standards\": 0\n      },\n      \"quality\": {\n        \"structure\": {\n          \"note\": 1,\n          \"evidences\": [\n            \"No section or link related to contributing to the project is present in the README.\"\n          ],\n          \"justifications\": [\n            \"No information is provided, making it impossible to assess structure.\"\n          ]\n        },\n        \"clarity\": {\n          \"note\": 1,\n          \"evidences\": [\n            \"No section or link related to contributing to the project is present in the README.\"\n          ],\n          \"justifications\": [\n            \"No information is provided, making it impossible to assess clarity.\"\n          ]\n        },\n        \"readability\": {\n          \"note\": 1,\n          \"evidences\": [\n            \"No section or link related to contributing to the project is present in the README.\"\n          ],\n          \"justifications\": [\n            \"No information is provided, making it impossible to assess readability.\"\n          ]\n        }\n      },\n      \"evidences\": [\n        \"No section or link related to contributing to the project is present in the README.\"\n      ],\n      \"justifications\": [\n        \"Guidance for potential contributors, including how to contribute, steps, and standards, is entirely missing.\"\n      ],\n      \"suggested_improvements\": [\n        \"Add a 'Contributing' section with a link to a CONTRIBUTING.md file or inline guidelines.\",\n        \"Outline basic steps for contributing (e.g., bug reports, feature requests, pull requests) and any coding standards.\"\n      ]\n    },\n    \"references\": {\n      \"checklist\": {\n        \"docs_link\": 1,\n        \"relevant_references\": 1,\n        \"faq_support\": 0\n      },\n      \"quality\": {\n        \"effectiveness\": {\n          \"note\": 4,\n          \"evidences\": [\n            \"L10: [Benchmark here](https://keras.io/getting_started/benchmarks/).\",\n            \"L94: Read more in the [Keras 3 release announcement](https://keras.io/keras_3/).\"\n          ],\n          \"justifications\": [\n            \"Provides key external references, but a more general link to the main documentation would enhance effectiveness.\"\n          ]\n        },\n        \"clarity\": {\n          \"note\": 4,\n          \"evidences\": [\n            \"L10: [Benchmark here](https://keras.io/getting_started/benchmarks/).\",\n            \"L94: Read more in the [Keras 3 release announcement](https://keras.io/keras_3/).\"\n          ],\n          \"justifications\": [\n            \"The links provided are clear and self-explanatory, but their scope is specific (benchmarks, release announcement) rather than general documentation.\"\n          ]\n        }\n      },\n      \"evidences\": [\n        \"L10: [Benchmark here](https://keras.io/getting_started/benchmarks/).\",\n        \"L94: Read more in the [Keras 3 release announcement](https://keras.io/keras_3/).\"\n      ],\n      \"justifications\": [\n        \"Provides links to relevant external resources like benchmarks and the release announcement.\",\n        \"Could benefit from a more direct and general link to the main Keras 3 documentation or an FAQ section.\"\n      ],\n      \"suggested_improvements\": [\n        \"Add a direct link to the main Keras 3 documentation portal (e.g., `https://keras.io/`).\",\n        \"Consider adding an FAQ section or a link to dedicated support resources.\"\n      ]\n    },\n    \"other\": {\n      \"checklist\": {\n        \"generic_sections\": 0,\n        \"placeholders\": 0\n      },\n      \"action\": {\n        \"reclassify\": false,\n        \"suggest_removal\": false\n      },\n      \"evidences\": [],\n      \"suggested_improvements\": []\n    }\n  },\n  \"dimensions_summary\": {\n    \"quality\": {\n      \"note\": 4,\n      \"evidences\": [\n        \"Clear description of Keras 3 and its benefits (L3-L13, L80-L91).\",\n        \"Detailed installation and configuration instructions (L15-L68).\",\n        \"Missing usage examples, author/license information, and contribution guidelines.\"\n      ],\n      \"justifications\": [\n        \"The core aspects of the project (what, why, how to install/configure) are well-covered and of high quality. However, significant standard sections for a complete project README are absent.\"\n      ]\n    },\n    \"appeal\": {\n      \"note\": 4,\n      \"evidences\": [\n        \"L8-L13: Highlights 'Accelerated model development', 'State-of-the-art performance', 'Datacenter-scale training'.\",\n        \"L13: 'Join nearly three million developers...'\"\n      ],\n      \"justifications\": [\n        \"Effectively communicates the project's value proposition and broad adoption, which is appealing. However, the absence of community trust signals like license and clear contribution paths slightly diminishes overall appeal.\"\n      ]\n    },\n    \"readability\": {\n      \"note\": 5,\n      \"evidences\": [\n        \"Consistent use of markdown headings (L1, L15, L17, L26, L46, L57, L70, L80).\",\n        \"Clear code blocks for installation commands (L20-L21, L32-L33).\",\n        \"Bullet points for features and benefits (L8-L13, L81-L91).\"\n      ],\n      \"justifications\": [\n        \"The README is exceptionally easy to scan and understand due to its excellent formatting, clear language, and logical presentation of information.\"\n      ]\n    },\n    \"understandability\": {\n      \"note\": 4,\n      \"evidences\": [\n        \"L3-L6: Clear explanation of what Keras 3 is.\",\n        \"L80-L91: Clear benefits of using Keras 3.\",\n        \"Lack of usage examples makes immediate practical understanding difficult (How_Usage section).\"\n      ],\n      \"justifications\": [\n        \"The descriptive and motivational parts are highly understandable. However, the absence of practical usage examples within the README means users cannot immediately grasp how to apply the library without external exploration.\"\n      ]\n    },\n    \"structure\": {\n      \"note\": 5,\n      \"evidences\": [\n        \"Logical flow of sections from introduction to installation, configuration, and rationale.\",\n        \"Effective use of subheadings to break down complex topics like installation (L17, L26, L46).\"\n      ],\n      \"justifications\": [\n        \"The README follows a logical and organized structure, making it easy to navigate and find specific information.\"\n      ]\n    },\n    \"cohesion\": {\n      \"note\": 4,\n      \"evidences\": [\n        \"Introduction flows naturally into features, then installation and configuration.\",\n        \"Missing sections like 'Usage', 'Who', 'License', and 'Contribution' create gaps in the overall narrative of a complete project overview.\"\n      ],\n      \"justifications\": [\n        \"The existing content is cohesive and flows well between related topics. However, the absence of several standard README sections reduces the overall completeness and cohesion of the project's documentation.\"\n      ]\n    },\n    \"conciseness\": {\n      \"note\": 5,\n      \"evidences\": [\n        \"Direct language used in descriptions and instructions (e.g., L3-L6, L20-L21).\",\n        \"No redundant information or verbose explanations.\"\n      ],\n      \"justifications\": [\n        \"The README is efficient in conveying information, presenting key details without unnecessary verbosity or fluff.\"\n      ]\n    },\n    \"effectiveness\": {\n      \"note\": 4,\n      \"evidences\": [\n        \"Successfully guides users through installation and backend setup (L15-L68).\",\n        \"Effectively communicates the core value proposition of Keras 3 (L8-L13, L80-L91).\",\n        \"Fails to provide immediate practical usage guidance within the README (How_Usage section).\"\n      ],\n      \"justifications\": [\n        \"The README achieves its primary goal of introducing the framework and getting it installed and configured. However, it falls short on demonstrating immediate utility and providing a complete project overview.\"\n      ]\n    },\n    \"consistency\": {\n      \"note\": 5,\n      \"evidences\": [\n        \"Consistent use of headings, code blocks, and bullet points throughout the document.\",\n        \"Terminology like 'backend' and 'framework' is used consistently (e.g., L3, L23, L57).\"\n      ],\n      \"justifications\": [\n        \"The README maintains a consistent style, formatting, and language, which contributes to its professional appearance and ease of comprehension.\"\n      ]\n    },\n    \"clarity\": {\n      \"note\": 5,\n      \"evidences\": [\n        \"Clear statements on what Keras 3 is and its benefits (L3-L13, L80-L91).\",\n        \"Unambiguous installation commands and configuration steps (L20-L21, L57-L60).\"\n      ],\n      \"justifications\": [\n        \"The information that is present in the README is presented with exceptional clarity, making it very easy to understand for the target audience.\"\n      ]\n    },\n    \"global_notes\": \"The Keras 3 README is strong in describing what the project is, why it's beneficial, and how to install and configure it. It is well-structured, highly readable, and concise. However, it has notable gaps in providing usage examples, information about authors/maintainers, licensing, and contribution guidelines, which are crucial for a complete project overview and fostering community engagement.\"\n  },\n  \"executive_summary\": {\n    \"strengths\": [\n      \"Clear and compelling description of Keras 3's purpose, features, and benefits.\",\n      \"Well-structured and easy-to-follow installation and backend configuration instructions.\",\n      \"Highlights key advantages like multi-backend support, performance, and scalability.\",\n      \"Good readability with clear headings, bullet points, and code blocks.\"\n    ],\n    \"weaknesses\": [\n      \"Lacks a minimal working example for immediate practical usage within the README.\",\n      \"Missing information on project authors, maintainers, and contact channels.\",\n      \"No explicit license declaration or link.\",\n      \"Absence of contribution guidelines.\"\n    ],\n    \"critical_gaps\": [\n      \"Absence of a 'Usage' section with code examples to demonstrate basic functionality.\",\n      \"Lack of transparency regarding project governance (authors, license, contribution guidelines).\"\n    ],\n    \"priority_recommendations\": [\n      \"Add a concise 'Usage' section with a minimal working code example (e.g., model definition, compilation, training, prediction).\",\n      \"Include a clear license statement and link to the license file to inform users of usage rights.\",\n      \"Provide information on how to contribute to the project and who maintains it, along with contact channels.\",\n      \"Add a direct link to the main Keras 3 documentation for comprehensive reference.\"\n    ]\n  }\n}\n```",
+  "prompt_length": 87438,
+  "model_output_length": 27531,
+  "parsed": {
+    "metadata": {
+      "repository_name": "Keras 3",
+      "repository_link": "",
+      "readme_raw_link": "",
+      "evaluation_date": "2025-11-29",
+      "evaluator": "gemini-2.5-flash",
+      "general_notes": "The README provides a clear overview of Keras 3, its features, installation methods, backend configuration, and rationale. It lacks explicit sections for usage examples, authors, license, and contribution guidelines."
+    },
+    "structural_summary": {
+      "detected_sections": [
+        "Keras 3: Deep Learning for Humans",
+        "Installation",
+        "Install with pip",
+        "Local installation",
+        "Minimal installation",
+        "Adding GPU support",
+        "Configuring your backend",
+        "Backwards compatibility",
+        "Why use Keras 3?"
+      ],
+      "present_categories": {
+        "what": 1,
+        "why": 1,
+        "how_installation": 1,
+        "how_usage": 0,
+        "how_config_requirements": 1,
+        "when": 1,
+        "who": 0,
+        "license": 0,
+        "contribution": 0,
+        "references": 1,
+        "other": 0
+      },
+      "organization_notes": "The README is well-structured with clear headings for installation, backend configuration, and purpose. It could benefit from a dedicated usage section and explicit information on license, authors, and contribution."
+    },
+    "categories": {
+      "what": {
+        "checklist": {
+          "clear_description": true,
+          "features_scope": true,
+          "target_audience": true
+        },
+        "quality": {
+          "clarity": {
+            "note": 5,
+            "evidences": [
+              "L3: Keras 3 is a multi-backend deep learning framework, with support for JAX, TensorFlow, PyTorch, and OpenVINO (for inference-only).",
+              "L4-L6: Effortlessly build and train models for computer vision, natural language processing, audio processing, timeseries forecasting, recommender systems, etc."
+            ],
+            "justifications": [
+              "Provides a clear and concise definition of the project.",
+              "Clearly outlines the capabilities and application domains."
+            ]
+          },
+          "understandability": {
+            "note": 5,
+            "evidences": [
+              "L3: Keras 3 is a multi-backend deep learning framework...",
+              "L4-L6: Effortlessly build and train models for computer vision, natural language processing..."
+            ],
+            "justifications": [
+              "The description is straightforward and uses common terminology, making it easy to grasp."
+            ]
+          },
+          "conciseness": {
+            "note": 5,
+            "evidences": [
+              "L3-L6: Keras 3 is a multi-backend deep learning framework... Effortlessly build and train models for computer vision, natural language processing..."
+            ],
+            "justifications": [
+              "The introduction is brief yet comprehensive, covering the core aspects without unnecessary verbosity."
+            ]
+          },
+          "consistency": {
+            "note": 5,
+            "evidences": [
+              "L3: Keras 3 is a multi-backend deep learning framework...",
+              "L80: Why use Keras 3?"
+            ],
+            "justifications": [
+              "Consistent terminology is used throughout the README when referring to Keras 3 and its functionalities."
+            ]
+          }
+        },
+        "evidences": [
+          "L3: Keras 3 is a multi-backend deep learning framework...",
+          "L4-L6: Effortlessly build and train models for computer vision, natural language processing, audio processing, timeseries forecasting, recommender systems, etc.",
+          "L13: Join nearly three million developers, from burgeoning startups to global enterprises, in harnessing the power of Keras 3."
+        ],
+        "justifications": [
+          "Provides a clear and concise definition of the project and its capabilities.",
+          "Clearly outlines the target audience and application domains."
+        ],
+        "suggested_improvements": []
+      },
+      "why": {
+        "checklist": {
+          "explicit_purpose": true,
+          "benefits_vs_alternatives": true,
+          "use_cases": true
+        },
+        "quality": {
+          "clarity": {
+            "note": 5,
+            "evidences": [
+              "L80: Why use Keras 3?",
+              "L81-L91: Run your high-level Keras workflows on top of any framework -- benefiting at will from the advantages of each framework..."
+            ],
+            "justifications": [
+              "The dedicated 'Why use Keras 3?' section clearly articulates the benefits and value proposition."
+            ]
+          },
+          "effectiveness": {
+            "note": 5,
+            "evidences": [
+              "L8-L13: Accelerated model development, State-of-the-art performance, Datacenter-scale training",
+              "L81-L91: Run your high-level Keras workflows on top of any framework -- benefiting at will from the advantages of each framework..."
+            ],
+            "justifications": [
+              "The benefits are compelling and address common pain points for developers, highlighting performance, flexibility, and future-proofing."
+            ]
+          },
+          "appeal": {
+            "note": 5,
+            "evidences": [
+              "L13: Join nearly three million developers, from burgeoning startups to global enterprises...",
+              "L88-L91: As a PyTorch user: get access to power and usability of Keras, at last! As a JAX user: get access to a fully-featured, battle-tested, well-documented modeling and training library."
+            ],
+            "justifications": [
+              "The language is engaging and highlights significant advantages, appealing to a broad audience including existing PyTorch and JAX users."
+            ]
+          }
+        },
+        "evidences": [
+          "L80: Why use Keras 3?",
+          "L8-L13: Accelerated model development, State-of-the-art performance, Datacenter-scale training",
+          "L81-L91: Run your high-level Keras workflows on top of any framework -- benefiting at will from the advantages of each framework..."
+        ],
+        "justifications": [
+          "Dedicated section clearly states the purpose and benefits.",
+          "Highlights key advantages and specific use cases for different backend users."
+        ],
+        "suggested_improvements": []
+      },
+      "how_installation": {
+        "checklist": {
+          "reproducible_commands": true,
+          "compatibility_requirements": true,
+          "dependencies": true
+        },
+        "quality": {
+          "structure": {
+            "note": 5,
+            "evidences": [
+              "L15: ## Installation",
+              "L17: ### Install with pip",
+              "L26: ### Local installation",
+              "L46: #### Adding GPU support"
+            ],
+            "justifications": [
+              "The installation instructions are well-organized into logical sections and sub-sections, covering different scenarios."
+            ]
+          },
+          "readability": {
+            "note": 5,
+            "evidences": [
+              "L20-L21: ```pip install keras --upgrade```",
+              "L32-L33: ```pip install -r requirements.txt```"
+            ],
+            "justifications": [
+              "Clear code blocks and concise explanations make the instructions easy to read and follow."
+            ]
+          },
+          "clarity": {
+            "note": 5,
+            "evidences": [
+              "L20-L21: pip install keras --upgrade",
+              "L23-L24: To use `keras`, you should also install the backend of choice: `tensorflow`, `jax`, or `torch`.",
+              "L28-L29: Keras 3 is compatible with Linux and macOS systems. For Windows users, we recommend using WSL2 to run Keras."
+            ],
+            "justifications": [
+              "Instructions are precise, unambiguous, and cover various installation methods and compatibility notes."
+            ]
+          }
+        },
+        "evidences": [
+          "L20-L21: pip install keras --upgrade",
+          "L23-L24: To use `keras`, you should also install the backend of choice: `tensorflow`, `jax`, or `torch`.",
+          "L28-L29: Keras 3 is compatible with Linux and macOS systems. For Windows users, we recommend using WSL2 to run Keras.",
+          "L46-L55: Adding GPU support with `requirements-{backend}-cuda.txt` and `conda` example."
+        ],
+        "justifications": [
+          "Provides clear, reproducible commands for pip and local installations.",
+          "Explicitly states system compatibility and backend dependencies, including GPU setup."
+        ],
+        "suggested_improvements": []
+      },
+      "how_usage": {
+        "checklist": {
+          "minimal_working_example": false,
+          "io_examples": false,
+          "api_commands_context": false
+        },
+        "quality": {
+          "understandability": {
+            "note": 1,
+            "evidences": [
+              "No explicit 'Usage' section or code examples are provided in the README."
+            ],
+            "justifications": [
+              "Without a minimal working example, a new user cannot immediately understand how to use the library from the README alone."
+            ]
+          },
+          "code_readability": {
+            "note": 1,
+            "evidences": [
+              "No code snippets demonstrating usage are present in the README."
+            ],
+            "justifications": [
+              "It is impossible to assess code readability as no usage code is provided."
+            ]
+          },
+          "effectiveness": {
+            "note": 1,
+            "evidences": [
+              "L76-L77: Mentions `model.save()` and `model.predict()` but without context or examples."
+            ],
+            "justifications": [
+              "The README does not effectively demonstrate how to use the library for common tasks, requiring users to seek external documentation immediately."
+            ]
+          }
+        },
+        "evidences": [
+          "No explicit 'Usage' section or code examples are provided in the README.",
+          "L76-L77: Mentions `model.save()` and `model.predict()` but without context or examples."
+        ],
+        "justifications": [
+          "The README lacks a dedicated section or code snippets demonstrating how to use Keras 3 for common tasks.",
+          "Mentions API methods without providing a runnable example or context."
+        ],
+        "suggested_improvements": [
+          "Add a 'Usage' section with a minimal working example, e.g., defining, compiling, and training a simple model.",
+          "Include examples of common I/O operations or model prediction with code snippets."
+        ]
+      },
+      "how_config_requirements": {
+        "checklist": {
+          "documented_configuration": true,
+          "parameters_options": true,
+          "troubleshooting": true
+        },
+        "quality": {
+          "clarity": {
+            "note": 5,
+            "evidences": [
+              "L57-L60: You can export the environment variable `KERAS_BACKEND` or you can edit your local config file at `~/.keras/keras.json` to configure your backend.",
+              "L59: Available backend options are: \"tensorflow\", \"jax\", \"torch\", \"openvino\"."
+            ],
+            "justifications": [
+              "Provides clear and unambiguous instructions on how to configure the backend."
+            ]
+          },
+          "structure": {
+            "note": 5,
+            "evidences": [
+              "L40: ## Backend Compatibility Table",
+              "L57: ## Configuring your backend"
+            ],
+            "justifications": [
+              "The information is well-organized into dedicated sections, making it easy to find configuration details."
+            ]
+          },
+          "conciseness": {
+            "note": 5,
+            "evidences": [
+              "L57-L60: You can export the environment variable `KERAS_BACKEND` or you can edit your local config file at `~/.keras/keras.json` to configure your backend.",
+              "L67-L68: The backend must be configured before importing `keras`, and the backend cannot be changed after the package has been imported."
+            ],
+            "justifications": [
+              "Instructions are direct and to the point, providing essential information without unnecessary detail."
+            ]
+          }
+        },
+        "evidences": [
+          "L57-L60: You can export the environment variable `KERAS_BACKEND` or you can edit your local config file at `~/.keras/keras.json` to configure your backend.",
+          "L59: Available backend options are: \"tensorflow\", \"jax\", \"torch\", \"openvino\".",
+          "L67-L68: The backend must be configured before importing `keras`, and the backend cannot be changed after the package has been imported.",
+          "L70-L78: Backwards compatibility section provides migration guidance, which can serve as troubleshooting for existing `tf.keras` users."
+        ],
+        "justifications": [
+          "Provides clear instructions for backend configuration, including environment variables and config files.",
+          "Lists available backend options and important notes regarding configuration timing.",
+          "The 'Backwards compatibility' section offers guidance for migrating from `tf.keras`, addressing potential issues."
+        ],
+        "suggested_improvements": []
+      },
+      "when": {
+        "checklist": {
+          "current_status": true,
+          "roadmap": false,
+          "changelog": false
+        },
+        "quality": {
+          "clarity": {
+            "note": 3,
+            "evidences": [
+              "L70-L78: Keras 3 is intended to work as a drop-in replacement for `tf.keras` (when using the TensorFlow backend)."
+            ],
+            "justifications": [
+              "The current status regarding `tf.keras` replacement is clear, but there's no explicit information on versioning or release cycles."
+            ]
+          },
+          "consistency": {
+            "note": 3,
+            "evidences": [
+              "L70-L78: Keras 3 is intended to work as a drop-in replacement for `tf.keras`..."
+            ],
+            "justifications": [
+              "The information provided is consistent, but its scope is limited to compatibility rather than a broader project timeline."
+            ]
+          }
+        },
+        "evidences": [
+          "L70-L78: Keras 3 is intended to work as a drop-in replacement for `tf.keras` (when using the TensorFlow backend)."
+        ],
+        "justifications": [
+          "Clearly states the current compatibility and migration path from `tf.keras`.",
+          "Lacks information on future development (roadmap) or detailed release history (changelog)."
+        ],
+        "suggested_improvements": [
+          "Add a link to a changelog or release notes if available.",
+          "Consider including a brief roadmap or future plans section to inform users about upcoming features or directions."
+        ]
+      },
+      "who": {
+        "checklist": {
+          "authors_maintainers": false,
+          "contact_channels": false,
+          "code_of_conduct": false
+        },
+        "quality": {
+          "clarity": {
+            "note": 1,
+            "evidences": [
+              "No information about authors, maintainers, or contact channels is present in the README."
+            ],
+            "justifications": [
+              "No information is provided, making it impossible to assess clarity."
+            ]
+          },
+          "consistency": {
+            "note": 1,
+            "evidences": [
+              "No information about authors, maintainers, or contact channels is present in the README."
+            ],
+            "justifications": [
+              "No information is provided, making it impossible to assess consistency."
+            ]
+          }
+        },
+        "evidences": [
+          "No information about authors, maintainers, contact channels, or a code of conduct is present in the README."
+        ],
+        "justifications": [
+          "Crucial information about project ownership, support, and community guidelines is entirely missing."
+        ],
+        "suggested_improvements": [
+          "Add a section for authors/maintainers and how to contact them for support or inquiries.",
+          "Include a link to a code of conduct if one exists, to foster a welcoming community."
+        ]
+      },
+      "license": {
+        "checklist": {
+          "license_type": false,
+          "license_link": false
+        },
+        "quality": {
+          "clarity": 1,
+          "consistency": 1
+        },
+        "evidences": [
+          "No license information is present in the README."
+        ],
+        "justifications": [
+          "The license under which the project is distributed is not stated, which is a significant omission for open-source projects."
+        ],
+        "suggested_improvements": [
+          "Clearly state the license type (e.g., MIT, Apache 2.0) and provide a link to the full license text (e.g., LICENSE file)."
+        ]
+      },
+      "contribution": {
+        "checklist": {
+          "contributing_link": false,
+          "contribution_steps": false,
+          "standards": false
+        },
+        "quality": {
+          "structure": {
+            "note": 1,
+            "evidences": [
+              "No section or link related to contributing to the project is present in the README."
+            ],
+            "justifications": [
+              "No information is provided, making it impossible to assess structure."
+            ]
+          },
+          "clarity": {
+            "note": 1,
+            "evidences": [
+              "No section or link related to contributing to the project is present in the README."
+            ],
+            "justifications": [
+              "No information is provided, making it impossible to assess clarity."
+            ]
+          },
+          "readability": {
+            "note": 1,
+            "evidences": [
+              "No section or link related to contributing to the project is present in the README."
+            ],
+            "justifications": [
+              "No information is provided, making it impossible to assess readability."
+            ]
+          }
+        },
+        "evidences": [
+          "No section or link related to contributing to the project is present in the README."
+        ],
+        "justifications": [
+          "Guidance for potential contributors, including how to contribute, steps, and standards, is entirely missing."
+        ],
+        "suggested_improvements": [
+          "Add a 'Contributing' section with a link to a CONTRIBUTING.md file or inline guidelines.",
+          "Outline basic steps for contributing (e.g., bug reports, feature requests, pull requests) and any coding standards."
+        ]
+      },
+      "references": {
+        "checklist": {
+          "docs_link": true,
+          "relevant_references": true,
+          "faq_support": false
+        },
+        "quality": {
+          "effectiveness": {
+            "note": 4,
+            "evidences": [
+              "L10: [Benchmark here](https://keras.io/getting_started/benchmarks/).",
+              "L94: Read more in the [Keras 3 release announcement](https://keras.io/keras_3/)."
+            ],
+            "justifications": [
+              "Provides key external references, but a more general link to the main documentation would enhance effectiveness."
+            ]
+          },
+          "clarity": {
+            "note": 4,
+            "evidences": [
+              "L10: [Benchmark here](https://keras.io/getting_started/benchmarks/).",
+              "L94: Read more in the [Keras 3 release announcement](https://keras.io/keras_3/)."
+            ],
+            "justifications": [
+              "The links provided are clear and self-explanatory, but their scope is specific (benchmarks, release announcement) rather than general documentation."
+            ]
+          }
+        },
+        "evidences": [
+          "L10: [Benchmark here](https://keras.io/getting_started/benchmarks/).",
+          "L94: Read more in the [Keras 3 release announcement](https://keras.io/keras_3/)."
+        ],
+        "justifications": [
+          "Provides links to relevant external resources like benchmarks and the release announcement.",
+          "Could benefit from a more direct and general link to the main Keras 3 documentation or an FAQ section."
+        ],
+        "suggested_improvements": [
+          "Add a direct link to the main Keras 3 documentation portal (e.g., `https://keras.io/`).",
+          "Consider adding an FAQ section or a link to dedicated support resources."
+        ]
+      },
+      "other": {
+        "checklist": {
+          "generic_sections": false,
+          "placeholders": false
+        },
+        "action": {
+          "reclassify": false,
+          "suggest_removal": false
+        },
+        "evidences": [],
+        "suggested_improvements": []
+      }
+    },
+    "dimensions_summary": {
+      "quality": {
+        "note": 4,
+        "evidences": [
+          "Clear description of Keras 3 and its benefits (L3-L13, L80-L91).",
+          "Detailed installation and configuration instructions (L15-L68).",
+          "Missing usage examples, author/license information, and contribution guidelines."
+        ],
+        "justifications": [
+          "The core aspects of the project (what, why, how to install/configure) are well-covered and of high quality. However, significant standard sections for a complete project README are absent."
+        ]
+      },
+      "appeal": {
+        "note": 4,
+        "evidences": [
+          "L8-L13: Highlights 'Accelerated model development', 'State-of-the-art performance', 'Datacenter-scale training'.",
+          "L13: 'Join nearly three million developers...'"
+        ],
+        "justifications": [
+          "Effectively communicates the project's value proposition and broad adoption, which is appealing. However, the absence of community trust signals like license and clear contribution paths slightly diminishes overall appeal."
+        ]
+      },
+      "readability": {
+        "note": 5,
+        "evidences": [
+          "Consistent use of markdown headings (L1, L15, L17, L26, L46, L57, L70, L80).",
+          "Clear code blocks for installation commands (L20-L21, L32-L33).",
+          "Bullet points for features and benefits (L8-L13, L81-L91)."
+        ],
+        "justifications": [
+          "The README is exceptionally easy to scan and understand due to its excellent formatting, clear language, and logical presentation of information."
+        ]
+      },
+      "understandability": {
+        "note": 4,
+        "evidences": [
+          "L3-L6: Clear explanation of what Keras 3 is.",
+          "L80-L91: Clear benefits of using Keras 3.",
+          "Lack of usage examples makes immediate practical understanding difficult (How_Usage section)."
+        ],
+        "justifications": [
+          "The descriptive and motivational parts are highly understandable. However, the absence of practical usage examples within the README means users cannot immediately grasp how to apply the library without external exploration."
+        ]
+      },
+      "structure": {
+        "note": 5,
+        "evidences": [
+          "Logical flow of sections from introduction to installation, configuration, and rationale.",
+          "Effective use of subheadings to break down complex topics like installation (L17, L26, L46)."
+        ],
+        "justifications": [
+          "The README follows a logical and organized structure, making it easy to navigate and find specific information."
+        ]
+      },
+      "cohesion": {
+        "note": 4,
+        "evidences": [
+          "Introduction flows naturally into features, then installation and configuration.",
+          "Missing sections like 'Usage', 'Who', 'License', and 'Contribution' create gaps in the overall narrative of a complete project overview."
+        ],
+        "justifications": [
+          "The existing content is cohesive and flows well between related topics. However, the absence of several standard README sections reduces the overall completeness and cohesion of the project's documentation."
+        ]
+      },
+      "conciseness": {
+        "note": 5,
+        "evidences": [
+          "Direct language used in descriptions and instructions (e.g., L3-L6, L20-L21).",
+          "No redundant information or verbose explanations."
+        ],
+        "justifications": [
+          "The README is efficient in conveying information, presenting key details without unnecessary verbosity or fluff."
+        ]
+      },
+      "effectiveness": {
+        "note": 4,
+        "evidences": [
+          "Successfully guides users through installation and backend setup (L15-L68).",
+          "Effectively communicates the core value proposition of Keras 3 (L8-L13, L80-L91).",
+          "Fails to provide immediate practical usage guidance within the README (How_Usage section)."
+        ],
+        "justifications": [
+          "The README achieves its primary goal of introducing the framework and getting it installed and configured. However, it falls short on demonstrating immediate utility and providing a complete project overview."
+        ]
+      },
+      "consistency": {
+        "note": 5,
+        "evidences": [
+          "Consistent use of headings, code blocks, and bullet points throughout the document.",
+          "Terminology like 'backend' and 'framework' is used consistently (e.g., L3, L23, L57)."
+        ],
+        "justifications": [
+          "The README maintains a consistent style, formatting, and language, which contributes to its professional appearance and ease of comprehension."
+        ]
+      },
+      "clarity": {
+        "note": 5,
+        "evidences": [
+          "Clear statements on what Keras 3 is and its benefits (L3-L13, L80-L91).",
+          "Unambiguous installation commands and configuration steps (L20-L21, L57-L60)."
+        ],
+        "justifications": [
+          "The information that is present in the README is presented with exceptional clarity, making it very easy to understand for the target audience."
+        ]
+      },
+      "global_notes": "The Keras 3 README is strong in describing what the project is, why it's beneficial, and how to install and configure it. It is well-structured, highly readable, and concise. However, it has notable gaps in providing usage examples, information about authors/maintainers, licensing, and contribution guidelines, which are crucial for a complete project overview and fostering community engagement."
+    },
+    "executive_summary": {
+      "strengths": [
+        "Clear and compelling description of Keras 3's purpose, features, and benefits.",
+        "Well-structured and easy-to-follow installation and backend configuration instructions.",
+        "Highlights key advantages like multi-backend support, performance, and scalability.",
+        "Good readability with clear headings, bullet points, and code blocks."
+      ],
+      "weaknesses": [
+        "Lacks a minimal working example for immediate practical usage within the README.",
+        "Missing information on project authors, maintainers, and contact channels.",
+        "No explicit license declaration or link.",
+        "Absence of contribution guidelines."
+      ],
+      "critical_gaps": [
+        "Absence of a 'Usage' section with code examples to demonstrate basic functionality.",
+        "Lack of transparency regarding project governance (authors, license, contribution guidelines)."
+      ],
+      "priority_recommendations": [
+        "Add a concise 'Usage' section with a minimal working code example (e.g., model definition, compilation, training, prediction).",
+        "Include a clear license statement and link to the license file to inform users of usage rights.",
+        "Provide information on how to contribute to the project and who maintains it, along with contact channels.",
+        "Add a direct link to the main Keras 3 documentation for comprehensive reference."
+      ]
+    }
+  },
+  "validation_ok": false,
+  "validation_errors": {
+    "message": "1 is not of type 'boolean', 'null'",
+    "path": [
+      "structural_summary",
+      "present_categories",
+      "why"
+    ]
+  },
+  "progress_history": [
+    {
+      "stage": "building_prompt",
+      "status": "in_progress",
+      "percentage": 25,
+      "message": "Loading schema and building prompt...",
+      "elapsed_seconds": 0.0,
+      "estimated_remaining_seconds": null,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "building_prompt",
+      "status": "completed",
+      "percentage": 25,
+      "message": "Prompt built (87438 chars)",
+      "elapsed_seconds": 0.02,
+      "estimated_remaining_seconds": 0.07,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Calling gemini-2.5-flash...",
+      "elapsed_seconds": 0.03,
+      "estimated_remaining_seconds": 0.01,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (136 chars)",
+      "elapsed_seconds": 33.53,
+      "estimated_remaining_seconds": 11.18,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (290 chars)",
+      "elapsed_seconds": 33.65,
+      "estimated_remaining_seconds": 11.22,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (496 chars)",
+      "elapsed_seconds": 33.85,
+      "estimated_remaining_seconds": 11.28,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (700 chars)",
+      "elapsed_seconds": 34.06,
+      "estimated_remaining_seconds": 11.35,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (844 chars)",
+      "elapsed_seconds": 34.2,
+      "estimated_remaining_seconds": 11.4,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (957 chars)",
+      "elapsed_seconds": 34.4,
+      "estimated_remaining_seconds": 11.47,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (1133 chars)",
+      "elapsed_seconds": 34.55,
+      "estimated_remaining_seconds": 11.52,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (1342 chars)",
+      "elapsed_seconds": 34.78,
+      "estimated_remaining_seconds": 11.59,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (1490 chars)",
+      "elapsed_seconds": 34.91,
+      "estimated_remaining_seconds": 11.64,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (1662 chars)",
+      "elapsed_seconds": 35.15,
+      "estimated_remaining_seconds": 11.72,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (1884 chars)",
+      "elapsed_seconds": 35.28,
+      "estimated_remaining_seconds": 11.76,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (2115 chars)",
+      "elapsed_seconds": 35.47,
+      "estimated_remaining_seconds": 11.82,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (2334 chars)",
+      "elapsed_seconds": 35.7,
+      "estimated_remaining_seconds": 11.9,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (2539 chars)",
+      "elapsed_seconds": 35.91,
+      "estimated_remaining_seconds": 11.97,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (2769 chars)",
+      "elapsed_seconds": 36.11,
+      "estimated_remaining_seconds": 12.04,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (2983 chars)",
+      "elapsed_seconds": 36.31,
+      "estimated_remaining_seconds": 12.1,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (3189 chars)",
+      "elapsed_seconds": 36.52,
+      "estimated_remaining_seconds": 12.17,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (3368 chars)",
+      "elapsed_seconds": 36.69,
+      "estimated_remaining_seconds": 12.23,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (3606 chars)",
+      "elapsed_seconds": 36.86,
+      "estimated_remaining_seconds": 12.29,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (3851 chars)",
+      "elapsed_seconds": 37.09,
+      "estimated_remaining_seconds": 12.36,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (4011 chars)",
+      "elapsed_seconds": 37.26,
+      "estimated_remaining_seconds": 12.42,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (4149 chars)",
+      "elapsed_seconds": 37.44,
+      "estimated_remaining_seconds": 12.48,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (4331 chars)",
+      "elapsed_seconds": 37.75,
+      "estimated_remaining_seconds": 12.58,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (4553 chars)",
+      "elapsed_seconds": 37.86,
+      "estimated_remaining_seconds": 12.62,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (4708 chars)",
+      "elapsed_seconds": 38.06,
+      "estimated_remaining_seconds": 12.69,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (4967 chars)",
+      "elapsed_seconds": 38.19,
+      "estimated_remaining_seconds": 12.73,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (5160 chars)",
+      "elapsed_seconds": 38.38,
+      "estimated_remaining_seconds": 12.79,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (5344 chars)",
+      "elapsed_seconds": 38.56,
+      "estimated_remaining_seconds": 12.85,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (5601 chars)",
+      "elapsed_seconds": 38.77,
+      "estimated_remaining_seconds": 12.92,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (5749 chars)",
+      "elapsed_seconds": 38.98,
+      "estimated_remaining_seconds": 12.99,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (5938 chars)",
+      "elapsed_seconds": 39.1,
+      "estimated_remaining_seconds": 13.03,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (6174 chars)",
+      "elapsed_seconds": 39.39,
+      "estimated_remaining_seconds": 13.13,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (6336 chars)",
+      "elapsed_seconds": 39.48,
+      "estimated_remaining_seconds": 13.16,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (6504 chars)",
+      "elapsed_seconds": 39.69,
+      "estimated_remaining_seconds": 13.23,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (6727 chars)",
+      "elapsed_seconds": 39.9,
+      "estimated_remaining_seconds": 13.3,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (6895 chars)",
+      "elapsed_seconds": 40.1,
+      "estimated_remaining_seconds": 13.37,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (7106 chars)",
+      "elapsed_seconds": 40.31,
+      "estimated_remaining_seconds": 13.44,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (7274 chars)",
+      "elapsed_seconds": 40.51,
+      "estimated_remaining_seconds": 13.5,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (7423 chars)",
+      "elapsed_seconds": 40.63,
+      "estimated_remaining_seconds": 13.54,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (7664 chars)",
+      "elapsed_seconds": 40.92,
+      "estimated_remaining_seconds": 13.64,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (7807 chars)",
+      "elapsed_seconds": 41.0,
+      "estimated_remaining_seconds": 13.67,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (7976 chars)",
+      "elapsed_seconds": 41.23,
+      "estimated_remaining_seconds": 13.74,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (8160 chars)",
+      "elapsed_seconds": 41.38,
+      "estimated_remaining_seconds": 13.79,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (8394 chars)",
+      "elapsed_seconds": 41.64,
+      "estimated_remaining_seconds": 13.88,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (8547 chars)",
+      "elapsed_seconds": 41.8,
+      "estimated_remaining_seconds": 13.93,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (8748 chars)",
+      "elapsed_seconds": 41.96,
+      "estimated_remaining_seconds": 13.99,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (8971 chars)",
+      "elapsed_seconds": 42.16,
+      "estimated_remaining_seconds": 14.05,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (9208 chars)",
+      "elapsed_seconds": 42.36,
+      "estimated_remaining_seconds": 14.12,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (9363 chars)",
+      "elapsed_seconds": 42.56,
+      "estimated_remaining_seconds": 14.19,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (9622 chars)",
+      "elapsed_seconds": 42.77,
+      "estimated_remaining_seconds": 14.26,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (9785 chars)",
+      "elapsed_seconds": 42.89,
+      "estimated_remaining_seconds": 14.3,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (9996 chars)",
+      "elapsed_seconds": 43.07,
+      "estimated_remaining_seconds": 14.36,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (10207 chars)",
+      "elapsed_seconds": 43.28,
+      "estimated_remaining_seconds": 14.43,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (10401 chars)",
+      "elapsed_seconds": 43.48,
+      "estimated_remaining_seconds": 14.49,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (10568 chars)",
+      "elapsed_seconds": 43.61,
+      "estimated_remaining_seconds": 14.54,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (10727 chars)",
+      "elapsed_seconds": 43.89,
+      "estimated_remaining_seconds": 14.63,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (10932 chars)",
+      "elapsed_seconds": 43.99,
+      "estimated_remaining_seconds": 14.66,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (11144 chars)",
+      "elapsed_seconds": 44.2,
+      "estimated_remaining_seconds": 14.73,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (11376 chars)",
+      "elapsed_seconds": 44.41,
+      "estimated_remaining_seconds": 14.8,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (11528 chars)",
+      "elapsed_seconds": 44.61,
+      "estimated_remaining_seconds": 14.87,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (11723 chars)",
+      "elapsed_seconds": 44.73,
+      "estimated_remaining_seconds": 14.91,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (11976 chars)",
+      "elapsed_seconds": 44.92,
+      "estimated_remaining_seconds": 14.97,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (12144 chars)",
+      "elapsed_seconds": 45.12,
+      "estimated_remaining_seconds": 15.04,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (12327 chars)",
+      "elapsed_seconds": 45.29,
+      "estimated_remaining_seconds": 15.1,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (12548 chars)",
+      "elapsed_seconds": 45.53,
+      "estimated_remaining_seconds": 15.18,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (12851 chars)",
+      "elapsed_seconds": 45.74,
+      "estimated_remaining_seconds": 15.25,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (13032 chars)",
+      "elapsed_seconds": 45.95,
+      "estimated_remaining_seconds": 15.32,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (13177 chars)",
+      "elapsed_seconds": 46.08,
+      "estimated_remaining_seconds": 15.36,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (13366 chars)",
+      "elapsed_seconds": 46.35,
+      "estimated_remaining_seconds": 15.45,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (13569 chars)",
+      "elapsed_seconds": 46.47,
+      "estimated_remaining_seconds": 15.49,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (13739 chars)",
+      "elapsed_seconds": 46.71,
+      "estimated_remaining_seconds": 15.57,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (13923 chars)",
+      "elapsed_seconds": 46.86,
+      "estimated_remaining_seconds": 15.62,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (14135 chars)",
+      "elapsed_seconds": 47.03,
+      "estimated_remaining_seconds": 15.68,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (14335 chars)",
+      "elapsed_seconds": 47.25,
+      "estimated_remaining_seconds": 15.75,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (14548 chars)",
+      "elapsed_seconds": 47.48,
+      "estimated_remaining_seconds": 15.83,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (14691 chars)",
+      "elapsed_seconds": 47.68,
+      "estimated_remaining_seconds": 15.89,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (14906 chars)",
+      "elapsed_seconds": 47.8,
+      "estimated_remaining_seconds": 15.93,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (15117 chars)",
+      "elapsed_seconds": 47.97,
+      "estimated_remaining_seconds": 15.99,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (15326 chars)",
+      "elapsed_seconds": 48.14,
+      "estimated_remaining_seconds": 16.05,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (15566 chars)",
+      "elapsed_seconds": 48.33,
+      "estimated_remaining_seconds": 16.11,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (15775 chars)",
+      "elapsed_seconds": 48.51,
+      "estimated_remaining_seconds": 16.17,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (15931 chars)",
+      "elapsed_seconds": 48.7,
+      "estimated_remaining_seconds": 16.23,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (16113 chars)",
+      "elapsed_seconds": 48.91,
+      "estimated_remaining_seconds": 16.3,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (16320 chars)",
+      "elapsed_seconds": 49.04,
+      "estimated_remaining_seconds": 16.35,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (16540 chars)",
+      "elapsed_seconds": 49.22,
+      "estimated_remaining_seconds": 16.41,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (16779 chars)",
+      "elapsed_seconds": 49.48,
+      "estimated_remaining_seconds": 16.49,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (16945 chars)",
+      "elapsed_seconds": 49.73,
+      "estimated_remaining_seconds": 16.58,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (17099 chars)",
+      "elapsed_seconds": 49.85,
+      "estimated_remaining_seconds": 16.62,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (17292 chars)",
+      "elapsed_seconds": 50.01,
+      "estimated_remaining_seconds": 16.67,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (17487 chars)",
+      "elapsed_seconds": 50.18,
+      "estimated_remaining_seconds": 16.73,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (17724 chars)",
+      "elapsed_seconds": 50.37,
+      "estimated_remaining_seconds": 16.79,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (17924 chars)",
+      "elapsed_seconds": 50.55,
+      "estimated_remaining_seconds": 16.85,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (18130 chars)",
+      "elapsed_seconds": 50.72,
+      "estimated_remaining_seconds": 16.91,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (18371 chars)",
+      "elapsed_seconds": 50.96,
+      "estimated_remaining_seconds": 16.99,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (18582 chars)",
+      "elapsed_seconds": 51.16,
+      "estimated_remaining_seconds": 17.05,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (18751 chars)",
+      "elapsed_seconds": 51.37,
+      "estimated_remaining_seconds": 17.12,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (18908 chars)",
+      "elapsed_seconds": 51.57,
+      "estimated_remaining_seconds": 17.19,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (19072 chars)",
+      "elapsed_seconds": 51.69,
+      "estimated_remaining_seconds": 17.23,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (19301 chars)",
+      "elapsed_seconds": 51.9,
+      "estimated_remaining_seconds": 17.3,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (19467 chars)",
+      "elapsed_seconds": 52.07,
+      "estimated_remaining_seconds": 17.36,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (19700 chars)",
+      "elapsed_seconds": 52.3,
+      "estimated_remaining_seconds": 17.43,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (19847 chars)",
+      "elapsed_seconds": 52.47,
+      "estimated_remaining_seconds": 17.49,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (20064 chars)",
+      "elapsed_seconds": 52.66,
+      "estimated_remaining_seconds": 17.55,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (20273 chars)",
+      "elapsed_seconds": 52.85,
+      "estimated_remaining_seconds": 17.62,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (20448 chars)",
+      "elapsed_seconds": 53.05,
+      "estimated_remaining_seconds": 17.68,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (20610 chars)",
+      "elapsed_seconds": 53.24,
+      "estimated_remaining_seconds": 17.75,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (20752 chars)",
+      "elapsed_seconds": 53.52,
+      "estimated_remaining_seconds": 17.84,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (20917 chars)",
+      "elapsed_seconds": 53.59,
+      "estimated_remaining_seconds": 17.86,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (21137 chars)",
+      "elapsed_seconds": 53.83,
+      "estimated_remaining_seconds": 17.94,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (21305 chars)",
+      "elapsed_seconds": 53.97,
+      "estimated_remaining_seconds": 17.99,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (21490 chars)",
+      "elapsed_seconds": 54.24,
+      "estimated_remaining_seconds": 18.08,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (21752 chars)",
+      "elapsed_seconds": 54.37,
+      "estimated_remaining_seconds": 18.12,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (21880 chars)",
+      "elapsed_seconds": 54.55,
+      "estimated_remaining_seconds": 18.18,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (22010 chars)",
+      "elapsed_seconds": 54.85,
+      "estimated_remaining_seconds": 18.28,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (22204 chars)",
+      "elapsed_seconds": 55.05,
+      "estimated_remaining_seconds": 18.35,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (22370 chars)",
+      "elapsed_seconds": 55.17,
+      "estimated_remaining_seconds": 18.39,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (22562 chars)",
+      "elapsed_seconds": 55.46,
+      "estimated_remaining_seconds": 18.49,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (22829 chars)",
+      "elapsed_seconds": 55.6,
+      "estimated_remaining_seconds": 18.53,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (23059 chars)",
+      "elapsed_seconds": 55.83,
+      "estimated_remaining_seconds": 18.61,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (23245 chars)",
+      "elapsed_seconds": 56.0,
+      "estimated_remaining_seconds": 18.67,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (23451 chars)",
+      "elapsed_seconds": 56.21,
+      "estimated_remaining_seconds": 18.74,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (23697 chars)",
+      "elapsed_seconds": 56.49,
+      "estimated_remaining_seconds": 18.83,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (23899 chars)",
+      "elapsed_seconds": 56.69,
+      "estimated_remaining_seconds": 18.9,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (24086 chars)",
+      "elapsed_seconds": 56.9,
+      "estimated_remaining_seconds": 18.97,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (24305 chars)",
+      "elapsed_seconds": 57.05,
+      "estimated_remaining_seconds": 19.02,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (24440 chars)",
+      "elapsed_seconds": 57.25,
+      "estimated_remaining_seconds": 19.08,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (24690 chars)",
+      "elapsed_seconds": 57.44,
+      "estimated_remaining_seconds": 19.15,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (24894 chars)",
+      "elapsed_seconds": 57.71,
+      "estimated_remaining_seconds": 19.24,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (25066 chars)",
+      "elapsed_seconds": 57.92,
+      "estimated_remaining_seconds": 19.31,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (25284 chars)",
+      "elapsed_seconds": 58.13,
+      "estimated_remaining_seconds": 19.38,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (25424 chars)",
+      "elapsed_seconds": 58.23,
+      "estimated_remaining_seconds": 19.41,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (25607 chars)",
+      "elapsed_seconds": 58.42,
+      "estimated_remaining_seconds": 19.47,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (25796 chars)",
+      "elapsed_seconds": 58.64,
+      "estimated_remaining_seconds": 19.55,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (26048 chars)",
+      "elapsed_seconds": 58.78,
+      "estimated_remaining_seconds": 19.59,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (26247 chars)",
+      "elapsed_seconds": 58.96,
+      "estimated_remaining_seconds": 19.65,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (26507 chars)",
+      "elapsed_seconds": 59.15,
+      "estimated_remaining_seconds": 19.72,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (26727 chars)",
+      "elapsed_seconds": 59.32,
+      "estimated_remaining_seconds": 19.77,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (26933 chars)",
+      "elapsed_seconds": 59.56,
+      "estimated_remaining_seconds": 19.85,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (27155 chars)",
+      "elapsed_seconds": 59.7,
+      "estimated_remaining_seconds": 19.9,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (27401 chars)",
+      "elapsed_seconds": 59.97,
+      "estimated_remaining_seconds": 19.99,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (27531 chars)",
+      "elapsed_seconds": 60.17,
+      "estimated_remaining_seconds": 20.06,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "completed",
+      "percentage": 75,
+      "message": "Model responded (27531 chars)",
+      "elapsed_seconds": 61.41,
+      "estimated_remaining_seconds": 20.47,
+      "details": {
+        "response_length": 27531
+      },
+      "error": null
+    },
+    {
+      "stage": "parsing_json",
+      "status": "in_progress",
+      "percentage": 90,
+      "message": "Parsing JSON response...",
+      "elapsed_seconds": 61.41,
+      "estimated_remaining_seconds": 6.82,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "parsing_json",
+      "status": "completed",
+      "percentage": 90,
+      "message": "JSON parsed and fixed successfully",
+      "elapsed_seconds": 61.41,
+      "estimated_remaining_seconds": 6.82,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "validating",
+      "status": "in_progress",
+      "percentage": 95,
+      "message": "Validating against schema...",
+      "elapsed_seconds": 61.41,
+      "estimated_remaining_seconds": 3.23,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "validating",
+      "status": "error",
+      "percentage": 95,
+      "message": "Schema validation failed",
+      "elapsed_seconds": 61.95,
+      "estimated_remaining_seconds": null,
+      "details": null,
+      "error": "Schema validation failed at ['structural_summary', 'present_categories', 'why']"
+    }
+  ],
+  "timing": {
+    "prompt_build": 0.024699687957763672,
+    "model_call": 61.38614058494568,
+    "parsing": 0.0009930133819580078,
+    "validation": 0.5363833904266357,
+    "total": 61.94997429847717
+  },
+  "tokens": {},
+  "retry_count": 0,
+  "recovery_suggestions": [
+    "Field validation failed at: structural_summary.present_categories.why"
+  ],
+  "mongo_id": "692b185cd3dac2929a613b10"
+}

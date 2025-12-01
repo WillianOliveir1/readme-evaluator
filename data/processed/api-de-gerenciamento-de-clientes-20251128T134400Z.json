@@ -1,0 +1,1912 @@
+{
+  "success": true,
+  "prompt": "You are a JSON extraction assistant.\nINSTRUCTIONS:\nExtract the information from the README and return a single JSON object that matches the supplied JSON Schema exactly. Do not include any explanatory text. Return only a valid JSON object.\n\nschema:\n{\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"required\": [\n    \"metadata\",\n    \"structural_summary\",\n    \"categories\",\n    \"dimensions_summary\",\n    \"executive_summary\"\n  ],\n  \"properties\": {\n    \"metadata\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\n        \"repository_name\",\n        \"repository_link\",\n        \"readme_raw_link\",\n        \"evaluation_date\",\n        \"evaluator\",\n        \"general_notes\"\n      ],\n      \"properties\": {\n        \"repository_name\": {\n          \"type\": \"string\"\n        },\n        \"repository_link\": {\n          \"type\": \"string\"\n        },\n        \"readme_raw_link\": {\n          \"type\": \"string\"\n        },\n        \"evaluation_date\": {\n          \"type\": \"string\"\n        },\n        \"evaluator\": {\n          \"type\": \"string\"\n        },\n        \"general_notes\": {\n          \"type\": \"string\"\n        }\n      }\n    },\n    \"structural_summary\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\n        \"detected_sections\",\n        \"present_categories\",\n        \"organization_notes\"\n      ],\n      \"properties\": {\n        \"detected_sections\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          }\n        },\n        \"present_categories\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"what\",\n            \"why\",\n            \"how_installation\",\n            \"how_usage\",\n            \"how_config_requirements\",\n            \"when\",\n            \"who\",\n            \"license\",\n            \"contribution\",\n            \"references\",\n            \"other\"\n          ],\n          \"properties\": {\n            \"what\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"why\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"how_installation\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"how_usage\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"how_config_requirements\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"when\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"who\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"license\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"contribution\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"references\": {\n              \"type\": [\"boolean\", \"null\"]\n            },\n            \"other\": {\n              \"type\": [\"boolean\", \"null\"]\n            }\n          }\n        },\n        \"organization_notes\": {\n          \"type\": \"string\"\n        }\n      }\n    },\n    \"categories\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\n        \"what\",\n        \"why\",\n        \"how_installation\",\n        \"how_usage\",\n        \"how_config_requirements\",\n        \"when\",\n        \"who\",\n        \"license\",\n        \"contribution\",\n        \"references\",\n        \"other\"\n      ],\n      \"properties\": {\n        \"what\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"clear_description\",\n                \"features_scope\",\n                \"target_audience\"\n              ],\n              \"properties\": {\n                \"clear_description\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"features_scope\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"target_audience\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"clarity\",\n                \"understandability\",\n                \"conciseness\",\n                \"consistency\"\n              ],\n              \"properties\": {\n                \"clarity\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"understandability\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"conciseness\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"consistency\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"why\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"explicit_purpose\",\n                \"benefits_vs_alternatives\",\n                \"use_cases\"\n              ],\n              \"properties\": {\n                \"explicit_purpose\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"benefits_vs_alternatives\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"use_cases\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"clarity\",\n                \"effectiveness\",\n                \"appeal\"\n              ],\n              \"properties\": {\n                \"clarity\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"effectiveness\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"appeal\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"how_installation\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"reproducible_commands\",\n                \"compatibility_requirements\",\n                \"dependencies\"\n              ],\n              \"properties\": {\n                \"reproducible_commands\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"compatibility_requirements\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"dependencies\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"structure\",\n                \"readability\",\n                \"clarity\"\n              ],\n              \"properties\": {\n                \"structure\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"readability\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"clarity\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"how_usage\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"minimal_working_example\",\n                \"io_examples\",\n                \"api_commands_context\"\n              ],\n              \"properties\": {\n                \"minimal_working_example\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"io_examples\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"api_commands_context\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"understandability\",\n                \"code_readability\",\n                \"effectiveness\"\n              ],\n              \"properties\": {\n                \"understandability\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"code_readability\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"effectiveness\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"how_config_requirements\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"documented_configuration\",\n                \"parameters_options\",\n                \"troubleshooting\"\n              ],\n              \"properties\": {\n                \"documented_configuration\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"parameters_options\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"troubleshooting\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"clarity\",\n                \"structure\",\n                \"conciseness\"\n              ],\n              \"properties\": {\n                \"clarity\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"structure\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"conciseness\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"when\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"current_status\",\n                \"roadmap\",\n                \"changelog\"\n              ],\n              \"properties\": {\n                \"current_status\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"roadmap\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"changelog\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"clarity\",\n                \"consistency\"\n              ],\n              \"properties\": {\n                \"clarity\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"consistency\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"who\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"authors_maintainers\",\n                \"contact_channels\",\n                \"code_of_conduct\"\n              ],\n              \"properties\": {\n                \"authors_maintainers\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"contact_channels\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"code_of_conduct\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"clarity\",\n                \"consistency\"\n              ],\n              \"properties\": {\n                \"clarity\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"consistency\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"license\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"license_type\",\n                \"license_link\"\n              ],\n              \"properties\": {\n                \"license_type\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"license_link\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"clarity\",\n                \"consistency\"\n              ],\n              \"properties\": {\n                \"clarity\": {\n                  \"type\": \"integer\",\n                  \"minimum\": 1,\n                  \"maximum\": 5\n                },\n                \"consistency\": {\n                  \"type\": \"integer\",\n                  \"minimum\": 1,\n                  \"maximum\": 5\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"contribution\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"contributing_link\",\n                \"contribution_steps\",\n                \"standards\"\n              ],\n              \"properties\": {\n                \"contributing_link\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"contribution_steps\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"standards\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"structure\",\n                \"clarity\",\n                \"readability\"\n              ],\n              \"properties\": {\n                \"structure\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"clarity\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"readability\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"references\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"quality\",\n            \"evidences\",\n            \"justifications\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"docs_link\",\n                \"relevant_references\",\n                \"faq_support\"\n              ],\n              \"properties\": {\n                \"docs_link\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"relevant_references\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"faq_support\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"quality\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"effectiveness\",\n                \"clarity\"\n              ],\n              \"properties\": {\n                \"effectiveness\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                },\n                \"clarity\": {\n                  \"type\": \"object\",\n                  \"additionalProperties\": false,\n                  \"required\": [\n                    \"note\",\n                    \"evidences\",\n                    \"justifications\"\n                  ],\n                  \"properties\": {\n                    \"note\": {\n                      \"type\": \"integer\",\n                      \"minimum\": 1,\n                      \"maximum\": 5\n                    },\n                    \"evidences\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    },\n                    \"justifications\": {\n                      \"type\": \"array\",\n                      \"items\": {\n                        \"type\": \"string\"\n                      }\n                    }\n                  }\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"other\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"checklist\",\n            \"action\",\n            \"evidences\",\n            \"suggested_improvements\"\n          ],\n          \"properties\": {\n            \"checklist\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"generic_sections\",\n                \"placeholders\"\n              ],\n              \"properties\": {\n                \"generic_sections\": {\n                  \"type\": [\"boolean\", \"null\"]\n                },\n                \"placeholders\": {\n                  \"type\": [\"boolean\", \"null\"]\n                }\n              }\n            },\n            \"action\": {\n              \"type\": \"object\",\n              \"additionalProperties\": false,\n              \"required\": [\n                \"reclassify\",\n                \"suggest_removal\"\n              ],\n              \"properties\": {\n                \"reclassify\": {\n                  \"type\": \"boolean\"\n                },\n                \"suggest_removal\": {\n                  \"type\": \"boolean\"\n                }\n              }\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"suggested_improvements\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        }\n      }\n    },\n    \"dimensions_summary\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\n        \"quality\",\n        \"appeal\",\n        \"readability\",\n        \"understandability\",\n        \"structure\",\n        \"cohesion\",\n        \"conciseness\",\n        \"effectiveness\",\n        \"consistency\",\n        \"clarity\",\n        \"global_notes\"\n      ],\n      \"properties\": {\n        \"quality\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"appeal\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"readability\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"understandability\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"structure\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"cohesion\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"conciseness\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"effectiveness\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"consistency\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"clarity\": {\n          \"type\": \"object\",\n          \"additionalProperties\": false,\n          \"required\": [\n            \"note\",\n            \"evidences\",\n            \"justifications\"\n          ],\n          \"properties\": {\n            \"note\": {\n              \"type\": \"integer\",\n              \"minimum\": 1,\n              \"maximum\": 5\n            },\n            \"evidences\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            },\n            \"justifications\": {\n              \"type\": \"array\",\n              \"items\": {\n                \"type\": \"string\"\n              }\n            }\n          }\n        },\n        \"global_notes\": {\n          \"type\": \"string\"\n        }\n      }\n    },\n    \"executive_summary\": {\n      \"type\": \"object\",\n      \"additionalProperties\": false,\n      \"required\": [\n        \"strengths\",\n        \"weaknesses\",\n        \"critical_gaps\",\n        \"priority_recommendations\"\n      ],\n      \"properties\": {\n        \"strengths\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          }\n        },\n        \"weaknesses\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          }\n        },\n        \"critical_gaps\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          }\n        },\n        \"priority_recommendations\": {\n          \"type\": \"array\",\n          \"items\": {\n            \"type\": \"string\"\n          }\n        }\n      }\n    }\n  }\n}\n\nreadme:\n# API de Gerenciamento de Clientes\n\nAPI RESTful desenvolvida com Flask e SQLAlchemy para gerenciamento de clientes e seus atributos customizados.\n\n![Versão](https://img.shields.io/badge/versão-1.0.0-blue)\n![Python](https://img.shields.io/badge/Python-3.8+-green)\n![Flask](https://img.shields.io/badge/Flask-2.0+-lightgrey)\n\n## Descrição\n\nEsta API permite realizar operações de CRUD (Criar, Ler, Atualizar e Deletar) de clientes e seus dados relacionados. O sistema foi projetado para ser facilmente extensível e integrado com outros serviços.\n\n### Principais funcionalidades\n- Gerenciamento completo de clientes\n- Suporte para atributos customizáveis por cliente\n- Documentação interativa via Swagger\n- Respostas JSON padronizadas\n- Tratamento de erros consistente\n\n## Tecnologias utilizadas\n\n- **Flask**: Framework web leve e flexível\n- **SQLAlchemy**: ORM para manipulação do banco de dados\n- **Flask-Swagger**: Documentação interativa da API\n- **SQLite**: Banco de dados (configurável para outros SGBDs)\n\n## Estrutura do projeto\n\n```\nbackend/\n├── app.py              # Ponto de entrada da aplicação\n├── config.py           # Configurações da aplicação\n├── models.py           # Modelos de dados e schemas\n├── blueprints/         # Rotas da API organizadas por recursos\n│   ├── clients.py      # Endpoints de clientes\n│   └── ...\n├── static/             # Arquivos estáticos\n│   └── swagger.json    # Documentação da API\n```\n\n## Instruções de Instalação\n\n### Pré-requisitos\n- Python 3.8 ou superior\n- pip (gerenciador de pacotes do Python)\n- Ambiente virtual (recomendado)\n\n### Passos para instalação\n\n1. Clone este repositório:\n```bash\ngit clone <URL-do-repositório>\n```\n\n2. Crie e ative um ambiente virtual (opcional, mas recomendado):\n```bash\npython -m venv venv\n# No Windows\nvenv\\Scripts\\activate\n# No Linux/MacOS\nsource venv/bin/activate\n```\n\n3. Instale as dependências:\n```bash\npip install -r requirements.txt\n```\n\n4. Configure as variáveis de ambiente (opcional):\n```bash\n# No Windows\nset FLASK_APP=app.py\nset FLASK_ENV=development\n# No Linux/MacOS\nexport FLASK_APP=app.py\nexport FLASK_ENV=development\n```\n\n5. Execute a aplicação:\n```bash\npython app.py\n# Ou alternativamente\nflask run\n```\n\nA API estará disponível em: http://localhost:5000\n\n## Rotas da API\n\n### Clientes\n- `GET /api/clients` - Listar todos os clientes\n- `GET /api/clients/<id>` - Buscar um cliente específico (incluindo seus atributos)\n- `POST /api/clients` - Cadastrar novo cliente\n- `PUT /api/clients/<id>` - Atualizar dados de um cliente\n- `DELETE /api/clients/<id>` - Remover um cliente\n\n### Atributos de clientes\n- `POST /api/clients/<id>/attributes` - Adicionar um novo atributo a um cliente\n\n## Exemplos de uso\n\n### Criar um novo cliente\n```bash\ncurl -X POST http://localhost:5000/api/clients \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"name\": \"João Silva\",\n    \"email\": \"joao.silva@exemplo.com\",\n    \"phone\": \"(11) 98765-4321\",\n    \"attributes\": [\n      {\"key\": \"categoria\", \"value\": \"premium\"},\n      {\"key\": \"região\", \"value\": \"sudeste\"}\n    ]\n  }'\n```\n\n### Buscar um cliente\n```bash\ncurl -X GET http://localhost:5000/api/clients/1\n```\n\n## Documentação\n\nA documentação interativa da API está disponível em http://localhost:5000/api/docs usando Swagger UI.\n\n## Contribuição\n\n1. Faça um fork do projeto\n2. Crie uma branch para sua feature (`git checkout -b feature/nova-funcionalidade`)\n3. Faça commit das suas alterações (`git commit -m 'Adiciona nova funcionalidade'`)\n4. Faça push para a branch (`git push origin feature/nova-funcionalidade`)\n5. Abra um Pull Request\n\n## Licença\n\nEste projeto está licenciado sob a licença MIT.\n\n\nIMPORTANT: The model must output a single JSON object, valid according to the schema above. No surrounding backticks, no markdown, no commentary.",
+  "model_output": "```json\n{\n  \"metadata\": {\n    \"repository_name\": \"API de Gerenciamento de Clientes\",\n    \"repository_link\": \"https://github.com/user/repo\",\n    \"readme_raw_link\": \"https://raw.githubusercontent.com/user/repo/main/README.md\",\n    \"evaluation_date\": \"2024-05-15\",\n    \"evaluator\": \"JSON Extraction Assistant\",\n    \"general_notes\": \"The README provides a good overview of the API, its features, installation, and usage. It includes badges for version and technologies, and a project structure. Documentation via Swagger is highlighted. Contribution guidelines and license information are also present.\"\n  },\n  \"structural_summary\": {\n    \"detected_sections\": [\n      \"API de Gerenciamento de Clientes\",\n      \"Descrição\",\n      \"Principais funcionalidades\",\n      \"Tecnologias utilizadas\",\n      \"Estrutura do projeto\",\n      \"Instruções de Instalação\",\n      \"Pré-requisitos\",\n      \"Passos para instalação\",\n      \"Rotas da API\",\n      \"Clientes\",\n      \"Atributos de clientes\",\n      \"Exemplos de uso\",\n      \"Criar um novo cliente\",\n      \"Buscar um cliente\",\n      \"Documentação\",\n      \"Contribuição\",\n      \"Licença\"\n    ],\n    \"present_categories\": {\n      \"what\": true,\n      \"why\": true,\n      \"how_installation\": true,\n      \"how_usage\": true,\n      \"how_config_requirements\": true,\n      \"when\": false,\n      \"who\": false,\n      \"license\": true,\n      \"contribution\": true,\n      \"references\": true,\n      \"other\": false\n    },\n    \"organization_notes\": \"The README is well-structured with clear headings for different aspects of the project. It follows a logical flow from description to installation, usage, and contribution. The use of code blocks for commands and examples enhances readability.\"\n  },\n  \"categories\": {\n    \"what\": {\n      \"checklist\": {\n        \"clear_description\": true,\n        \"features_scope\": true,\n        \"target_audience\": null\n      },\n      \"quality\": {\n        \"clarity\": {\n          \"note\": 4,\n          \"evidences\": [\n            \"API RESTful desenvolvida com Flask e SQLAlchemy para gerenciamento de clientes e seus atributos customizados.\",\n            \"Esta API permite realizar operações de CRUD (Criar, Ler, Atualizar e Deletar) de clientes e seus dados relacionados.\"\n          ],\n          \"justifications\": [\n            \"The initial statement and description clearly define what the API is and its primary function.\"\n          ]\n        },\n        \"understandability\": {\n          \"note\": 4,\n          \"evidences\": [\n            \"API RESTful desenvolvida com Flask e SQLAlchemy para gerenciamento de clientes e seus atributos customizados.\",\n            \"Principais funcionalidades: Gerenciamento completo de clientes, Suporte para atributos customizáveis por cliente, Documentação interativa via Swagger, Respostas JSON padronizadas, Tratamento de erros consistente.\"\n          ],\n          \"justifications\": [\n            \"The language is straightforward, and the bullet points for functionalities are easy to grasp.\"\n          ]\n        },\n        \"conciseness\": {\n          \"note\": 4,\n          \"evidences\": [\n            \"API RESTful desenvolvida com Flask e SQLAlchemy para gerenciamento de clientes e seus atributos customizados.\"\n          ],\n          \"justifications\": [\n            \"The description is direct and to the point without unnecessary jargon.\"\n          ]\n        },\n        \"consistency\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"The description and features align perfectly with the project's stated purpose.\"\n          ],\n          \"justifications\": [\n            \"All parts of the 'what' section consistently describe the same project and its capabilities.\"\n          ]\n        }\n      },\n      \"evidences\": [\n        \"API RESTful desenvolvida com Flask e SQLAlchemy para gerenciamento de clientes e seus atributos customizados.\",\n        \"Esta API permite realizar operações de CRUD (Criar, Ler, Atualizar e Deletar) de clientes e seus dados relacionados.\",\n        \"Principais funcionalidades: Gerenciamento completo de clientes, Suporte para atributos customizáveis por cliente, Documentação interativa via Swagger, Respostas JSON padronizadas, Tratamento de erros consistente.\"\n      ],\n      \"justifications\": [\n        \"The README clearly states the project's purpose and lists its core features, providing a solid understanding of what the API does.\"\n      ],\n      \"suggested_improvements\": [\n        \"Explicitly state the target audience (e.g., 'This API is intended for developers building applications that require customer management capabilities').\"\n      ]\n    },\n    \"why\": {\n      \"checklist\": {\n        \"explicit_purpose\": true,\n        \"benefits_vs_alternatives\": null,\n        \"use_cases\": null\n      },\n      \"quality\": {\n        \"clarity\": {\n          \"note\": 3,\n          \"evidences\": [\n            \"O sistema foi projetado para ser facilmente extensível e integrado com outros serviços.\"\n          ],\n          \"justifications\": [\n            \"The purpose is clear, but the 'why' it's a good solution is less elaborated.\"\n          ]\n        },\n        \"effectiveness\": {\n          \"note\": 3,\n          \"evidences\": [\n            \"O sistema foi projetado para ser facilmente extensível e integrado com outros serviços.\"\n          ],\n          \"justifications\": [\n            \"It states the purpose but doesn't strongly convince the reader why this specific solution is beneficial over others or for specific scenarios.\"\n          ]\n        },\n        \"appeal\": {\n          \"note\": 3,\n          \"evidences\": [\n            \"Suporte para atributos customizáveis por cliente\",\n            \"Documentação interativa via Swagger\"\n          ],\n          \"justifications\": [\n            \"The customizable attributes and Swagger documentation are appealing features, but the overall 'why' is not strongly articulated.\"\n          ]\n        }\n      },\n      \"evidences\": [\n        \"API RESTful desenvolvida com Flask e SQLAlchemy para gerenciamento de clientes e seus atributos customizados.\",\n        \"O sistema foi projetado para ser facilmente extensível e integrado com outros serviços.\"\n      ],\n      \"justifications\": [\n        \"The README describes what the API does and mentions extensibility, but lacks a dedicated section or strong emphasis on the specific problems it solves or its unique value proposition compared to alternatives.\"\n      ],\n      \"suggested_improvements\": [\n        \"Add a 'Motivation' or 'Why This Project?' section to explain the specific problems this API solves, its advantages, and potential use cases.\",\n        \"Elaborate on the benefits of 'atributos customizáveis' and 'extensível e integrado'.\"\n      ]\n    },\n    \"how_installation\": {\n      \"checklist\": {\n        \"reproducible_commands\": true,\n        \"compatibility_requirements\": true,\n        \"dependencies\": true\n      },\n      \"quality\": {\n        \"structure\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"Pré-requisitos\",\n            \"Passos para instalação\",\n            \"Numbered steps\",\n            \"Code blocks\"\n          ],\n          \"justifications\": [\n            \"The section is very well-structured with clear sub-headings and ordered steps.\"\n          ]\n        },\n        \"readability\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"Clear headings, bullet points, and code blocks make it easy to follow.\"\n          ],\n          \"justifications\": [\n            \"The instructions are presented in a highly readable format.\"\n          ]\n        },\n        \"clarity\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"Each step is clearly defined with the corresponding command and context (e.g., Windows vs. Linux/MacOS for environment variables).\"\n          ],\n          \"justifications\": [\n            \"The instructions are unambiguous and easy to understand for a developer.\"\n          ]\n        }\n      },\n      \"evidences\": [\n        \"Pré-requisitos: Python 3.8 ou superior, pip, Ambiente virtual (recomendado)\",\n        \"Passos para instalação: 1. Clone este repositório, 2. Crie e ative um ambiente virtual, 3. Instale as dependências, 4. Configure as variáveis de ambiente, 5. Execute a aplicação.\",\n        \"Code blocks for all commands.\"\n      ],\n      \"justifications\": [\n        \"The installation instructions are comprehensive, well-organized, and include all necessary steps and prerequisites for a smooth setup.\"\n      ],\n      \"suggested_improvements\": []\n    },\n    \"how_usage\": {\n      \"checklist\": {\n        \"minimal_working_example\": true,\n        \"io_examples\": true,\n        \"api_commands_context\": true\n      },\n      \"quality\": {\n        \"understandability\": {\n          \"note\": 4,\n          \"evidences\": [\n            \"Rotas da API section clearly lists endpoints.\",\n            \"Exemplos de uso section provides `curl` commands.\"\n          ],\n          \"justifications\": [\n            \"The API routes are clearly defined, and the examples are practical and easy to follow.\"\n          ]\n        },\n        \"code_readability\": {\n          \"note\": 5,\n          \"evidences\": [\n            \"The `curl` commands are well-formatted in code blocks and include headers and JSON bodies.\"\n          ],\n          \"justifications\": [\n            \"The code examples are perfectly readable and demonstrate usage effectively.\"\n          ]\n        },\n        \"effectiveness\": {\n          \"note\": 4,\n          \"evidences\": [\n            \"The examples demonstrate how to create and retrieve a client, which covers basic CRUD operations.\"\n          ],\n          \"justifications\": [\n            \"The provided examples are effective for a quick start, though more complex scenarios could be added.\"\n          ]\n        }\n      },\n      \"evidences\": [\n        \"Rotas da API: GET /api/clients, POST /api/clients, etc.\",\n        \"Exemplos de uso: `curl -X POST ...`, `curl -X GET ...`\"\n      ],\n      \"justifications\": [\n        \"The README provides a clear list of API routes and practical `curl` examples for common operations, making it easy for users to start interacting with the API.\"\n      ],\n      \"suggested_improvements\": [\n        \"Add examples for PUT and DELETE operations.\",\n        \"Show an example of adding a custom attribute to a client.\",\n        \"Provide expected JSON responses for the examples.\"\n      ]\n    },\n    \"how_config_requirements\": {\n      \"checklist\": {\n        \"documented_configuration\": true,\n        \"parameters_options\": true,\n        \"troubleshooting\": null\n      },\n      \"quality\": {\n        \"clarity\": {\n          \"note\": 3,\n          \"evidences\": [\n            \"config.py # Configurações da aplicação\",\n            \"SQLite: Banco de dados (configurável para outros SGBDs)\",\n            \"Configure as variáveis de ambiente\"\n          ],\n          \"justifications\": [\n            \"It mentions configuration files and options, but doesn't detail *how* to configure them or what parameters are available beyond environment variables.\"\n          ]\n        },\n        \"structure\": {\n          \"note\": 3,\n          \"evidences\": [\n            \"config.py # Configurações da aplicação\",\n            \"Configure as variáveis de ambiente\"\n          ],\n          \"justifications\": [\n            \"Configuration details are scattered across 'Estrutura do projeto' and 'Instruções de Instalação' rather than a dedicated section.\"\n          ]\n        },\n        \"conciseness\": {\n          \"note\": 3,\n          \"evidences\": [\n            \"SQLite: Banco de dados (configurável para outros SGBDs)\"\n          ],\n          \"justifications\": [\n            \"It's concise but perhaps too brief, lacking details on how to perform the configuration.\"\n          ]\n        }\n      },\n      \"evidences\": [\n        \"config.py # Configurações da aplicação\",\n        \"set FLASK_APP=app.py\",\n        \"set FLASK_ENV=development\",\n        \"SQLite: Banco de dados (configurável para outros SGBDs)\"\n      ],\n      \"justifications\": [\n        \"The README indicates that configuration is possible (e.g., database, environment variables) but lacks a dedicated section detailing configuration options, parameters, or how to modify them effectively.\"\n      ],\n      \"suggested_improvements\": [\n        \"Create a dedicated 'Configuration' section detailing `config.py` options, how to switch databases, and any other configurable parameters.\",\n        \"Provide examples of how to configure custom attributes.\"\n      ]\n    },\n    \"when\": {\n      \"checklist\": {\n        \"current_status\": null,\n        \"roadmap\": null,\n        \"changelog\": null\n      },\n      \"quality\": {\n        \"clarity\": {\n          \"note\": 1,\n          \"evidences\": [],\n          \"justifications\": [\n            \"No information provided.\"\n          ]\n        },\n        \"consistency\": {\n          \"note\": 1,\n          \"evidences\": [],\n          \"justifications\": [\n            \"No information provided.\"\n          ]\n        }\n      },\n      \"evidences\": [],\n      \"justifications\": [\n        \"The README does not contain any information regarding the project's current status, future plans (roadmap), or a history of changes (changelog).\"\n      ],\n      \"suggested_improvements\": [\n        \"Add a 'Status' section indicating if the project is active, in development, or stable.\",\n        \"Consider adding a 'Roadmap' for future features or a 'Changelog' for version history.\"\n      ]\n    },\n    \"who\": {\n      \"checklist\": {\n        \"authors_maintainers\": null,\n        \"contact_channels\": null,\n        \"code_of_conduct\": null\n      },\n      \"quality\": {\n        \"clarity\": {\n          \"note\": 1,\n          \"evidences\": [],\n          \"justifications\": [\n            \"No information provided.\"\n          ]\n        },\n        \"consistency\": {\n          \"note\": 1,\n          \"evidences\": [],\n          \"justifications\": [\n            \"No information provided.\"\n          ]\n        }\n      },\n      \"evidences\": [],\n      \"justifications\": [\n        \"The README does not explicitly mention the authors or maintainers of the project, nor does it provide contact channels or a code of conduct.\"\n      ],\n      \"suggested_improvements\": [\n        \"Add an 'Authors' or 'Credits' section to acknowledge contributors.\",\n        \"Include contact information or preferred communication channels.\",\n        \"Consider adding a Code of Conduct, especially for open-source projects.\"\n      ]\n    },\n    \"license\": {\n      \"checklist\": {\n        \"license_type\": true,\n        \"license_link\": null\n      },\n      \"quality\": {\n        \"clarity\": 4,\n        \"consistency\": 5\n      },\n      \"evidences\": [\n        \"Este projeto está licenciado sob a licença MIT.\"\n      ],\n      \"justifications\": [\n        \"The license type is clearly stated.\"\n      ],\n      \"suggested_improvements\": [\n        \"Provide a direct link to the full license text (e.g., a `LICENSE` file in the repository).\"\n      ]\n    },\n    \"contribution\": {\n      \"checklist\": {\n        \"contributing_link\": null,\n        \"contribution_steps\": true,\n        \"standards\": null\n      },\n      \"quality\": {\n        \"structure\": {\n          \"note\": 4,\n          \"evidences\": [\n            \"Numbered steps for contribution process.\"\n          ],\n          \"justifications\": [\n            \"The steps are clearly structured and easy to follow.\"\n          ]\n        },\n        \"clarity\": {\n          \"note\": 4,\n          \"evidences\": [\n            \"Each step is a concise instruction.\"\n          ],\n          \"justifications\": [\n            \"The instructions are clear and direct.\"\n          ]\n        },\n        \"readability\": {\n          \"note\": 4,\n          \"evidences\": [\n            \"The steps are presented as a numbered list.\"\n          ],\n          \"justifications\": [\n            \"The list format makes the contribution process easy to read.\"\n          ]\n        }\n      },\n      \"evidences\": [\n        \"1. Faça um fork do projeto\",\n        \"2. Crie uma branch para sua feature (`git checkout -b feature/nova-funcionalidade`)\",\n        \"3. Faça commit das suas alterações (`git commit -m 'Adiciona nova funcionalidade'`)\",\n        \"4. Faça push para a branch (`git push origin feature/nova-funcionalidade`)\",\n        \"5. Abra um Pull Request\"\n      ],\n      \"justifications\": [\n        \"The README provides a clear, step-by-step guide for contributing to the project.\"\n      ],\n      \"suggested_improvements\": [\n        \"Add a link to a `CONTRIBUTING.md` file if more detailed guidelines exist.\",\n        \"Include information on coding standards, testing requirements, or issue reporting guidelines.\"\n      ]\n    },\n    \"references\": {\n      \"checklist\": {\n        \"docs_link\": true,\n        \"relevant_references\": null,\n        \"faq_support\": null\n      },\n      \"quality\": {\n        \"effectiveness\": {\n          \"note\": 4,\n          \"evidences\": [\n            \"A documentação interativa da API está disponível em http://localhost:5000/api/docs usando Swagger UI.\"\n          ],\n          \"justifications\": [\n            \"Providing a link to interactive Swagger documentation is highly effective for API users.\"\n          ]\n        },\n        \"clarity\": {\n          \"note\": 4,\n          \"evidences\": [\n            \"A documentação interativa da API está disponível em http://localhost:5000/api/docs usando Swagger UI.\"\n          ],\n          \"justifications\": [\n            \"The statement about documentation is clear and direct.\"\n          ]\n        }\n      },\n      \"evidences\": [\n        \"A documentação interativa da API está disponível em http://localhost:5000/api/docs usando Swagger UI.\"\n      ],\n      \"justifications\": [\n        \"The README clearly points to the interactive API documentation via Swagger UI, which is a valuable resource.\"\n      ],\n      \"suggested_improvements\": [\n        \"Consider adding a section for external resources, related projects, or a FAQ if applicable.\",\n        \"Provide information on how to get support or report issues.\"\n      ]\n    },\n    \"other\": {\n      \"checklist\": {\n        \"generic_sections\": false,\n        \"placeholders\": false\n      },\n      \"action\": {\n        \"reclassify\": false,\n        \"suggest_removal\": false\n      },\n      \"evidences\": [],\n      \"suggested_improvements\": []\n    }\n  },\n  \"dimensions_summary\": {\n    \"quality\": {\n      \"note\": 4,\n      \"evidences\": [\n        \"Clear description and features.\",\n        \"Well-structured installation and usage instructions.\",\n        \"Interactive API documentation via Swagger.\"\n      ],\n      \"justifications\": [\n        \"The README is generally high quality, providing essential information clearly and effectively.\"\n      ]\n    },\n    \"appeal\": {\n      \"note\": 4,\n      \"evidences\": [\n        \"Badges for version and technologies.\",\n        \"Mention of customizable attributes and Swagger UI.\",\n        \"Clear examples.\"\n      ],\n      \"justifications\": [\n        \"The README presents the project in an appealing way, highlighting key features and ease of use.\"\n      ]\n    },\n    \"readability\": {\n      \"note\": 5,\n      \"evidences\": [\n        \"Consistent use of headings, bullet points, and code blocks.\",\n        \"Clear and concise language.\"\n      ],\n      \"justifications\": [\n        \"The README is exceptionally readable, making it easy to digest information quickly.\"\n      ]\n    },\n    \"understandability\": {\n      \"note\": 4,\n      \"evidences\": [\n        \"Straightforward language in descriptions.\",\n        \"Practical code examples.\",\n        \"Logical flow of sections.\"\n      ],\n      \"justifications\": [\n        \"Most sections are easy to understand, especially the technical instructions and API usage.\"\n      ]\n    },\n    \"structure\": {\n      \"note\": 5,\n      \"evidences\": [\n        \"Logical organization of sections (Description, Technologies, Installation, Usage, Contribution, License).\",\n        \"Use of sub-headings for detailed steps.\"\n      ],\n      \"justifications\": [\n        \"The README has an excellent, logical structure that guides the reader through the project.\"\n      ]\n    },\n    \"cohesion\": {\n      \"note\": 4,\n      \"evidences\": [\n        \"All sections relate directly to the API project.\",\n        \"Consistent tone and terminology.\"\n      ],\n      \"justifications\": [\n        \"The content is cohesive, with all parts contributing to the overall understanding of the API.\"\n      ]\n    },\n    \"conciseness\": {\n      \"note\": 4,\n      \"evidences\": [\n        \"Information is presented without excessive verbosity.\",\n        \"Code examples are to the point.\"\n      ],\n      \"justifications\": [\n        \"The README is generally concise, providing necessary information without being overly long.\"\n      ]\n    },\n    \"effectiveness\": {\n      \"note\": 4,\n      \"evidences\": [\n        \"Installation steps are actionable.\",\n        \"Usage examples demonstrate core functionality.\",\n        \"Link to interactive documentation.\"\n      ],\n      \"justifications\": [\n        \"The README is effective in enabling users to set up and start using the API.\"\n      ]\n    },\n    \"consistency\": {\n      \"note\": 5,\n      \"evidences\": [\n        \"Consistent formatting and language throughout.\",\n        \"Information presented is consistent across sections.\"\n      ],\n      \"justifications\": [\n        \"The README maintains high consistency in its presentation and content.\"\n      ]\n    },\n    \"clarity\": {\n      \"note\": 4,\n      \"evidences\": [\n        \"Clear descriptions of what the API does and how to use it.\",\n        \"Unambiguous instructions.\"\n      ],\n      \"justifications\": [\n        \"The README is largely clear, though some areas like configuration details could be more explicit.\"\n      ]\n    },\n    \"global_notes\": \"The README is a strong example of good documentation, particularly in its clarity for installation and usage. It effectively uses markdown features like badges, headings, and code blocks. Areas for improvement primarily involve expanding on the 'why' and providing more detailed configuration and support information.\"\n  },\n  \"executive_summary\": {\n    \"strengths\": [\n      \"Clear and concise description of the API and its core functionalities.\",\n      \"Well-structured and highly readable installation instructions with reproducible commands.\",\n      \"Practical usage examples using `curl` that demonstrate key API interactions.\",\n      \"Explicit mention and link to interactive API documentation via Swagger UI.\",\n      \"Clear contribution guidelines with step-by-step instructions.\",\n      \"Good overall organization and consistent formatting.\"\n    ],\n    \"weaknesses\": [\n      \"Lacks an explicit 'Why' section detailing the project's motivation, specific problems it solves, or unique value proposition.\",\n      \"Configuration details are mentioned but not thoroughly documented in a dedicated section.\",\n      \"No explicit information about authors, maintainers, or contact channels.\",\n      \"No information regarding the project's current status, roadmap, or changelog.\"\n    ],\n    \"critical_gaps\": [\n      \"Absence of a dedicated 'Why' section to articulate the project's purpose and benefits.\",\n      \"Lack of comprehensive configuration documentation, which could hinder advanced setup or customization.\",\n      \"Missing information on project maintainers and support channels, making it difficult for users to seek help or provide feedback.\"\n    ],\n    \"priority_recommendations\": [\n      \"Add a 'Motivation' or 'Why' section to clearly articulate the project's purpose, benefits, and target use cases.\",\n      \"Create a dedicated 'Configuration' section to detail all configurable parameters, environment variables, and how to switch database systems.\",\n      \"Include an 'Authors' or 'Contact' section with information about maintainers and preferred communication channels.\",\n      \"Expand the 'Usage' section with more examples, including PUT/DELETE operations and expected API responses.\",\n      \"Consider adding a `CONTRIBUTING.md` file for more detailed contribution guidelines, including coding standards and testing.\"\n    ]\n  }\n}\n```",
+  "prompt_length": 56156,
+  "model_output_length": 23875,
+  "parsed": {
+    "metadata": {
+      "repository_name": "API de Gerenciamento de Clientes",
+      "repository_link": "https://github.com/user/repo",
+      "readme_raw_link": "https://raw.githubusercontent.com/user/repo/main/README.md",
+      "evaluation_date": "2025-11-28",
+      "evaluator": "gemini-2.5-flash",
+      "general_notes": "The README provides a good overview of the API, its features, installation, and usage. It includes badges for version and technologies, and a project structure. Documentation via Swagger is highlighted. Contribution guidelines and license information are also present."
+    },
+    "structural_summary": {
+      "detected_sections": [
+        "API de Gerenciamento de Clientes",
+        "Descrição",
+        "Principais funcionalidades",
+        "Tecnologias utilizadas",
+        "Estrutura do projeto",
+        "Instruções de Instalação",
+        "Pré-requisitos",
+        "Passos para instalação",
+        "Rotas da API",
+        "Clientes",
+        "Atributos de clientes",
+        "Exemplos de uso",
+        "Criar um novo cliente",
+        "Buscar um cliente",
+        "Documentação",
+        "Contribuição",
+        "Licença"
+      ],
+      "present_categories": {
+        "what": true,
+        "why": true,
+        "how_installation": true,
+        "how_usage": true,
+        "how_config_requirements": true,
+        "when": false,
+        "who": false,
+        "license": true,
+        "contribution": true,
+        "references": true,
+        "other": false
+      },
+      "organization_notes": "The README is well-structured with clear headings for different aspects of the project. It follows a logical flow from description to installation, usage, and contribution. The use of code blocks for commands and examples enhances readability."
+    },
+    "categories": {
+      "what": {
+        "checklist": {
+          "clear_description": true,
+          "features_scope": true,
+          "target_audience": null
+        },
+        "quality": {
+          "clarity": {
+            "note": 4,
+            "evidences": [
+              "API RESTful desenvolvida com Flask e SQLAlchemy para gerenciamento de clientes e seus atributos customizados.",
+              "Esta API permite realizar operações de CRUD (Criar, Ler, Atualizar e Deletar) de clientes e seus dados relacionados."
+            ],
+            "justifications": [
+              "The initial statement and description clearly define what the API is and its primary function."
+            ]
+          },
+          "understandability": {
+            "note": 4,
+            "evidences": [
+              "API RESTful desenvolvida com Flask e SQLAlchemy para gerenciamento de clientes e seus atributos customizados.",
+              "Principais funcionalidades: Gerenciamento completo de clientes, Suporte para atributos customizáveis por cliente, Documentação interativa via Swagger, Respostas JSON padronizadas, Tratamento de erros consistente."
+            ],
+            "justifications": [
+              "The language is straightforward, and the bullet points for functionalities are easy to grasp."
+            ]
+          },
+          "conciseness": {
+            "note": 4,
+            "evidences": [
+              "API RESTful desenvolvida com Flask e SQLAlchemy para gerenciamento de clientes e seus atributos customizados."
+            ],
+            "justifications": [
+              "The description is direct and to the point without unnecessary jargon."
+            ]
+          },
+          "consistency": {
+            "note": 5,
+            "evidences": [
+              "The description and features align perfectly with the project's stated purpose."
+            ],
+            "justifications": [
+              "All parts of the 'what' section consistently describe the same project and its capabilities."
+            ]
+          }
+        },
+        "evidences": [
+          "API RESTful desenvolvida com Flask e SQLAlchemy para gerenciamento de clientes e seus atributos customizados.",
+          "Esta API permite realizar operações de CRUD (Criar, Ler, Atualizar e Deletar) de clientes e seus dados relacionados.",
+          "Principais funcionalidades: Gerenciamento completo de clientes, Suporte para atributos customizáveis por cliente, Documentação interativa via Swagger, Respostas JSON padronizadas, Tratamento de erros consistente."
+        ],
+        "justifications": [
+          "The README clearly states the project's purpose and lists its core features, providing a solid understanding of what the API does."
+        ],
+        "suggested_improvements": [
+          "Explicitly state the target audience (e.g., 'This API is intended for developers building applications that require customer management capabilities')."
+        ]
+      },
+      "why": {
+        "checklist": {
+          "explicit_purpose": true,
+          "benefits_vs_alternatives": null,
+          "use_cases": null
+        },
+        "quality": {
+          "clarity": {
+            "note": 3,
+            "evidences": [
+              "O sistema foi projetado para ser facilmente extensível e integrado com outros serviços."
+            ],
+            "justifications": [
+              "The purpose is clear, but the 'why' it's a good solution is less elaborated."
+            ]
+          },
+          "effectiveness": {
+            "note": 3,
+            "evidences": [
+              "O sistema foi projetado para ser facilmente extensível e integrado com outros serviços."
+            ],
+            "justifications": [
+              "It states the purpose but doesn't strongly convince the reader why this specific solution is beneficial over others or for specific scenarios."
+            ]
+          },
+          "appeal": {
+            "note": 3,
+            "evidences": [
+              "Suporte para atributos customizáveis por cliente",
+              "Documentação interativa via Swagger"
+            ],
+            "justifications": [
+              "The customizable attributes and Swagger documentation are appealing features, but the overall 'why' is not strongly articulated."
+            ]
+          }
+        },
+        "evidences": [
+          "API RESTful desenvolvida com Flask e SQLAlchemy para gerenciamento de clientes e seus atributos customizados.",
+          "O sistema foi projetado para ser facilmente extensível e integrado com outros serviços."
+        ],
+        "justifications": [
+          "The README describes what the API does and mentions extensibility, but lacks a dedicated section or strong emphasis on the specific problems it solves or its unique value proposition compared to alternatives."
+        ],
+        "suggested_improvements": [
+          "Add a 'Motivation' or 'Why This Project?' section to explain the specific problems this API solves, its advantages, and potential use cases.",
+          "Elaborate on the benefits of 'atributos customizáveis' and 'extensível e integrado'."
+        ]
+      },
+      "how_installation": {
+        "checklist": {
+          "reproducible_commands": true,
+          "compatibility_requirements": true,
+          "dependencies": true
+        },
+        "quality": {
+          "structure": {
+            "note": 5,
+            "evidences": [
+              "Pré-requisitos",
+              "Passos para instalação",
+              "Numbered steps",
+              "Code blocks"
+            ],
+            "justifications": [
+              "The section is very well-structured with clear sub-headings and ordered steps."
+            ]
+          },
+          "readability": {
+            "note": 5,
+            "evidences": [
+              "Clear headings, bullet points, and code blocks make it easy to follow."
+            ],
+            "justifications": [
+              "The instructions are presented in a highly readable format."
+            ]
+          },
+          "clarity": {
+            "note": 5,
+            "evidences": [
+              "Each step is clearly defined with the corresponding command and context (e.g., Windows vs. Linux/MacOS for environment variables)."
+            ],
+            "justifications": [
+              "The instructions are unambiguous and easy to understand for a developer."
+            ]
+          }
+        },
+        "evidences": [
+          "Pré-requisitos: Python 3.8 ou superior, pip, Ambiente virtual (recomendado)",
+          "Passos para instalação: 1. Clone este repositório, 2. Crie e ative um ambiente virtual, 3. Instale as dependências, 4. Configure as variáveis de ambiente, 5. Execute a aplicação.",
+          "Code blocks for all commands."
+        ],
+        "justifications": [
+          "The installation instructions are comprehensive, well-organized, and include all necessary steps and prerequisites for a smooth setup."
+        ],
+        "suggested_improvements": []
+      },
+      "how_usage": {
+        "checklist": {
+          "minimal_working_example": true,
+          "io_examples": true,
+          "api_commands_context": true
+        },
+        "quality": {
+          "understandability": {
+            "note": 4,
+            "evidences": [
+              "Rotas da API section clearly lists endpoints.",
+              "Exemplos de uso section provides `curl` commands."
+            ],
+            "justifications": [
+              "The API routes are clearly defined, and the examples are practical and easy to follow."
+            ]
+          },
+          "code_readability": {
+            "note": 5,
+            "evidences": [
+              "The `curl` commands are well-formatted in code blocks and include headers and JSON bodies."
+            ],
+            "justifications": [
+              "The code examples are perfectly readable and demonstrate usage effectively."
+            ]
+          },
+          "effectiveness": {
+            "note": 4,
+            "evidences": [
+              "The examples demonstrate how to create and retrieve a client, which covers basic CRUD operations."
+            ],
+            "justifications": [
+              "The provided examples are effective for a quick start, though more complex scenarios could be added."
+            ]
+          }
+        },
+        "evidences": [
+          "Rotas da API: GET /api/clients, POST /api/clients, etc.",
+          "Exemplos de uso: `curl -X POST ...`, `curl -X GET ...`"
+        ],
+        "justifications": [
+          "The README provides a clear list of API routes and practical `curl` examples for common operations, making it easy for users to start interacting with the API."
+        ],
+        "suggested_improvements": [
+          "Add examples for PUT and DELETE operations.",
+          "Show an example of adding a custom attribute to a client.",
+          "Provide expected JSON responses for the examples."
+        ]
+      },
+      "how_config_requirements": {
+        "checklist": {
+          "documented_configuration": true,
+          "parameters_options": true,
+          "troubleshooting": null
+        },
+        "quality": {
+          "clarity": {
+            "note": 3,
+            "evidences": [
+              "config.py # Configurações da aplicação",
+              "SQLite: Banco de dados (configurável para outros SGBDs)",
+              "Configure as variáveis de ambiente"
+            ],
+            "justifications": [
+              "It mentions configuration files and options, but doesn't detail *how* to configure them or what parameters are available beyond environment variables."
+            ]
+          },
+          "structure": {
+            "note": 3,
+            "evidences": [
+              "config.py # Configurações da aplicação",
+              "Configure as variáveis de ambiente"
+            ],
+            "justifications": [
+              "Configuration details are scattered across 'Estrutura do projeto' and 'Instruções de Instalação' rather than a dedicated section."
+            ]
+          },
+          "conciseness": {
+            "note": 3,
+            "evidences": [
+              "SQLite: Banco de dados (configurável para outros SGBDs)"
+            ],
+            "justifications": [
+              "It's concise but perhaps too brief, lacking details on how to perform the configuration."
+            ]
+          }
+        },
+        "evidences": [
+          "config.py # Configurações da aplicação",
+          "set FLASK_APP=app.py",
+          "set FLASK_ENV=development",
+          "SQLite: Banco de dados (configurável para outros SGBDs)"
+        ],
+        "justifications": [
+          "The README indicates that configuration is possible (e.g., database, environment variables) but lacks a dedicated section detailing configuration options, parameters, or how to modify them effectively."
+        ],
+        "suggested_improvements": [
+          "Create a dedicated 'Configuration' section detailing `config.py` options, how to switch databases, and any other configurable parameters.",
+          "Provide examples of how to configure custom attributes."
+        ]
+      },
+      "when": {
+        "checklist": {
+          "current_status": null,
+          "roadmap": null,
+          "changelog": null
+        },
+        "quality": {
+          "clarity": {
+            "note": 1,
+            "evidences": [],
+            "justifications": [
+              "No information provided."
+            ]
+          },
+          "consistency": {
+            "note": 1,
+            "evidences": [],
+            "justifications": [
+              "No information provided."
+            ]
+          }
+        },
+        "evidences": [],
+        "justifications": [
+          "The README does not contain any information regarding the project's current status, future plans (roadmap), or a history of changes (changelog)."
+        ],
+        "suggested_improvements": [
+          "Add a 'Status' section indicating if the project is active, in development, or stable.",
+          "Consider adding a 'Roadmap' for future features or a 'Changelog' for version history."
+        ]
+      },
+      "who": {
+        "checklist": {
+          "authors_maintainers": null,
+          "contact_channels": null,
+          "code_of_conduct": null
+        },
+        "quality": {
+          "clarity": {
+            "note": 1,
+            "evidences": [],
+            "justifications": [
+              "No information provided."
+            ]
+          },
+          "consistency": {
+            "note": 1,
+            "evidences": [],
+            "justifications": [
+              "No information provided."
+            ]
+          }
+        },
+        "evidences": [],
+        "justifications": [
+          "The README does not explicitly mention the authors or maintainers of the project, nor does it provide contact channels or a code of conduct."
+        ],
+        "suggested_improvements": [
+          "Add an 'Authors' or 'Credits' section to acknowledge contributors.",
+          "Include contact information or preferred communication channels.",
+          "Consider adding a Code of Conduct, especially for open-source projects."
+        ]
+      },
+      "license": {
+        "checklist": {
+          "license_type": true,
+          "license_link": null
+        },
+        "quality": {
+          "clarity": 4,
+          "consistency": 5
+        },
+        "evidences": [
+          "Este projeto está licenciado sob a licença MIT."
+        ],
+        "justifications": [
+          "The license type is clearly stated."
+        ],
+        "suggested_improvements": [
+          "Provide a direct link to the full license text (e.g., a `LICENSE` file in the repository)."
+        ]
+      },
+      "contribution": {
+        "checklist": {
+          "contributing_link": null,
+          "contribution_steps": true,
+          "standards": null
+        },
+        "quality": {
+          "structure": {
+            "note": 4,
+            "evidences": [
+              "Numbered steps for contribution process."
+            ],
+            "justifications": [
+              "The steps are clearly structured and easy to follow."
+            ]
+          },
+          "clarity": {
+            "note": 4,
+            "evidences": [
+              "Each step is a concise instruction."
+            ],
+            "justifications": [
+              "The instructions are clear and direct."
+            ]
+          },
+          "readability": {
+            "note": 4,
+            "evidences": [
+              "The steps are presented as a numbered list."
+            ],
+            "justifications": [
+              "The list format makes the contribution process easy to read."
+            ]
+          }
+        },
+        "evidences": [
+          "1. Faça um fork do projeto",
+          "2. Crie uma branch para sua feature (`git checkout -b feature/nova-funcionalidade`)",
+          "3. Faça commit das suas alterações (`git commit -m 'Adiciona nova funcionalidade'`)",
+          "4. Faça push para a branch (`git push origin feature/nova-funcionalidade`)",
+          "5. Abra um Pull Request"
+        ],
+        "justifications": [
+          "The README provides a clear, step-by-step guide for contributing to the project."
+        ],
+        "suggested_improvements": [
+          "Add a link to a `CONTRIBUTING.md` file if more detailed guidelines exist.",
+          "Include information on coding standards, testing requirements, or issue reporting guidelines."
+        ]
+      },
+      "references": {
+        "checklist": {
+          "docs_link": true,
+          "relevant_references": null,
+          "faq_support": null
+        },
+        "quality": {
+          "effectiveness": {
+            "note": 4,
+            "evidences": [
+              "A documentação interativa da API está disponível em http://localhost:5000/api/docs usando Swagger UI."
+            ],
+            "justifications": [
+              "Providing a link to interactive Swagger documentation is highly effective for API users."
+            ]
+          },
+          "clarity": {
+            "note": 4,
+            "evidences": [
+              "A documentação interativa da API está disponível em http://localhost:5000/api/docs usando Swagger UI."
+            ],
+            "justifications": [
+              "The statement about documentation is clear and direct."
+            ]
+          }
+        },
+        "evidences": [
+          "A documentação interativa da API está disponível em http://localhost:5000/api/docs usando Swagger UI."
+        ],
+        "justifications": [
+          "The README clearly points to the interactive API documentation via Swagger UI, which is a valuable resource."
+        ],
+        "suggested_improvements": [
+          "Consider adding a section for external resources, related projects, or a FAQ if applicable.",
+          "Provide information on how to get support or report issues."
+        ]
+      },
+      "other": {
+        "checklist": {
+          "generic_sections": false,
+          "placeholders": false
+        },
+        "action": {
+          "reclassify": false,
+          "suggest_removal": false
+        },
+        "evidences": [],
+        "suggested_improvements": []
+      }
+    },
+    "dimensions_summary": {
+      "quality": {
+        "note": 4,
+        "evidences": [
+          "Clear description and features.",
+          "Well-structured installation and usage instructions.",
+          "Interactive API documentation via Swagger."
+        ],
+        "justifications": [
+          "The README is generally high quality, providing essential information clearly and effectively."
+        ]
+      },
+      "appeal": {
+        "note": 4,
+        "evidences": [
+          "Badges for version and technologies.",
+          "Mention of customizable attributes and Swagger UI.",
+          "Clear examples."
+        ],
+        "justifications": [
+          "The README presents the project in an appealing way, highlighting key features and ease of use."
+        ]
+      },
+      "readability": {
+        "note": 5,
+        "evidences": [
+          "Consistent use of headings, bullet points, and code blocks.",
+          "Clear and concise language."
+        ],
+        "justifications": [
+          "The README is exceptionally readable, making it easy to digest information quickly."
+        ]
+      },
+      "understandability": {
+        "note": 4,
+        "evidences": [
+          "Straightforward language in descriptions.",
+          "Practical code examples.",
+          "Logical flow of sections."
+        ],
+        "justifications": [
+          "Most sections are easy to understand, especially the technical instructions and API usage."
+        ]
+      },
+      "structure": {
+        "note": 5,
+        "evidences": [
+          "Logical organization of sections (Description, Technologies, Installation, Usage, Contribution, License).",
+          "Use of sub-headings for detailed steps."
+        ],
+        "justifications": [
+          "The README has an excellent, logical structure that guides the reader through the project."
+        ]
+      },
+      "cohesion": {
+        "note": 4,
+        "evidences": [
+          "All sections relate directly to the API project.",
+          "Consistent tone and terminology."
+        ],
+        "justifications": [
+          "The content is cohesive, with all parts contributing to the overall understanding of the API."
+        ]
+      },
+      "conciseness": {
+        "note": 4,
+        "evidences": [
+          "Information is presented without excessive verbosity.",
+          "Code examples are to the point."
+        ],
+        "justifications": [
+          "The README is generally concise, providing necessary information without being overly long."
+        ]
+      },
+      "effectiveness": {
+        "note": 4,
+        "evidences": [
+          "Installation steps are actionable.",
+          "Usage examples demonstrate core functionality.",
+          "Link to interactive documentation."
+        ],
+        "justifications": [
+          "The README is effective in enabling users to set up and start using the API."
+        ]
+      },
+      "consistency": {
+        "note": 5,
+        "evidences": [
+          "Consistent formatting and language throughout.",
+          "Information presented is consistent across sections."
+        ],
+        "justifications": [
+          "The README maintains high consistency in its presentation and content."
+        ]
+      },
+      "clarity": {
+        "note": 4,
+        "evidences": [
+          "Clear descriptions of what the API does and how to use it.",
+          "Unambiguous instructions."
+        ],
+        "justifications": [
+          "The README is largely clear, though some areas like configuration details could be more explicit."
+        ]
+      },
+      "global_notes": "The README is a strong example of good documentation, particularly in its clarity for installation and usage. It effectively uses markdown features like badges, headings, and code blocks. Areas for improvement primarily involve expanding on the 'why' and providing more detailed configuration and support information."
+    },
+    "executive_summary": {
+      "strengths": [
+        "Clear and concise description of the API and its core functionalities.",
+        "Well-structured and highly readable installation instructions with reproducible commands.",
+        "Practical usage examples using `curl` that demonstrate key API interactions.",
+        "Explicit mention and link to interactive API documentation via Swagger UI.",
+        "Clear contribution guidelines with step-by-step instructions.",
+        "Good overall organization and consistent formatting."
+      ],
+      "weaknesses": [
+        "Lacks an explicit 'Why' section detailing the project's motivation, specific problems it solves, or unique value proposition.",
+        "Configuration details are mentioned but not thoroughly documented in a dedicated section.",
+        "No explicit information about authors, maintainers, or contact channels.",
+        "No information regarding the project's current status, roadmap, or changelog."
+      ],
+      "critical_gaps": [
+        "Absence of a dedicated 'Why' section to articulate the project's purpose and benefits.",
+        "Lack of comprehensive configuration documentation, which could hinder advanced setup or customization.",
+        "Missing information on project maintainers and support channels, making it difficult for users to seek help or provide feedback."
+      ],
+      "priority_recommendations": [
+        "Add a 'Motivation' or 'Why' section to clearly articulate the project's purpose, benefits, and target use cases.",
+        "Create a dedicated 'Configuration' section to detail all configurable parameters, environment variables, and how to switch database systems.",
+        "Include an 'Authors' or 'Contact' section with information about maintainers and preferred communication channels.",
+        "Expand the 'Usage' section with more examples, including PUT/DELETE operations and expected API responses.",
+        "Consider adding a `CONTRIBUTING.md` file for more detailed contribution guidelines, including coding standards and testing."
+      ]
+    }
+  },
+  "validation_ok": true,
+  "validation_errors": null,
+  "progress_history": [
+    {
+      "stage": "building_prompt",
+      "status": "in_progress",
+      "percentage": 25,
+      "message": "Loading schema and building prompt...",
+      "elapsed_seconds": 0.0,
+      "estimated_remaining_seconds": null,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "building_prompt",
+      "status": "completed",
+      "percentage": 25,
+      "message": "Prompt built (56156 chars)",
+      "elapsed_seconds": 0.03,
+      "estimated_remaining_seconds": 0.1,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Calling gemini-2.5-flash...",
+      "elapsed_seconds": 0.03,
+      "estimated_remaining_seconds": 0.01,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (152 chars)",
+      "elapsed_seconds": 28.34,
+      "estimated_remaining_seconds": 9.45,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (276 chars)",
+      "elapsed_seconds": 28.47,
+      "estimated_remaining_seconds": 9.49,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (516 chars)",
+      "elapsed_seconds": 28.64,
+      "estimated_remaining_seconds": 9.55,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (718 chars)",
+      "elapsed_seconds": 28.82,
+      "estimated_remaining_seconds": 9.61,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (886 chars)",
+      "elapsed_seconds": 29.03,
+      "estimated_remaining_seconds": 9.68,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (1047 chars)",
+      "elapsed_seconds": 29.15,
+      "estimated_remaining_seconds": 9.72,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (1201 chars)",
+      "elapsed_seconds": 29.34,
+      "estimated_remaining_seconds": 9.78,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (1354 chars)",
+      "elapsed_seconds": 29.51,
+      "estimated_remaining_seconds": 9.84,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (1554 chars)",
+      "elapsed_seconds": 29.68,
+      "estimated_remaining_seconds": 9.89,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (1767 chars)",
+      "elapsed_seconds": 29.86,
+      "estimated_remaining_seconds": 9.95,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (1934 chars)",
+      "elapsed_seconds": 30.02,
+      "estimated_remaining_seconds": 10.01,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (2161 chars)",
+      "elapsed_seconds": 30.2,
+      "estimated_remaining_seconds": 10.07,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (2391 chars)",
+      "elapsed_seconds": 30.4,
+      "estimated_remaining_seconds": 10.13,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (2607 chars)",
+      "elapsed_seconds": 30.55,
+      "estimated_remaining_seconds": 10.18,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (2849 chars)",
+      "elapsed_seconds": 30.72,
+      "estimated_remaining_seconds": 10.24,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (3054 chars)",
+      "elapsed_seconds": 30.89,
+      "estimated_remaining_seconds": 10.3,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (3296 chars)",
+      "elapsed_seconds": 31.1,
+      "estimated_remaining_seconds": 10.37,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (3506 chars)",
+      "elapsed_seconds": 31.24,
+      "estimated_remaining_seconds": 10.41,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (3717 chars)",
+      "elapsed_seconds": 31.42,
+      "estimated_remaining_seconds": 10.47,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (3940 chars)",
+      "elapsed_seconds": 31.61,
+      "estimated_remaining_seconds": 10.54,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (4186 chars)",
+      "elapsed_seconds": 31.78,
+      "estimated_remaining_seconds": 10.59,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (4398 chars)",
+      "elapsed_seconds": 31.94,
+      "estimated_remaining_seconds": 10.65,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (4609 chars)",
+      "elapsed_seconds": 32.11,
+      "estimated_remaining_seconds": 10.7,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (4772 chars)",
+      "elapsed_seconds": 32.28,
+      "estimated_remaining_seconds": 10.76,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (4985 chars)",
+      "elapsed_seconds": 32.47,
+      "estimated_remaining_seconds": 10.82,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (5161 chars)",
+      "elapsed_seconds": 32.63,
+      "estimated_remaining_seconds": 10.88,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (5415 chars)",
+      "elapsed_seconds": 32.82,
+      "estimated_remaining_seconds": 10.94,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (5615 chars)",
+      "elapsed_seconds": 32.99,
+      "estimated_remaining_seconds": 11.0,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (5858 chars)",
+      "elapsed_seconds": 33.16,
+      "estimated_remaining_seconds": 11.05,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (6089 chars)",
+      "elapsed_seconds": 33.33,
+      "estimated_remaining_seconds": 11.11,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (6339 chars)",
+      "elapsed_seconds": 33.5,
+      "estimated_remaining_seconds": 11.17,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (6558 chars)",
+      "elapsed_seconds": 33.68,
+      "estimated_remaining_seconds": 11.23,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (6728 chars)",
+      "elapsed_seconds": 33.84,
+      "estimated_remaining_seconds": 11.28,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (6911 chars)",
+      "elapsed_seconds": 34.01,
+      "estimated_remaining_seconds": 11.34,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (7131 chars)",
+      "elapsed_seconds": 34.2,
+      "estimated_remaining_seconds": 11.4,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (7322 chars)",
+      "elapsed_seconds": 34.36,
+      "estimated_remaining_seconds": 11.45,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (7533 chars)",
+      "elapsed_seconds": 34.54,
+      "estimated_remaining_seconds": 11.51,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (7747 chars)",
+      "elapsed_seconds": 34.71,
+      "estimated_remaining_seconds": 11.57,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (7937 chars)",
+      "elapsed_seconds": 34.89,
+      "estimated_remaining_seconds": 11.63,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (8102 chars)",
+      "elapsed_seconds": 35.06,
+      "estimated_remaining_seconds": 11.69,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (8326 chars)",
+      "elapsed_seconds": 35.23,
+      "estimated_remaining_seconds": 11.74,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (8511 chars)",
+      "elapsed_seconds": 35.4,
+      "estimated_remaining_seconds": 11.8,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (8675 chars)",
+      "elapsed_seconds": 35.57,
+      "estimated_remaining_seconds": 11.86,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (8888 chars)",
+      "elapsed_seconds": 35.74,
+      "estimated_remaining_seconds": 11.91,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (9075 chars)",
+      "elapsed_seconds": 35.92,
+      "estimated_remaining_seconds": 11.97,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (9318 chars)",
+      "elapsed_seconds": 36.09,
+      "estimated_remaining_seconds": 12.03,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (9541 chars)",
+      "elapsed_seconds": 36.28,
+      "estimated_remaining_seconds": 12.09,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (9739 chars)",
+      "elapsed_seconds": 36.45,
+      "estimated_remaining_seconds": 12.15,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (9880 chars)",
+      "elapsed_seconds": 36.62,
+      "estimated_remaining_seconds": 12.21,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (10102 chars)",
+      "elapsed_seconds": 36.83,
+      "estimated_remaining_seconds": 12.28,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (10320 chars)",
+      "elapsed_seconds": 37.0,
+      "estimated_remaining_seconds": 12.33,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (10502 chars)",
+      "elapsed_seconds": 37.18,
+      "estimated_remaining_seconds": 12.39,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (10676 chars)",
+      "elapsed_seconds": 37.33,
+      "estimated_remaining_seconds": 12.44,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (10932 chars)",
+      "elapsed_seconds": 37.5,
+      "estimated_remaining_seconds": 12.5,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (11126 chars)",
+      "elapsed_seconds": 37.67,
+      "estimated_remaining_seconds": 12.56,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (11337 chars)",
+      "elapsed_seconds": 37.87,
+      "estimated_remaining_seconds": 12.62,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (11507 chars)",
+      "elapsed_seconds": 38.04,
+      "estimated_remaining_seconds": 12.68,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (11704 chars)",
+      "elapsed_seconds": 38.21,
+      "estimated_remaining_seconds": 12.74,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (11862 chars)",
+      "elapsed_seconds": 38.41,
+      "estimated_remaining_seconds": 12.8,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (12109 chars)",
+      "elapsed_seconds": 38.54,
+      "estimated_remaining_seconds": 12.85,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (12336 chars)",
+      "elapsed_seconds": 38.72,
+      "estimated_remaining_seconds": 12.91,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (12508 chars)",
+      "elapsed_seconds": 38.89,
+      "estimated_remaining_seconds": 12.96,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (12688 chars)",
+      "elapsed_seconds": 39.07,
+      "estimated_remaining_seconds": 13.02,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (12871 chars)",
+      "elapsed_seconds": 39.24,
+      "estimated_remaining_seconds": 13.08,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (13091 chars)",
+      "elapsed_seconds": 39.42,
+      "estimated_remaining_seconds": 13.14,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (13292 chars)",
+      "elapsed_seconds": 39.59,
+      "estimated_remaining_seconds": 13.2,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (13449 chars)",
+      "elapsed_seconds": 39.76,
+      "estimated_remaining_seconds": 13.25,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (13631 chars)",
+      "elapsed_seconds": 39.96,
+      "estimated_remaining_seconds": 13.32,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (13816 chars)",
+      "elapsed_seconds": 40.15,
+      "estimated_remaining_seconds": 13.38,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (14026 chars)",
+      "elapsed_seconds": 40.32,
+      "estimated_remaining_seconds": 13.44,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (14272 chars)",
+      "elapsed_seconds": 40.49,
+      "estimated_remaining_seconds": 13.5,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (14433 chars)",
+      "elapsed_seconds": 40.68,
+      "estimated_remaining_seconds": 13.56,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (14601 chars)",
+      "elapsed_seconds": 40.83,
+      "estimated_remaining_seconds": 13.61,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (14781 chars)",
+      "elapsed_seconds": 41.0,
+      "estimated_remaining_seconds": 13.67,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (14959 chars)",
+      "elapsed_seconds": 41.17,
+      "estimated_remaining_seconds": 13.72,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (15158 chars)",
+      "elapsed_seconds": 41.34,
+      "estimated_remaining_seconds": 13.78,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (15350 chars)",
+      "elapsed_seconds": 41.51,
+      "estimated_remaining_seconds": 13.84,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (15540 chars)",
+      "elapsed_seconds": 41.69,
+      "estimated_remaining_seconds": 13.9,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (15766 chars)",
+      "elapsed_seconds": 41.89,
+      "estimated_remaining_seconds": 13.96,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (15936 chars)",
+      "elapsed_seconds": 42.09,
+      "estimated_remaining_seconds": 14.03,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (16118 chars)",
+      "elapsed_seconds": 42.26,
+      "estimated_remaining_seconds": 14.09,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (16302 chars)",
+      "elapsed_seconds": 42.44,
+      "estimated_remaining_seconds": 14.15,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (16518 chars)",
+      "elapsed_seconds": 42.61,
+      "estimated_remaining_seconds": 14.2,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (16691 chars)",
+      "elapsed_seconds": 42.79,
+      "estimated_remaining_seconds": 14.26,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (16870 chars)",
+      "elapsed_seconds": 42.94,
+      "estimated_remaining_seconds": 14.31,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (17077 chars)",
+      "elapsed_seconds": 43.12,
+      "estimated_remaining_seconds": 14.37,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (17292 chars)",
+      "elapsed_seconds": 43.29,
+      "estimated_remaining_seconds": 14.43,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (17469 chars)",
+      "elapsed_seconds": 43.47,
+      "estimated_remaining_seconds": 14.49,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (17684 chars)",
+      "elapsed_seconds": 43.64,
+      "estimated_remaining_seconds": 14.55,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (17890 chars)",
+      "elapsed_seconds": 44.0,
+      "estimated_remaining_seconds": 14.67,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (18063 chars)",
+      "elapsed_seconds": 44.0,
+      "estimated_remaining_seconds": 14.67,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (18204 chars)",
+      "elapsed_seconds": 44.16,
+      "estimated_remaining_seconds": 14.72,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (18485 chars)",
+      "elapsed_seconds": 44.35,
+      "estimated_remaining_seconds": 14.78,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (18668 chars)",
+      "elapsed_seconds": 44.55,
+      "estimated_remaining_seconds": 14.85,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (18869 chars)",
+      "elapsed_seconds": 44.69,
+      "estimated_remaining_seconds": 14.9,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (19048 chars)",
+      "elapsed_seconds": 44.86,
+      "estimated_remaining_seconds": 14.95,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (19237 chars)",
+      "elapsed_seconds": 45.04,
+      "estimated_remaining_seconds": 15.01,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (19463 chars)",
+      "elapsed_seconds": 45.2,
+      "estimated_remaining_seconds": 15.07,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (19664 chars)",
+      "elapsed_seconds": 45.38,
+      "estimated_remaining_seconds": 15.13,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (19878 chars)",
+      "elapsed_seconds": 45.55,
+      "estimated_remaining_seconds": 15.18,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (20052 chars)",
+      "elapsed_seconds": 45.7,
+      "estimated_remaining_seconds": 15.23,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (20240 chars)",
+      "elapsed_seconds": 45.91,
+      "estimated_remaining_seconds": 15.3,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (20439 chars)",
+      "elapsed_seconds": 46.08,
+      "estimated_remaining_seconds": 15.36,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (20640 chars)",
+      "elapsed_seconds": 46.24,
+      "estimated_remaining_seconds": 15.41,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (20868 chars)",
+      "elapsed_seconds": 46.59,
+      "estimated_remaining_seconds": 15.53,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (21071 chars)",
+      "elapsed_seconds": 46.59,
+      "estimated_remaining_seconds": 15.53,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (21246 chars)",
+      "elapsed_seconds": 46.94,
+      "estimated_remaining_seconds": 15.65,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (21469 chars)",
+      "elapsed_seconds": 46.95,
+      "estimated_remaining_seconds": 15.65,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (21701 chars)",
+      "elapsed_seconds": 47.11,
+      "estimated_remaining_seconds": 15.7,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (21929 chars)",
+      "elapsed_seconds": 47.29,
+      "estimated_remaining_seconds": 15.76,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (22206 chars)",
+      "elapsed_seconds": 47.46,
+      "estimated_remaining_seconds": 15.82,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (22427 chars)",
+      "elapsed_seconds": 47.63,
+      "estimated_remaining_seconds": 15.88,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (22693 chars)",
+      "elapsed_seconds": 47.8,
+      "estimated_remaining_seconds": 15.93,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (22887 chars)",
+      "elapsed_seconds": 48.0,
+      "estimated_remaining_seconds": 16.0,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (23163 chars)",
+      "elapsed_seconds": 48.15,
+      "estimated_remaining_seconds": 16.05,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (23353 chars)",
+      "elapsed_seconds": 48.34,
+      "estimated_remaining_seconds": 16.11,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (23625 chars)",
+      "elapsed_seconds": 48.52,
+      "estimated_remaining_seconds": 16.17,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (23865 chars)",
+      "elapsed_seconds": 48.7,
+      "estimated_remaining_seconds": 16.23,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "in_progress",
+      "percentage": 75,
+      "message": "Generating response... (23875 chars)",
+      "elapsed_seconds": 48.76,
+      "estimated_remaining_seconds": 16.25,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "calling_model",
+      "status": "completed",
+      "percentage": 75,
+      "message": "Model responded (23875 chars)",
+      "elapsed_seconds": 50.02,
+      "estimated_remaining_seconds": 16.67,
+      "details": {
+        "response_length": 23875
+      },
+      "error": null
+    },
+    {
+      "stage": "parsing_json",
+      "status": "in_progress",
+      "percentage": 90,
+      "message": "Parsing JSON response...",
+      "elapsed_seconds": 50.02,
+      "estimated_remaining_seconds": 5.56,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "parsing_json",
+      "status": "completed",
+      "percentage": 90,
+      "message": "JSON parsed and fixed successfully",
+      "elapsed_seconds": 50.02,
+      "estimated_remaining_seconds": 5.56,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "validating",
+      "status": "in_progress",
+      "percentage": 95,
+      "message": "Validating against schema...",
+      "elapsed_seconds": 50.02,
+      "estimated_remaining_seconds": 2.63,
+      "details": null,
+      "error": null
+    },
+    {
+      "stage": "validating",
+      "status": "completed",
+      "percentage": 95,
+      "message": "Schema validation passed",
+      "elapsed_seconds": 50.23,
+      "estimated_remaining_seconds": 2.64,
+      "details": null,
+      "error": null
+    }
+  ],
+  "timing": {
+    "prompt_build": 0.034552574157714844,
+    "model_call": 49.980950355529785,
+    "parsing": 0.0003542900085449219,
+    "validation": 0.21494579315185547,
+    "total": 50.231147050857544
+  },
+  "tokens": {},
+  "retry_count": 0,
+  "recovery_suggestions": [],
+  "mongo_id": "6929d15249ba038ef579cff9"
+}

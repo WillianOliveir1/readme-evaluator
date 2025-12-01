@@ -1,0 +1,634 @@
+{
+  "metadata": {
+    "repository_name": "Keras 3",
+    "repository_link": "https://github.com/keras-team/keras",
+    "readme_raw_link": "https://github.com/keras-team/keras/blob/master/README.md",
+    "evaluation_date": "2025-11-30",
+    "evaluator": "gemini-2.5-flash",
+    "general_notes": "The README provides a clear overview of Keras 3, its multi-backend support, and key benefits. Installation instructions are comprehensive, covering pip, local, and GPU setups. Configuration of backends is also well-explained. However, it lacks explicit usage examples, information on authors/maintainers, license details, and contribution guidelines. The 'Why' section is strong, but a dedicated 'When' (roadmap/changelog) is missing."
+  },
+  "structural_summary": {
+    "detected_sections": [
+      "# Keras 3: Deep Learning for Humans",
+      "## Installation",
+      "### Install with pip",
+      "### Local installation",
+      "#### Minimal installation",
+      "## Backend Compatibility Table",
+      "#### Adding GPU support",
+      "## Configuring your backend",
+      "## Backwards compatibility",
+      "## Why use Keras 3?"
+    ],
+    "present_categories": {
+      "what": true,
+      "why": true,
+      "how_installation": true,
+      "how_usage": false,
+      "how_config_requirements": true,
+      "when": false,
+      "who": false,
+      "license": false,
+      "contribution": false,
+      "references": true,
+      "other": false
+    },
+    "organization_notes": "The README is well-structured with clear headings for installation, backend configuration, and benefits. The flow is logical, moving from introduction to setup. However, it lacks sections for usage examples, project status, community, and legal aspects like licensing and contribution."
+  },
+  "categories": {
+    "what": {
+      "checklist": {
+        "clear_description": true,
+        "features_scope": true,
+        "target_audience": true
+      },
+      "quality": {
+        "clarity": {
+          "note": 5,
+          "evidences": [
+            "L3: Keras 3 is a multi-backend deep learning framework, with support for JAX, TensorFlow, PyTorch, and OpenVINO (for inference-only).",
+            "L4-L5: Effortlessly build and train models for computer vision, natural language processing, audio processing, timeseries forecasting, recommender systems, etc."
+          ],
+          "justifications": [
+            "The description clearly states what Keras 3 is and its primary function.",
+            "The scope of applications is explicitly listed, providing a good overview of its capabilities."
+          ]
+        },
+        "understandability": {
+          "note": 5,
+          "evidences": [
+            "L3: Keras 3 is a multi-backend deep learning framework...",
+            "L4-L5: Effortlessly build and train models for computer vision, natural language processing, audio processing, timeseries forecasting, recommender systems, etc."
+          ],
+          "justifications": [
+            "The language used is straightforward and easy for anyone familiar with deep learning concepts to understand.",
+            "The examples of applications are common and immediately comprehensible."
+          ]
+        },
+        "conciseness": {
+          "note": 5,
+          "evidences": [
+            "L3-L5: Keras 3 is a multi-backend deep learning framework, with support for JAX, TensorFlow, PyTorch, and OpenVINO (for inference-only). Effortlessly build and train models for computer vision, natural language processing, audio processing, timeseries forecasting, recommender systems, etc."
+          ],
+          "justifications": [
+            "The 'What' is described efficiently in a few sentences, covering the core identity and scope without unnecessary jargon or verbosity."
+          ]
+        },
+        "consistency": {
+          "note": 5,
+          "evidences": [
+            "L1: # Keras 3: Deep Learning for Humans",
+            "L3: Keras 3 is a multi-backend deep learning framework..."
+          ],
+          "justifications": [
+            "The name 'Keras 3' and its description as a 'deep learning framework' are consistent throughout the introductory text."
+          ]
+        }
+      },
+      "evidences": [
+        "L3: Keras 3 is a multi-backend deep learning framework, with support for JAX, TensorFlow, PyTorch, and OpenVINO (for inference-only).",
+        "L4-L5: Effortlessly build and train models for computer vision, natural language processing, audio processing, timeseries forecasting, recommender systems, etc.",
+        "L12-L14: Join nearly three million developers, from burgeoning startups to global enterprises, in harnessing the power of Keras 3."
+      ],
+      "justifications": [
+        "The README clearly defines Keras 3, its capabilities, and its target users.",
+        "The features and scope are well-articulated in the initial paragraphs and bullet points."
+      ],
+      "suggested_improvements": []
+    },
+    "why": {
+      "checklist": {
+        "explicit_purpose": true,
+        "benefits_vs_alternatives": true,
+        "use_cases": true
+      },
+      "quality": {
+        "clarity": {
+          "note": 5,
+          "evidences": [
+            "L6: - **Accelerated model development**: Ship deep learning solutions faster thanks to the high-level UX of Keras...",
+            "L8: - **State-of-the-art performance**: By picking the backend that is the fastest for your model architecture...",
+            "L11: - **Datacenter-scale training**: Scale confidently from your laptop to large clusters of GPUs or TPUs.",
+            "L88: ## Why use Keras 3?"
+          ],
+          "justifications": [
+            "The 'Why' is explicitly addressed in a dedicated section and through clear bullet points highlighting key advantages.",
+            "The benefits are stated directly and are easy to understand."
+          ]
+        },
+        "effectiveness": {
+          "note": 5,
+          "evidences": [
+            "L9-L10: leverage speedups ranging from 20% to 350% compared to other frameworks. [Benchmark here](https://keras.io/getting_started/benchmarks/).",
+            "L95: Make your ML code future-proof by avoiding framework lock-in.",
+            "L96: As a PyTorch user: get access to power and usability of Keras, at last!",
+            "L97-L98: As a JAX user: get access to a fully-featured, battle-tested, well-documented modeling and training library."
+          ],
+          "justifications": [
+            "The benefits are compelling, offering concrete advantages like performance gains and framework independence.",
+            "It directly addresses pain points for users of other frameworks, making a strong case for Keras 3."
+          ]
+        },
+        "appeal": {
+          "note": 5,
+          "evidences": [
+            "L1: # Keras 3: Deep Learning for Humans",
+            "L12-L14: Join nearly three million developers, from burgeoning startups to global enterprises, in harnessing the power of Keras 3.",
+            "L96-L98: As a PyTorch user: get access to power and usability of Keras, at last! As a JAX user: get access to a fully-featured, battle-tested, well-documented modeling and training library."
+          ],
+          "justifications": [
+            "The README uses engaging language ('Deep Learning for Humans', 'Effortlessly build', 'Join nearly three million developers') to attract users.",
+            "It speaks directly to potential users (PyTorch/JAX users) and highlights specific benefits for them."
+          ]
+        }
+      },
+      "evidences": [
+        "L6-L11: Accelerated model development, State-of-the-art performance, Datacenter-scale training.",
+        "L9-L10: leverage speedups ranging from 20% to 350% compared to other frameworks.",
+        "L90-L98: Run your high-level Keras workflows on top of any framework... Make your ML code future-proof... As a PyTorch user... As a JAX user..."
+      ],
+      "justifications": [
+        "The README clearly articulates the benefits and purpose of Keras 3, including performance advantages and framework flexibility.",
+        "It addresses specific user needs and positions Keras 3 as a superior alternative."
+      ],
+      "suggested_improvements": []
+    },
+    "how_installation": {
+      "checklist": {
+        "reproducible_commands": true,
+        "compatibility_requirements": true,
+        "dependencies": true
+      },
+      "quality": {
+        "structure": {
+          "note": 5,
+          "evidences": [
+            "L15: ## Installation",
+            "L17: ### Install with pip",
+            "L27: ### Local installation",
+            "L47: #### Adding GPU support"
+          ],
+          "justifications": [
+            "The installation section is logically structured with clear subheadings for different installation methods (pip, local, GPU).",
+            "Steps are numbered where appropriate, enhancing clarity."
+          ]
+        },
+        "readability": {
+          "note": 5,
+          "evidences": [
+            "L20: `pip install keras --upgrade`",
+            "L32: `pip install -r requirements.txt`",
+            "L52-L55: `conda create -y -n keras-jax python=3.10` ... `pip install -r requirements-jax-cuda.txt`"
+          ],
+          "justifications": [
+            "Code blocks are used for commands, making them easy to identify and copy.",
+            "Explanations are concise and directly precede the commands."
+          ]
+        },
+        "clarity": {
+          "note": 5,
+          "evidences": [
+            "L23-L25: To use `keras`, you should also install the backend of choice: `tensorflow`, `jax`, or `torch`.",
+            "L29-L30: Keras 3 is compatible with Linux and macOS systems. For Windows users, we recommend using WSL2 to run Keras.",
+            "L47-L50: The `requirements.txt` file will install a CPU-only version... For GPU support, we also provide a separate `requirements-{backend}-cuda.txt`..."
+          ],
+          "justifications": [
+            "The instructions are unambiguous, specifying necessary backend installations, operating system compatibility, and GPU setup details.",
+            "The backend compatibility table (L40-L45) further clarifies requirements."
+          ]
+        }
+      },
+      "evidences": [
+        "L17-L25: Install with pip (keras and backend packages).",
+        "L27-L37: Local installation (dependencies, build command, API gen script).",
+        "L40-L45: Backend Compatibility Table (minimum supported versions).",
+        "L47-L57: Adding GPU support (backend-specific requirements, conda example)."
+      ],
+      "justifications": [
+        "Comprehensive installation instructions are provided for various scenarios (pip, local, GPU).",
+        "Dependencies and compatibility requirements are clearly stated, including specific backend versions."
+      ],
+      "suggested_improvements": []
+    },
+    "how_usage": {
+      "checklist": {
+        "minimal_working_example": false,
+        "io_examples": false,
+        "api_commands_context": false
+      },
+      "quality": {
+        "understandability": {
+          "note": 1,
+          "evidences": [],
+          "justifications": [
+            "Without any usage examples, it is impossible for a new user to understand how to start using Keras 3 directly from the README."
+          ]
+        },
+        "code_readability": {
+          "note": 1,
+          "evidences": [],
+          "justifications": [
+            "No code examples are provided in the README, so code readability cannot be assessed."
+          ]
+        },
+        "effectiveness": {
+          "note": 1,
+          "evidences": [],
+          "justifications": [
+            "The README does not effectively demonstrate how to use Keras 3, requiring users to seek external documentation immediately for basic usage."
+          ]
+        }
+      },
+      "evidences": [],
+      "justifications": [
+        "The README lacks any explicit section or code snippets demonstrating how to use Keras 3, such as a minimal working example, input/output examples, or API commands in context."
+      ],
+      "suggested_improvements": [
+        "Add a 'Quick Start' or 'Usage' section with a minimal code example demonstrating how to define, compile, and train a simple model.",
+        "Include examples of common API calls and their expected behavior."
+      ]
+    },
+    "how_config_requirements": {
+      "checklist": {
+        "documented_configuration": true,
+        "parameters_options": true,
+        "troubleshooting": false
+      },
+      "quality": {
+        "clarity": {
+          "note": 5,
+          "evidences": [
+            "L59: ## Configuring your backend",
+            "L60-L63: You can export the environment variable `KERAS_BACKEND` or you can edit your local config file at `~/.keras/keras.json` to configure your backend. Available backend options are: `\"tensorflow\"`, `\"jax\"`, `\"torch\"`, `\"openvino\"`.",
+            "L65: `export KERAS_BACKEND=\"jax\"`"
+          ],
+          "justifications": [
+            "The configuration options are clearly documented, specifying both environment variables and config file methods.",
+            "Available backend options are explicitly listed."
+          ]
+        },
+        "structure": {
+          "note": 5,
+          "evidences": [
+            "L59: ## Configuring your backend",
+            "L65: `export KERAS_BACKEND=\"jax\"`",
+            "L68-L70: In Colab, you can do: `import os` `os.environ[\"KERAS_BACKEND\"] = \"jax\"` `import keras`"
+          ],
+          "justifications": [
+            "The section is well-structured, starting with a general explanation, followed by a command-line example, and then a specific example for Colab.",
+            "Notes are clearly separated."
+          ]
+        },
+        "conciseness": {
+          "note": 5,
+          "evidences": [
+            "L60-L63: You can export the environment variable `KERAS_BACKEND` or you can edit your local config file at `~/.keras/keras.json` to configure your backend. Available backend options are: `\"tensorflow\"`, `\"jax\"`, `\"torch\"`, `\"openvino\"`.",
+            "L71-L73: **Note:** The OpenVINO backend is an inference-only backend, meaning it is designed only for running model predictions using `model.predict()` method."
+          ],
+          "justifications": [
+            "The configuration details are presented concisely, providing all necessary information without being overly verbose.",
+            "Important notes are highlighted briefly."
+          ]
+        }
+      },
+      "evidences": [
+        "L59-L73: Section 'Configuring your backend' details how to set `KERAS_BACKEND` via environment variable or config file, listing available options.",
+        "L40-L45: 'Backend Compatibility Table' lists minimum supported versions for each backend.",
+        "L47-L57: 'Adding GPU support' describes specific requirements for GPU installations."
+      ],
+      "justifications": [
+        "Configuration options for backends are clearly documented with examples.",
+        "Compatibility and specific requirements for different setups (e.g., GPU) are provided.",
+        "No troubleshooting information is present."
+      ],
+      "suggested_improvements": [
+        "Add a small troubleshooting section for common configuration issues, such as backend not found errors."
+      ]
+    },
+    "when": {
+      "checklist": {
+        "current_status": true,
+        "roadmap": false,
+        "changelog": false
+      },
+      "quality": {
+        "clarity": {
+          "note": 2,
+          "evidences": [
+            "L40: The following table lists the minimum supported versions of each backend for the latest stable release of Keras (v3.x):"
+          ],
+          "justifications": [
+            "The current status is only implicitly mentioned as 'latest stable release (v3.x)'. There is no explicit section for project status, roadmap, or changelog."
+          ]
+        },
+        "consistency": {
+          "note": 3,
+          "evidences": [
+            "L40: latest stable release of Keras (v3.x)"
+          ],
+          "justifications": [
+            "The mention of 'v3.x' is consistent with the title 'Keras 3', but the lack of a dedicated section for 'When' makes it less consistent with a comprehensive README structure."
+          ]
+        }
+      },
+      "evidences": [
+        "L40: The following table lists the minimum supported versions of each backend for the latest stable release of Keras (v3.x):"
+      ],
+      "justifications": [
+        "The current status is only implicitly stated as 'latest stable release (v3.x)'.",
+        "There is no information about a roadmap or a changelog within the README."
+      ],
+      "suggested_improvements": [
+        "Add a dedicated 'Status' or 'Project Lifecycle' section.",
+        "Include a link to a changelog or release notes if available externally.",
+        "Provide a high-level roadmap for future development."
+      ]
+    },
+    "who": {
+      "checklist": {
+        "authors_maintainers": false,
+        "contact_channels": false,
+        "code_of_conduct": false
+      },
+      "quality": {
+        "clarity": {
+          "note": 1,
+          "evidences": [],
+          "justifications": [
+            "No information regarding authors, maintainers, contact channels, or a code of conduct is present in the README."
+          ]
+        },
+        "consistency": {
+          "note": 1,
+          "evidences": [],
+          "justifications": [
+            "The absence of any 'Who' related information means there is no consistency to evaluate."
+          ]
+        }
+      },
+      "evidences": [],
+      "justifications": [
+        "The README does not contain any information about the authors, maintainers, contact channels, or a code of conduct for the project."
+      ],
+      "suggested_improvements": [
+        "Add a 'Community' or 'Contact' section listing authors/maintainers, preferred contact methods (e.g., GitHub issues, mailing list), and a link to a Code of Conduct if applicable."
+      ]
+    },
+    "license": {
+      "checklist": {
+        "license_type": false,
+        "license_link": false
+      },
+      "quality": {
+        "clarity": 1,
+        "consistency": 1
+      },
+      "evidences": [],
+      "justifications": [
+        "No license information (type or link) is provided in the README."
+      ],
+      "suggested_improvements": [
+        "Add a 'License' section clearly stating the license type and providing a link to the full license text."
+      ]
+    },
+    "contribution": {
+      "checklist": {
+        "contributing_link": false,
+        "contribution_steps": false,
+        "standards": false
+      },
+      "quality": {
+        "structure": {
+          "note": 1,
+          "evidences": [],
+          "justifications": [
+            "No contribution section exists, so structure cannot be assessed."
+          ]
+        },
+        "clarity": {
+          "note": 1,
+          "evidences": [],
+          "justifications": [
+            "No contribution information is provided, so clarity cannot be assessed."
+          ]
+        },
+        "readability": {
+          "note": 1,
+          "evidences": [],
+          "justifications": [
+            "No contribution information is provided, so readability cannot be assessed."
+          ]
+        }
+      },
+      "evidences": [],
+      "justifications": [
+        "The README does not include any information or links related to contributing to the project, such as a contributing guide, steps, or coding standards."
+      ],
+      "suggested_improvements": [
+        "Add a 'Contributing' section with a link to a `CONTRIBUTING.md` file or outline basic contribution steps and guidelines."
+      ]
+    },
+    "references": {
+      "checklist": {
+        "docs_link": true,
+        "relevant_references": true,
+        "faq_support": false
+      },
+      "quality": {
+        "effectiveness": {
+          "note": 3,
+          "evidences": [
+            "L10: [Benchmark here](https://keras.io/getting_started/benchmarks/).",
+            "L99: Read more in the [Keras 3 release announcement](https://keras.io/keras_3/)."
+          ],
+          "justifications": [
+            "Provides links to a benchmark and a release announcement, which are relevant external resources.",
+            "However, it lacks a comprehensive documentation link or a dedicated support/FAQ section."
+          ]
+        },
+        "clarity": {
+          "note": 4,
+          "evidences": [
+            "L10: [Benchmark here](https://keras.io/getting_started/benchmarks/).",
+            "L99: Read more in the [Keras 3 release announcement](https://keras.io/keras_3/)."
+          ],
+          "justifications": [
+            "The links are clearly labeled and indicate their content.",
+            "The purpose of each link is evident from its surrounding text."
+          ]
+        }
+      },
+      "evidences": [
+        "L10: [Benchmark here](https://keras.io/getting_started/benchmarks/).",
+        "L99: Read more in the [Keras 3 release announcement](https://keras.io/keras_3/)."
+      ],
+      "justifications": [
+        "The README includes links to relevant external resources like benchmarks and a release announcement.",
+        "However, it does not provide a general documentation link or a section for FAQ/support."
+      ],
+      "suggested_improvements": [
+        "Add a prominent link to the main Keras 3 documentation.",
+        "Consider adding a link to a FAQ or support forum if available."
+      ]
+    },
+    "other": {
+      "checklist": {
+        "generic_sections": false,
+        "placeholders": false
+      },
+      "action": {
+        "reclassify": false,
+        "suggest_removal": false
+      },
+      "evidences": [],
+      "suggested_improvements": []
+    }
+  },
+  "dimensions_summary": {
+    "quality": {
+      "note": 4,
+      "evidences": [
+        "L3-L14: Clear 'What' and 'Why' sections.",
+        "L15-L57: Comprehensive installation instructions.",
+        "L59-L73: Detailed backend configuration."
+      ],
+      "justifications": [
+        "The README is of good quality, providing essential information clearly and comprehensively for setup and understanding the project's value.",
+        "However, the absence of usage examples, community details, and legal information (license, contribution) prevents a higher score."
+      ]
+    },
+    "appeal": {
+      "note": 5,
+      "evidences": [
+        "L1: # Keras 3: Deep Learning for Humans",
+        "L12-L14: Join nearly three million developers, from burgeoning startups to global enterprises, in harnessing the power of Keras 3.",
+        "L96-L98: As a PyTorch user: get access to power and usability of Keras, at last! As a JAX user: get access to a fully-featured, battle-tested, well-documented modeling and training library."
+      ],
+      "justifications": [
+        "The README is highly appealing, using strong, benefit-oriented language and directly addressing potential users' needs and aspirations.",
+        "The title and introductory statements are very engaging."
+      ]
+    },
+    "readability": {
+      "note": 5,
+      "evidences": [
+        "L15: ## Installation",
+        "L20: `pip install keras --upgrade`",
+        "L40-L45: Backend Compatibility Table"
+      ],
+      "justifications": [
+        "The README uses clear headings, bullet points, and code blocks effectively, making it very easy to scan and read.",
+        "The language is accessible and avoids overly complex sentences."
+      ]
+    },
+    "understandability": {
+      "note": 4,
+      "evidences": [
+        "L3-L5: Keras 3 is a multi-backend deep learning framework...",
+        "L6-L11: Accelerated model development, State-of-the-art performance, Datacenter-scale training.",
+        "L59-L63: Configuring your backend..."
+      ],
+      "justifications": [
+        "Most sections are very easy to understand, especially the 'What', 'Why', and 'Installation' parts.",
+        "The main drawback is the lack of usage examples, which would significantly improve the immediate practical understanding for new users."
+      ]
+    },
+    "structure": {
+      "note": 4,
+      "evidences": [
+        "L15: ## Installation",
+        "L17: ### Install with pip",
+        "L27: ### Local installation",
+        "L59: ## Configuring your backend"
+      ],
+      "justifications": [
+        "The README has a logical and hierarchical structure with clear headings and subheadings.",
+        "Information is grouped coherently, making it easy to navigate to specific topics.",
+        "However, the absence of some standard sections (e.g., Usage, Contributing, License) means the overall structure is incomplete."
+      ]
+    },
+    "cohesion": {
+      "note": 4,
+      "evidences": [
+        "L3: Keras 3 is a multi-backend deep learning framework...",
+        "L23-L25: To use `keras`, you should also install the backend of choice...",
+        "L59: Configuring your backend"
+      ],
+      "justifications": [
+        "The content flows well from the introduction to installation and configuration, maintaining a consistent focus on Keras 3's multi-backend nature.",
+        "The 'Why' section reinforces the initial value proposition. The missing sections (usage, community, legal) create some gaps in overall cohesion."
+      ]
+    },
+    "conciseness": {
+      "note": 5,
+      "evidences": [
+        "L3-L5: Keras 3 is a multi-backend deep learning framework...",
+        "L20: `pip install keras --upgrade`",
+        "L71-L73: **Note:** The OpenVINO backend is an inference-only backend..."
+      ],
+      "justifications": [
+        "The README is highly concise, presenting information efficiently without unnecessary words.",
+        "Each section delivers its message directly, making it an effective read."
+      ]
+    },
+    "effectiveness": {
+      "note": 4,
+      "evidences": [
+        "L6-L11: Clearly communicates key benefits.",
+        "L15-L57: Provides actionable installation steps.",
+        "L59-L73: Guides users on backend configuration."
+      ],
+      "justifications": [
+        "The README is very effective in introducing Keras 3, explaining its value, and guiding users through the setup process.",
+        "Its effectiveness is slightly hampered by the lack of immediate usage examples, which would allow users to get started coding faster."
+      ]
+    },
+    "consistency": {
+      "note": 5,
+      "evidences": [
+        "L1: # Keras 3",
+        "L3: Keras 3 is a multi-backend deep learning framework...",
+        "L40: latest stable release of Keras (v3.x)"
+      ],
+      "justifications": [
+        "The terminology ('Keras 3', 'multi-backend', 'deep learning framework') is consistently used throughout the document.",
+        "The formatting of headings and code blocks is uniform."
+      ]
+    },
+    "clarity": {
+      "note": 5,
+      "evidences": [
+        "L3-L5: Clear description of what Keras 3 is and its applications.",
+        "L6-L11: Explicitly stated benefits.",
+        "L23-L25: Clear instructions for installing backend packages."
+      ],
+      "justifications": [
+        "The README excels in clarity. All explanations, instructions, and benefits are presented in a clear, unambiguous manner, making it easy for readers to grasp the information."
+      ]
+    },
+    "global_notes": "The Keras 3 README is strong in its clear description of the project, its compelling 'Why' section, and its comprehensive installation and configuration guides. It is highly readable and appealing. However, it has significant gaps in providing immediate usage examples, information about authors/maintainers, licensing, and contribution guidelines. Addressing these gaps would make it a truly exemplary README."
+  },
+  "executive_summary": {
+    "strengths": [
+      "Clear and engaging description of Keras 3 and its core value proposition.",
+      "Comprehensive and well-structured installation instructions for various environments (pip, local, GPU).",
+      "Detailed and clear guidance on configuring different backends.",
+      "Strong articulation of benefits, including performance gains and framework independence."
+    ],
+    "weaknesses": [
+      "Absence of a minimal working usage example in the README.",
+      "Lack of information regarding authors, maintainers, or contact channels.",
+      "Missing explicit license information and contribution guidelines."
+    ],
+    "critical_gaps": [
+      "The absence of any usage examples (MWE, I/O, API context) directly in the README is a critical gap, hindering immediate user onboarding.",
+      "Lack of 'Who' (authors, contact) and 'License' information."
+    ],
+    "priority_recommendations": [
+      "**Add a 'Quick Start' or 'Usage' section with a minimal working code example** to enable users to quickly understand and run Keras 3.",
+      "**Include a 'Community' or 'Contact' section** with information on authors/maintainers, preferred communication channels, and a link to a Code of Conduct.",
+      "**Add a 'License' section** clearly stating the license type and providing a link to the full license text.",
+      "**Provide a 'Contributing' section** with a link to a `CONTRIBUTING.md` file or outline basic contribution steps."
+    ]
+  }
+}

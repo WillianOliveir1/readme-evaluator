@@ -1,0 +1,601 @@
+{
+  "metadata": {
+    "repository_name": "scipy",
+    "repository_link": "https://github.com/scipy/scipy",
+    "readme_raw_link": "Not provided in README",
+    "evaluation_date": "2025-11-30",
+    "evaluator": "gemini-2.5-flash",
+    "general_notes": "The README provides a concise overview of SciPy, its purpose, and how to get involved. It is rich in external links for documentation, installation, contributing, and community support. However, it lacks direct installation commands and usage examples within the README itself, relying heavily on external documentation."
+  },
+  "structural_summary": {
+    "detected_sections": [
+      "Introduction/What",
+      "Key Links",
+      "SciPy & NumPy Context",
+      "Installation Instructions (link)",
+      "Call for Contributions"
+    ],
+    "present_categories": {
+      "what": true,
+      "why": true,
+      "how_installation": true,
+      "how_usage": false,
+      "how_config_requirements": false,
+      "when": false,
+      "who": true,
+      "license": false,
+      "contribution": true,
+      "references": true,
+      "other": false
+    },
+    "organization_notes": "The README is structured logically with an introduction, a list of key links, a paragraph on its context with NumPy, a link to installation, and a dedicated 'Call for Contributions' section. It lacks explicit markdown headings for most sections, relying on bullet points and paragraphs, which makes section detection a bit interpretive. There is no explicit license section, but a DOI badge is present."
+  },
+  "categories": {
+    "what": {
+      "checklist": {
+        "clear_description": true,
+        "features_scope": true,
+        "target_audience": true
+      },
+      "quality": {
+        "clarity": {
+          "note": 5,
+          "evidences": [
+            "L20: SciPy (pronounced \"Sigh Pie\") is an open-source software for mathematics, science, and engineering.",
+            "L21-23: It includes modules for statistics, optimization, integration, linear algebra, Fourier transforms, signal and image processing, ODE solvers, and more."
+          ],
+          "justifications": [
+            "The project is clearly defined as open-source software for specific domains.",
+            "Its core functionalities are explicitly listed, giving a good overview of its scope."
+          ]
+        },
+        "understandability": {
+          "note": 5,
+          "evidences": [
+            "L20: SciPy (pronounced \"Sigh Pie\") is an open-source software for mathematics, science, and engineering.",
+            "L44-46: If you need to manipulate numbers on a computer and display or publish the results, give SciPy a try!"
+          ],
+          "justifications": [
+            "The description is straightforward and uses accessible language.",
+            "The call to action clearly indicates the type of user who would benefit."
+          ]
+        },
+        "conciseness": {
+          "note": 4,
+          "evidences": [
+            "L20-23: SciPy ... includes modules for statistics, optimization, integration, linear algebra, Fourier transforms, signal and image processing, ODE solvers, and more."
+          ],
+          "justifications": [
+            "The description is brief and to the point, listing key features without excessive detail. It avoids jargon where possible."
+          ]
+        },
+        "consistency": {
+          "note": 5,
+          "evidences": [
+            "L20: SciPy (pronounced \"Sigh Pie\") is an open-source software for mathematics, science, and engineering.",
+            "L26: Website: https://scipy.org"
+          ],
+          "justifications": [
+            "The name and core identity of the project are consistently presented throughout the README and linked resources."
+          ]
+        }
+      },
+      "evidences": [
+        "L20: SciPy (pronounced \"Sigh Pie\") is an open-source software for mathematics, science, and engineering.",
+        "L21-23: It includes modules for statistics, optimization, integration, linear algebra, Fourier transforms, signal and image processing, ODE solvers, and more.",
+        "L44-46: If you need to manipulate numbers on a computer and display or publish the results, give SciPy a try!"
+      ],
+      "justifications": [
+        "The README provides a clear and concise description of what SciPy is, its main features, and its target audience."
+      ],
+      "suggested_improvements": []
+    },
+    "why": {
+      "checklist": {
+        "explicit_purpose": true,
+        "benefits_vs_alternatives": false,
+        "use_cases": true
+      },
+      "quality": {
+        "clarity": {
+          "note": 4,
+          "evidences": [
+            "L20: SciPy ... is an open-source software for mathematics, science, and engineering.",
+            "L40-41: provides many user-friendly and efficient numerical routines, such as routines for numerical integration and optimization."
+          ],
+          "justifications": [
+            "The purpose is clear (mathematics, science, engineering) and benefits like 'user-friendly and efficient numerical routines' are stated."
+          ]
+        },
+        "effectiveness": {
+          "note": 4,
+          "evidences": [
+            "L42-43: Together, they run on all popular operating systems, are quick to install, and are free of charge.",
+            "L43-44: NumPy and SciPy are easy to use, but powerful enough to be depended upon by some of the world's leading scientists and engineers."
+          ],
+          "justifications": [
+            "The benefits are effectively communicated, highlighting ease of use, power, and accessibility (free, cross-platform)."
+          ]
+        },
+        "appeal": {
+          "note": 4,
+          "evidences": [
+            "L43-44: powerful enough to be depended upon by some of the world's leading scientists and engineers.",
+            "L44-46: If you need to manipulate numbers on a computer and display or publish the results, give SciPy a try!"
+          ],
+          "justifications": [
+            "The README appeals to users by emphasizing its power and adoption by leading professionals, and directly invites potential users."
+          ]
+        }
+      },
+      "evidences": [
+        "L20: SciPy ... is an open-source software for mathematics, science, and engineering.",
+        "L40-41: provides many user-friendly and efficient numerical routines, such as routines for numerical integration and optimization.",
+        "L42-44: Together, they run on all popular operating systems, are quick to install, and are free of charge. NumPy and SciPy are easy to use, but powerful enough to be depended upon by some of the world's leading scientists and engineers."
+      ],
+      "justifications": [
+        "The README clearly states the purpose and benefits of SciPy, including its ease of use, efficiency, and adoption by professionals. It also implies use cases through its feature list and target audience."
+      ],
+      "suggested_improvements": [
+        "Consider adding a dedicated 'Why SciPy?' section to consolidate the benefits and use cases, potentially with a brief comparison to alternatives if applicable."
+      ]
+    },
+    "how_installation": {
+      "checklist": {
+        "reproducible_commands": false,
+        "compatibility_requirements": false,
+        "dependencies": false
+      },
+      "quality": {
+        "structure": {
+          "note": 2,
+          "evidences": [
+            "L48-49: For the installation instructions, see `our install guide <https://scipy.org/install/>`__."
+          ],
+          "justifications": [
+            "The README only provides a link to installation instructions, rather than structuring them within the document itself. This is a pointer, not a structured section."
+          ]
+        },
+        "readability": {
+          "note": 3,
+          "evidences": [
+            "L48-49: For the installation instructions, see `our install guide <https://scipy.org/install/>`__."
+          ],
+          "justifications": [
+            "The instruction itself is readable, but it immediately directs the user away from the README, which reduces the overall readability of the installation process within this document."
+          ]
+        },
+        "clarity": {
+          "note": 3,
+          "evidences": [
+            "L48-49: For the installation instructions, see `our install guide <https://scipy.org/install/>`__."
+          ],
+          "justifications": [
+            "It's clear that installation instructions exist and where to find them, but the details are not present in the README, making it less clear for a user who prefers to stay within the README."
+          ]
+        }
+      },
+      "evidences": [
+        "L48-49: For the installation instructions, see `our install guide <https://scipy.org/install/>`__."
+      ],
+      "justifications": [
+        "The README only provides a link to external installation instructions, lacking direct commands, compatibility requirements, or dependency lists within the document itself."
+      ],
+      "suggested_improvements": [
+        "Include a minimal set of installation commands (e.g., `pip install scipy` or `conda install scipy`) directly in the README for quick setup.",
+        "Briefly mention key compatibility requirements (e.g., Python version) and major dependencies."
+      ]
+    },
+    "how_usage": {
+      "checklist": {
+        "minimal_working_example": false,
+        "io_examples": false,
+        "api_commands_context": false
+      },
+      "quality": {
+        "understandability": {
+          "note": 1,
+          "evidences": [],
+          "justifications": [
+            "No usage examples are provided in the README, making it impossible to understand how to use the software without consulting external documentation."
+          ]
+        },
+        "code_readability": {
+          "note": 1,
+          "evidences": [],
+          "justifications": [
+            "No code examples are present, so code readability cannot be assessed."
+          ]
+        },
+        "effectiveness": {
+          "note": 1,
+          "evidences": [],
+          "justifications": [
+            "The README is completely ineffective in demonstrating how to use SciPy, as it contains no usage information."
+          ]
+        }
+      },
+      "evidences": [],
+      "justifications": [
+        "The README does not include any minimal working examples, I/O examples, or API/command context for using SciPy. Users must refer to external documentation."
+      ],
+      "suggested_improvements": [
+        "Add a 'Quick Start' or 'Usage' section with a minimal working code example demonstrating a core SciPy functionality (e.g., optimization, integration).",
+        "Show a simple input/output interaction if applicable."
+      ]
+    },
+    "how_config_requirements": {
+      "checklist": {
+        "documented_configuration": false,
+        "parameters_options": false,
+        "troubleshooting": false
+      },
+      "quality": {
+        "clarity": {
+          "note": 1,
+          "evidences": [],
+          "justifications": [
+            "No configuration, parameters, options, or troubleshooting information is provided in the README."
+          ]
+        },
+        "structure": {
+          "note": 1,
+          "evidences": [],
+          "justifications": [
+            "There is no section or mention of configuration or requirements beyond the installation link."
+          ]
+        },
+        "conciseness": {
+          "note": 1,
+          "evidences": [],
+          "justifications": [
+            "No information is present, so conciseness is not applicable in a positive sense."
+          ]
+        }
+      },
+      "evidences": [],
+      "justifications": [
+        "The README does not contain any information regarding configuration, parameters, options, or troubleshooting. This information is likely deferred to the full documentation."
+      ],
+      "suggested_improvements": [
+        "Briefly mention any critical configuration steps or common requirements (e.g., specific Python versions, OS support) if they are not covered by the installation guide link.",
+        "Add a link to a troubleshooting guide if one exists."
+      ]
+    },
+    "when": {
+      "checklist": {
+        "current_status": false,
+        "roadmap": false,
+        "changelog": false
+      },
+      "quality": {
+        "clarity": {
+          "note": 1,
+          "evidences": [],
+          "justifications": [
+            "No information about the current status, roadmap, or changelog is present in the README."
+          ]
+        },
+        "consistency": {
+          "note": 1,
+          "evidences": [],
+          "justifications": [
+            "No information is present to assess consistency."
+          ]
+        }
+      },
+      "evidences": [],
+      "justifications": [
+        "The README does not provide any information about the project's current status, future roadmap, or a changelog. While a DOI badge is present, it refers to a publication, not project status."
+      ],
+      "suggested_improvements": [
+        "Add a 'Status' section indicating if the project is actively maintained, stable, or in active development.",
+        "Include a link to a changelog or release notes if available.",
+        "Briefly mention any major upcoming features or a link to a roadmap."
+      ]
+    },
+    "who": {
+      "checklist": {
+        "authors_maintainers": false,
+        "contact_channels": true,
+        "code_of_conduct": true
+      },
+      "quality": {
+        "clarity": {
+          "note": 4,
+          "evidences": [
+            "L28: SciPy development forum: https://discuss.scientific-python.org/c/contributor/scipy",
+            "L29: Stack Overflow: https://stackoverflow.com/questions/tagged/scipy",
+            "L33: Code of Conduct: https://docs.scipy.org/doc/scipy/dev/conduct/code_of_conduct.html",
+            "L69-72: You can ask on the `forum <https://discuss.scientific-python.org/c/contributor/scipy>`__ or here, on GitHub, by leaving a comment on a relevant issue that is already open."
+          ],
+          "justifications": [
+            "Multiple clear contact channels are provided for different purposes (development, questions, issues).",
+            "A direct link to the Code of Conduct is present."
+          ]
+        },
+        "consistency": {
+          "note": 5,
+          "evidences": [
+            "L28: SciPy development forum: https://discuss.scientific-python.org/c/contributor/scipy",
+            "L69-70: You can ask on the `forum <https://discuss.scientific-python.org/c/contributor/scipy>`__"
+          ],
+          "justifications": [
+            "The contact channels are consistently listed and referenced throughout the README."
+          ]
+        }
+      },
+      "evidences": [
+        "L28: SciPy development forum: https://discuss.scientific-python.org/c/contributor/scipy",
+        "L29: Stack Overflow: https://stackoverflow.com/questions/tagged/scipy",
+        "L32: Bug reports: https://github.com/scipy/scipy/issues",
+        "L33: Code of Conduct: https://docs.scipy.org/doc/scipy/dev/conduct/code_of_conduct.html",
+        "L69-72: You can ask on the `forum <https://discuss.scientific-python.org/c/contributor/scipy>`__ or here, on GitHub, by leaving a comment on a relevant issue that is already open."
+      ],
+      "justifications": [
+        "The README clearly lists various contact channels for support and development, and provides a link to the Code of Conduct. However, it does not explicitly name authors or maintainers."
+      ],
+      "suggested_improvements": [
+        "Consider adding a section or a link to a page listing the main authors and maintainers of the project."
+      ]
+    },
+    "license": {
+      "checklist": {
+        "license_type": false,
+        "license_link": false
+      },
+      "quality": {
+        "clarity": 1,
+        "consistency": 1
+      },
+      "evidences": [],
+      "justifications": [
+        "The README does not explicitly state the license type or provide a direct link to the license file. While it is open-source, the specific license is not mentioned."
+      ],
+      "suggested_improvements": [
+        "Clearly state the license type (e.g., 'Licensed under BSD 3-Clause') and provide a direct link to the LICENSE file in the repository."
+      ]
+    },
+    "contribution": {
+      "checklist": {
+        "contributing_link": true,
+        "contribution_steps": true,
+        "standards": true
+      },
+      "quality": {
+        "structure": {
+          "note": 5,
+          "evidences": [
+            "L52: Call for Contributions",
+            "L55-56: Have a look at `our contributing guide <https://scipy.github.io/devdocs/dev/index.html>`__.",
+            "L58-66: Writing code isn’t the only way to contribute to SciPy. You can also: ..."
+          ],
+          "justifications": [
+            "The 'Call for Contributions' section is well-structured, starting with an invitation, linking to a detailed guide, and then listing various ways to contribute beyond coding."
+          ]
+        },
+        "clarity": {
+          "note": 5,
+          "evidences": [
+            "L54: issues labeled as \"good first issue\" may be a good starting point.",
+            "L58-66: Writing code isn’t the only way to contribute to SciPy. You can also: ...",
+            "L73-75: If you are new to contributing to open source, `this guide <https://opensource.guide/how-to-contribute/>`__ helps explain why, what, and how to get involved."
+          ],
+          "justifications": [
+            "The instructions are very clear, offering specific entry points for new contributors ('good first issue'), diverse contribution types, and even a general guide for open-source newcomers."
+          ]
+        },
+        "readability": {
+          "note": 5,
+          "evidences": [
+            "L52: Call for Contributions",
+            "L58-66: Writing code isn’t the only way to contribute to SciPy. You can also: ..."
+          ],
+          "justifications": [
+            "The section uses clear headings, bullet points for different contribution types, and well-placed links, making it easy to read and digest."
+          ]
+        }
+      },
+      "evidences": [
+        "L31: Contributing: https://scipy.github.io/devdocs/dev/index.html",
+        "L52: Call for Contributions",
+        "L54: issues labeled as \"good first issue\" may be a good starting point.",
+        "L55-56: Have a look at `our contributing guide <https://scipy.github.io/devdocs/dev/index.html>`__.",
+        "L58-66: Writing code isn’t the only way to contribute to SciPy. You can also: review pull requests, triage issues, develop tutorials, presentations, and other educational materials, maintain and improve `our website <https://github.com/scipy/scipy.org>`__, develop graphic design for our brand assets and promotional materials, help with outreach and onboard new contributors, write grant proposals and help with other fundraising efforts.",
+        "L73-75: If you are new to contributing to open source, `this guide <https://opensource.guide/how-to-contribute/>`__ helps explain why, what, and how to get involved."
+      ],
+      "justifications": [
+        "The README provides a dedicated section for contributions, a direct link to the contributing guide, outlines various ways to contribute, and points to resources for new open-source contributors."
+      ],
+      "suggested_improvements": []
+    },
+    "references": {
+      "checklist": {
+        "docs_link": true,
+        "relevant_references": true,
+        "faq_support": true
+      },
+      "quality": {
+        "effectiveness": {
+          "note": 5,
+          "evidences": [
+            "L27: Documentation: https://docs.scipy.org/doc/scipy/",
+            "L28: SciPy development forum: https://discuss.scientific-python.org/c/contributor/scipy",
+            "L29: Stack Overflow: https://stackoverflow.com/questions/tagged/scipy",
+            "L32: Bug reports: https://github.com/scipy/scipy/issues",
+            "L34: Report a security vulnerability: https://tidelift.com/docs/security"
+          ],
+          "justifications": [
+            "The README provides a comprehensive list of links to official documentation, community forums, Stack Overflow for questions, bug reporting, and security vulnerability reporting, making it highly effective for users seeking further information or support."
+          ]
+        },
+        "clarity": {
+          "note": 5,
+          "evidences": [
+            "L27: Documentation: https://docs.scipy.org/doc/scipy/",
+            "L28: SciPy development forum: https://discuss.scientific-python.org/c/contributor/scipy",
+            "L29: Stack Overflow: https://stackoverflow.com/questions/tagged/scipy"
+          ],
+          "justifications": [
+            "Each link is clearly labeled with its purpose, making it easy for users to identify and navigate to the relevant resource."
+          ]
+        }
+      },
+      "evidences": [
+        "L27: Documentation: https://docs.scipy.org/doc/scipy/",
+        "L28: SciPy development forum: https://discuss.scientific-python.org/c/contributor/scipy",
+        "L29: Stack Overflow: https://stackoverflow.com/questions/tagged/scipy",
+        "L32: Bug reports: https://github.com/scipy/scipy/issues",
+        "L34: Report a security vulnerability: https://tidelift.com/docs/security",
+        "L35: Citing in your work: https://www.scipy.org/citing-scipy/"
+      ],
+      "justifications": [
+        "The README provides extensive links to documentation, community support channels (forum, Stack Overflow), bug reporting, security vulnerability reporting, and citation guidelines."
+      ],
+      "suggested_improvements": []
+    },
+    "other": {
+      "checklist": {
+        "generic_sections": false,
+        "placeholders": false
+      },
+      "action": {
+        "reclassify": false,
+        "suggest_removal": false
+      },
+      "evidences": [],
+      "suggested_improvements": []
+    }
+  },
+  "dimensions_summary": {
+    "quality": {
+      "note": 3,
+      "evidences": [
+        "L20-23: SciPy ... includes modules for statistics, optimization, integration, linear algebra, Fourier transforms, signal and image processing, ODE solvers, and more.",
+        "L48-49: For the installation instructions, see `our install guide <https://scipy.org/install/>`__.",
+        "No usage examples in README."
+      ],
+      "justifications": [
+        "The README provides good descriptive quality for 'What' and 'Why' and excellent contribution guidelines. However, the lack of direct installation steps and usage examples within the README significantly reduces its overall practical quality for new users."
+      ]
+    },
+    "appeal": {
+      "note": 4,
+      "evidences": [
+        "L43-44: powerful enough to be depended upon by some of the world's leading scientists and engineers.",
+        "L44-46: If you need to manipulate numbers on a computer and display or publish the results, give SciPy a try!",
+        "L52: Call for Contributions"
+      ],
+      "justifications": [
+        "The README effectively appeals to potential users by highlighting the project's power and adoption by professionals, and actively encourages contributions, fostering a sense of community."
+      ]
+    },
+    "readability": {
+      "note": 4,
+      "evidences": [
+        "L20-23: SciPy (pronounced \"Sigh Pie\") is an open-source software for mathematics, science, and engineering. It includes modules for statistics, optimization, integration, linear algebra, Fourier transforms, signal and image processing, ODE solvers, and more.",
+        "L58-66: Writing code isn’t the only way to contribute to SciPy. You can also: ..."
+      ],
+      "justifications": [
+        "The text is generally easy to read, with clear language and good use of bullet points for lists (e.g., contribution types). The initial description is concise and informative. However, the lack of explicit headings for all sections makes scanning slightly less efficient."
+      ]
+    },
+    "understandability": {
+      "note": 3,
+      "evidences": [
+        "L20-23: SciPy ... is an open-source software for mathematics, science, and engineering. It includes modules for statistics, optimization, integration, linear algebra, Fourier transforms, signal and image processing, ODE solvers, and more.",
+        "No usage examples in README."
+      ],
+      "justifications": [
+        "The 'What' and 'Why' are very understandable. However, the complete absence of installation steps and usage examples within the README means a user cannot understand how to get started or use the software without leaving the document, which hinders immediate comprehension."
+      ]
+    },
+    "structure": {
+      "note": 3,
+      "evidences": [
+        "L26-37: List of key links.",
+        "L52: Call for Contributions (explicit heading)."
+      ],
+      "justifications": [
+        "The README has a logical flow (introduction, links, context, contribution). However, it lacks consistent markdown headings for all major sections, making the structure less explicit and harder to navigate at a glance compared to a README with a Table of Contents."
+      ]
+    },
+    "cohesion": {
+      "note": 4,
+      "evidences": [
+        "L39: SciPy is built to work with NumPy arrays...",
+        "L20: SciPy ... is an open-source software for mathematics, science, and engineering."
+      ],
+      "justifications": [
+        "The README maintains a consistent focus on SciPy's purpose, features, and community engagement. All parts contribute to understanding the project, even if some practical details are externalized."
+      ]
+    },
+    "conciseness": {
+      "note": 4,
+      "evidences": [
+        "L20-23: SciPy ... includes modules for statistics, optimization, integration, linear algebra, Fourier transforms, signal and image processing, ODE solvers, and more.",
+        "L48-49: For the installation instructions, see `our install guide <https://scipy.org/install/>`__."
+      ],
+      "justifications": [
+        "The README is concise, providing high-level information and relying heavily on external links for details (e.g., installation, documentation). This keeps the README short but might sacrifice immediate utility for some users."
+      ]
+    },
+    "effectiveness": {
+      "note": 3,
+      "evidences": [
+        "L20-23: SciPy ... includes modules for statistics, optimization, integration, linear algebra, Fourier transforms, signal and image processing, ODE solvers, and more.",
+        "L48-49: For the installation instructions, see `our install guide <https://scipy.org/install/>`__.",
+        "No usage examples in README."
+      ],
+      "justifications": [
+        "The README is effective in introducing SciPy and guiding users to further resources (documentation, community, contribution). However, its effectiveness for immediate practical engagement (installation, usage) is limited by the absence of direct instructions and examples."
+      ]
+    },
+    "consistency": {
+      "note": 5,
+      "evidences": [
+        "L26-37: Consistent use of bulleted list for key links.",
+        "L20: SciPy (pronounced \"Sigh Pie\")"
+      ],
+      "justifications": [
+        "The terminology, branding (SciPy), and linking conventions are consistent throughout the document. Information, where present, is presented uniformly."
+      ]
+    },
+    "clarity": {
+      "note": 4,
+      "evidences": [
+        "L20-23: SciPy ... is an open-source software for mathematics, science, and engineering. It includes modules for statistics, optimization, integration, linear algebra, Fourier transforms, signal and image processing, ODE solvers, and more.",
+        "L48-49: For the installation instructions, see `our install guide <https://scipy.org/install/>`__."
+      ],
+      "justifications": [
+        "The language used is clear and unambiguous. The purpose and features are well-articulated. While it clearly points to external resources, the lack of direct content for installation and usage means the README itself isn't fully clear on *how* to get started without leaving the page."
+      ]
+    },
+    "global_notes": "The SciPy README is a well-written, concise overview that excels in introducing the project's purpose, features, and community engagement. It provides an extensive list of external links for documentation, support, and contribution. However, it significantly lacks direct installation instructions and usage examples within the README itself, which are critical for immediate user onboarding. This design choice prioritizes conciseness and delegation to external docs over self-sufficiency for initial setup."
+  },
+  "executive_summary": {
+    "strengths": [
+      "Clear and concise description of SciPy's purpose and features.",
+      "Comprehensive list of external links for documentation, community support, bug reporting, and security.",
+      "Excellent 'Call for Contributions' section, detailing various ways to contribute and providing resources for new contributors.",
+      "Strong emphasis on community and support channels (forum, Stack Overflow, Code of Conduct)."
+    ],
+    "weaknesses": [
+      "Absence of direct installation commands within the README, relying solely on an external link.",
+      "Complete lack of usage examples or a minimal working example in the README.",
+      "No explicit mention of the license type or a direct link to the license file.",
+      "No information on project status, roadmap, or changelog."
+    ],
+    "critical_gaps": [
+      "Direct, reproducible installation commands for common package managers (e.g., pip, conda).",
+      "A minimal working code example to demonstrate basic usage.",
+      "Explicit license information."
+    ],
+    "priority_recommendations": [
+      "Add a 'Quick Installation' section with common `pip` and `conda` commands.",
+      "Include a 'Quick Start' or 'Usage Example' section with a simple, runnable code snippet.",
+      "Clearly state the license type and provide a link to the LICENSE file.",
+      "Consider adding a brief 'Project Status' or 'Changelog' link."
+    ]
+  }
+}
