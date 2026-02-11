@@ -156,6 +156,12 @@ class MongoDBHandler:
             return self.connect()
         return True
 
+    def _get_collection(self) -> Collection:
+        """Return the active collection, raising if unavailable."""
+        if self._collection is None:
+            raise RuntimeError("MongoDB collection is not initialised")
+        return self._collection
+
     # ==================== INSERT OPERATIONS ====================
 
     def insert_one(
@@ -179,7 +185,7 @@ class MongoDBHandler:
             if add_timestamp:
                 doc["_inserted_at"] = datetime.utcnow().isoformat()
 
-            result = self._collection.insert_one(doc)
+            result = self._get_collection().insert_one(doc)
             inserted_id = str(result.inserted_id)
             LOG.info(f"Document inserted: {inserted_id}")
             return inserted_id
@@ -214,7 +220,7 @@ class MongoDBHandler:
                     d["_inserted_at"] = datetime.utcnow().isoformat()
                 docs.append(d)
 
-            result = self._collection.insert_many(docs)
+            result = self._get_collection().insert_many(docs)
             inserted_ids = [str(id_) for id_ in result.inserted_ids]
             LOG.info(f"Inserted {len(inserted_ids)} documents")
             return inserted_ids
@@ -225,7 +231,7 @@ class MongoDBHandler:
     # ==================== READ OPERATIONS ====================
 
     def find_one(
-        self, query: Dict[str, Any] = None, projection: Dict[str, int] = None
+        self, query: Optional[Dict[str, Any]] = None, projection: Optional[Dict[str, int]] = None
     ) -> Optional[Dict[str, Any]]:
         """Find a single document.
 
@@ -242,7 +248,7 @@ class MongoDBHandler:
 
         try:
             query = query or {}
-            result = self._collection.find_one(query, projection)
+            result = self._get_collection().find_one(query, projection)
             if result:
                 # Convert ObjectId to string for JSON serialization
                 result["_id"] = str(result["_id"])
@@ -252,7 +258,7 @@ class MongoDBHandler:
             return None
 
     def find_all(
-        self, query: Dict[str, Any] = None, projection: Dict[str, int] = None
+        self, query: Optional[Dict[str, Any]] = None, projection: Optional[Dict[str, int]] = None
     ) -> List[Dict[str, Any]]:
         """Find all documents matching the query.
 
@@ -269,7 +275,7 @@ class MongoDBHandler:
 
         try:
             query = query or {}
-            cursor = self._collection.find(query, projection)
+            cursor = self._get_collection().find(query, projection)
             documents = []
             for doc in cursor:
                 doc["_id"] = str(doc["_id"])
@@ -281,7 +287,7 @@ class MongoDBHandler:
             return []
 
     def find_by_id(
-        self, document_id: str, projection: Dict[str, int] = None
+        self, document_id: str, projection: Optional[Dict[str, int]] = None
     ) -> Optional[Dict[str, Any]]:
         """Find a document by its ObjectId.
 
@@ -303,7 +309,7 @@ class MongoDBHandler:
             LOG.error(f"Failed to find document by ID: {e}")
             return None
 
-    def count_documents(self, query: Dict[str, Any] = None) -> int:
+    def count_documents(self, query: Optional[Dict[str, Any]] = None) -> int:
         """Count documents matching the query.
 
         Args:
@@ -318,7 +324,7 @@ class MongoDBHandler:
 
         try:
             query = query or {}
-            count = self._collection.count_documents(query)
+            count = self._get_collection().count_documents(query)
             return count
         except Exception as e:
             LOG.error(f"Failed to count documents: {e}")
@@ -349,7 +355,7 @@ class MongoDBHandler:
                 update_with_timestamp["$set"] = {}
             update_with_timestamp["$set"]["_updated_at"] = datetime.utcnow().isoformat()
 
-            result = self._collection.update_one(query, update_with_timestamp)
+            result = self._get_collection().update_one(query, update_with_timestamp)
             LOG.info(f"Modified {result.modified_count} document(s)")
             return result.modified_count
         except Exception as e:
@@ -379,7 +385,7 @@ class MongoDBHandler:
                 update_with_timestamp["$set"] = {}
             update_with_timestamp["$set"]["_updated_at"] = datetime.utcnow().isoformat()
 
-            result = self._collection.update_many(query, update_with_timestamp)
+            result = self._get_collection().update_many(query, update_with_timestamp)
             LOG.info(f"Modified {result.modified_count} document(s)")
             return result.modified_count
         except Exception as e:
@@ -406,7 +412,7 @@ class MongoDBHandler:
             replacement_with_timestamp = dict(replacement)
             replacement_with_timestamp["_replaced_at"] = datetime.utcnow().isoformat()
 
-            result = self._collection.replace_one(query, replacement_with_timestamp)
+            result = self._get_collection().replace_one(query, replacement_with_timestamp)
             LOG.info(f"Replaced {result.modified_count} document(s)")
             return result.modified_count
         except Exception as e:
@@ -429,7 +435,7 @@ class MongoDBHandler:
             return None
 
         try:
-            result = self._collection.delete_one(query)
+            result = self._get_collection().delete_one(query)
             LOG.info(f"Deleted {result.deleted_count} document(s)")
             return result.deleted_count
         except Exception as e:
@@ -450,7 +456,7 @@ class MongoDBHandler:
             return None
 
         try:
-            result = self._collection.delete_many(query)
+            result = self._get_collection().delete_many(query)
             LOG.info(f"Deleted {result.deleted_count} document(s)")
             return result.deleted_count
         except Exception as e:
@@ -468,7 +474,7 @@ class MongoDBHandler:
             return None
 
         try:
-            result = self._collection.delete_many({})
+            result = self._get_collection().delete_many({})
             LOG.warning(f"Deleted {result.deleted_count} document(s)")
             return result.deleted_count
         except Exception as e:
@@ -500,7 +506,7 @@ class MongoDBHandler:
             return None
 
         try:
-            result = self._collection.bulk_write(operations)
+            result = self._get_collection().bulk_write(operations)
             LOG.info(f"Bulk write completed: {result.acknowledged}")
             return {
                 "acknowledged": result.acknowledged,

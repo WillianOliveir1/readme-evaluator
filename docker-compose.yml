@@ -1,0 +1,57 @@
+# docker-compose.yml — README Evaluator
+#
+# Usage:
+#   cp .env.example .env        # fill in your secrets
+#   docker compose up --build   # start backend + frontend
+#
+# Backend at http://localhost:8000
+# Frontend at http://localhost:3000
+
+services:
+  # ------------------------------------------------------------------ backend
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: readme-evaluator-backend
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GITHUB_TOKEN=${GITHUB_TOKEN:-}
+      - MONGODB_URI=${MONGODB_URI:-}
+      - MONGODB_DB=${MONGODB_DB:-readme_evaluator}
+      - MONGODB_COLLECTION=${MONGODB_COLLECTION:-evaluations}
+      - API_KEY=${API_KEY:-}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - LOG_FORMAT=${LOG_FORMAT:-json}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost:3000,http://127.0.0.1:3000}
+      - UVICORN_WORKERS=${UVICORN_WORKERS:-1}
+    volumes:
+      # Persist data directory across restarts
+      - evaluator-data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  # ----------------------------------------------------------------- frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    container_name: readme-evaluator-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  evaluator-data:

@@ -12,6 +12,7 @@ import os
 import uuid
 import shutil
 import logging
+import threading
 from datetime import datetime
 from typing import Any, Dict, Optional
 
@@ -22,6 +23,38 @@ from backend.cache_manager import get_cache_manager
 from backend.config import SCHEMA_PATH, DEFAULT_MAX_TOKENS, DEFAULT_TEMPERATURE
 
 LOG = logging.getLogger(__name__)
+
+# ---------------------------------------------------------------------------
+# Concurrency control
+# ---------------------------------------------------------------------------
+
+MAX_CONCURRENT_PIPELINES = int(os.environ.get("MAX_CONCURRENT_PIPELINES", "3"))
+"""Maximum number of pipeline jobs running simultaneously."""
+
+_pipeline_semaphore = threading.Semaphore(MAX_CONCURRENT_PIPELINES)
+"""Limits how many pipeline executions can happen at the same time."""
+
+_active_jobs: set[str] = set()
+_active_jobs_lock = threading.Lock()
+"""Prevents the same job from being executed twice concurrently."""
+
+_file_locks: dict[str, threading.Lock] = {}
+_file_locks_lock = threading.Lock()
+"""Per-job file lock for thread-safe JSON writes."""
+
+
+def _get_file_lock(job_id: str) -> threading.Lock:
+    """Return (or create) a lock specific to *job_id*."""
+    with _file_locks_lock:
+        if job_id not in _file_locks:
+            _file_locks[job_id] = threading.Lock()
+        return _file_locks[job_id]
+
+
+def _release_file_lock(job_id: str) -> None:
+    """Remove the per-job lock once the job is finished (cleanup)."""
+    with _file_locks_lock:
+        _file_locks.pop(job_id, None)
 
 
 def _now_iso() -> str:
@@ -43,12 +76,14 @@ class PipelineRunner:
 
     def _write(self, job: Dict[str, Any]) -> None:
         path = self._job_path(job["id"])
-        with open(path, "w", encoding="utf-8") as f:
-            json.dump(job, f, ensure_ascii=False, indent=2)
+        lock = _get_file_lock(job["id"])
+        with lock:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(job, f, ensure_ascii=False, indent=2)
 
     def new_job(self, params: Dict[str, Any]) -> Dict[str, Any]:
         job_id = str(uuid.uuid4())
-        job = {
+        job: Dict[str, Any] = {
             "id": job_id,
             "status": "queued",
             "created_at": _now_iso(),
@@ -83,7 +118,35 @@ class PipelineRunner:
         """Execute the pipeline for a previously created job id.
 
         This method updates the job file at each step to allow polling.
+        Concurrency is controlled by a global semaphore (MAX_CONCURRENT_PIPELINES)
+        and duplicate execution of the same job is prevented.
         """
+        # --- Guard: prevent duplicate execution of the same job ---
+        with _active_jobs_lock:
+            if job_id in _active_jobs:
+                LOG.warning("Job %s is already running — ignoring duplicate request", job_id)
+                return
+            _active_jobs.add(job_id)
+
+        acquired = _pipeline_semaphore.acquire(timeout=0)
+        if not acquired:
+            LOG.info(
+                "Concurrency limit reached (%d). Job %s waiting for a slot …",
+                MAX_CONCURRENT_PIPELINES,
+                job_id,
+            )
+            _pipeline_semaphore.acquire()  # block until a slot opens
+
+        try:
+            self._run_inner(job_id, params)
+        finally:
+            _pipeline_semaphore.release()
+            with _active_jobs_lock:
+                _active_jobs.discard(job_id)
+            _release_file_lock(job_id)
+
+    def _run_inner(self, job_id: str, params: Dict[str, Any]) -> None:
+        """Core pipeline logic (called by *run* after concurrency guards)."""
         path = self._job_path(job_id)
         if not os.path.exists(path):
             LOG.error("Job %s not found", job_id)
@@ -103,7 +166,7 @@ class PipelineRunner:
             readme_path = None
             if repo_url:
                 dl = ReadmeDownloader()
-                readme_path = dl.download(repo_url, dest_path=None, branch=branch)
+                readme_path = dl.download(repo_url, branch=branch)
                 job["artifacts"]["readme_path"] = readme_path
             else:
                 # write provided readme_text to a file for bookkeeping
@@ -134,7 +197,7 @@ class PipelineRunner:
                 temperature=params.get("temperature", DEFAULT_TEMPERATURE),
             )
             # save prompt to artifact
-            prompt_txt = prompt_only.get("prompt")
+            prompt_txt = prompt_only.prompt
             if prompt_txt:
                 prompt_file = os.path.join(os.path.dirname(readme_path), f"{job_id}-prompt.txt")
                 with open(prompt_file, "w", encoding="utf-8") as pf:
@@ -142,6 +205,7 @@ class PipelineRunner:
                 job["artifacts"]["prompt_path"] = prompt_file
 
             self._finish_step(job, step, ok=True)
+            prompt_only_dict = prompt_only.to_dict()
 
             # Step 3: call_model (may be skipped)
             step = self._start_step(job, "call_model")
@@ -157,11 +221,11 @@ class PipelineRunner:
                     max_tokens=params.get("max_tokens", DEFAULT_MAX_TOKENS),
                     temperature=params.get("temperature", DEFAULT_TEMPERATURE),
                 )
-                job["result"] = called
-                job["artifacts"]["model_output"] = called.get("model_output")
+                job["result"] = called.to_dict()
+                job["artifacts"]["model_output"] = called.model_output
             else:
                 # skipped
-                job["result"] = prompt_only
+                job["result"] = prompt_only_dict
                 self._finish_step(job, step, ok=True, message="skipped: no model or GEMINI_API_KEY")
                 # continue to validation step which will be skipped too
                 # mark call_model as skipped and move on
@@ -169,7 +233,7 @@ class PipelineRunner:
                 pass
 
             # If we reached here and model call was executed, finish step
-            if job.get("result") is not None and job["result"] is not prompt_only:
+            if job.get("result") is not None and job["result"] is not prompt_only_dict:
                 # model executed
                 self._finish_step(job, step, ok=True)
 
@@ -285,4 +349,10 @@ class PipelineRunner:
                 pass
 
 
-__all__ = ["PipelineRunner"]
+def get_active_jobs() -> set[str]:
+    """Return a snapshot of currently running job IDs (for monitoring)."""
+    with _active_jobs_lock:
+        return _active_jobs.copy()
+
+
+__all__ = ["PipelineRunner", "get_active_jobs", "MAX_CONCURRENT_PIPELINES"]

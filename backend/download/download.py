@@ -37,7 +37,7 @@ class ReadmeDownloader:
         
         # Automatically create temporary directory for all downloads
         self.temp_dir = tempfile.mkdtemp(prefix="readme_download_")
-        self.readme_url = None  # Store the URL of the downloaded README
+        self.readme_url: Optional[str] = None  # Store the URL of the downloaded README
         logging.debug("Using temp directory: %s", self.temp_dir)
 
     def _parse_repo(self, url: str) -> Tuple[str, str, Optional[str]]:
@@ -46,11 +46,13 @@ class ReadmeDownloader:
             return m.group("owner"), m.group("repo"), None
 
         m = re.match(
-            r"https?://github.com/(?P<owner>[^/]+)/(?P<repo>[^/]+)(?:\.git)?(?:/(?:tree|blob)/(?P<branch>[^/]+))?",
+            r"https?://github.com/(?P<owner>[^/]+)/(?P<repo>[^/]+?)(?:/(?:tree|blob)/(?P<branch>[^/]+))?/?$",
             url,
         )
         if m:
             repo = m.group("repo")
+            if repo.endswith(".git"):
+                repo = repo[:-4]
             branch = m.group("branch")
             return m.group("owner"), repo, branch
 
@@ -61,7 +63,8 @@ class ReadmeDownloader:
         r = self.session.get(url, headers={"Accept": "application/vnd.github.v3+json"})
         if r.status_code == 200:
             data = r.json()
-            return data.get("default_branch")
+            branch: Optional[str] = data.get("default_branch")
+            return branch
         return None
 
     def _get_readme_api(self, owner: str, repo: str) -> Optional[Tuple[str, bytes, str]]:
@@ -83,7 +86,8 @@ class ReadmeDownloader:
         r = self.session.get(url, params={"recursive": "1"}, headers={"Accept": "application/vnd.github.v3+json"})
         if r.status_code == 200:
             data = r.json()
-            return data.get("tree", [])
+            tree: list = data.get("tree", [])
+            return tree
         return None
 
     def _find_readme_in_tree(self, tree: list) -> Optional[str]:
@@ -92,12 +96,12 @@ class ReadmeDownloader:
         Returns the README file with the fewest directory levels (slashes in path).
         This ensures preference for root-level READMEs over nested ones.
         """
-        readme_files = []
+        readme_files: list[str] = []
         
         for entry in tree:
             if entry.get("type") != "blob":
                 continue
-            path = entry.get("path", "")
+            path: str = entry.get("path", "")
             name = os.path.basename(path)
             if re.match(r"(?i)^readme(?:\.|$)", name):
                 readme_files.append(path)
@@ -116,10 +120,10 @@ class ReadmeDownloader:
         r = self.session.get(url, params=params, headers={"Accept": "application/vnd.github.v3+json"})
         if r.status_code == 200:
             data = r.json()
-            content = data.get("content")
-            encoding = data.get("encoding")
-            name = data.get("name") or os.path.basename(path)
-            download_url = data.get("download_url")
+            content: Optional[str] = data.get("content")
+            encoding: Optional[str] = data.get("encoding")
+            name: str = data.get("name") or os.path.basename(path)
+            download_url: str = data.get("download_url") or ""
             if content and encoding == "base64":
                 return name, base64.b64decode(content), download_url
         return None
@@ -161,8 +165,7 @@ class ReadmeDownloader:
         logging.info("Downloading README from %s/%s", owner, repo)
         logging.debug("Parsed repo_url=%s -> owner=%s repo=%s parsed_branch=%s", repo_url, owner, repo, parsed_branch)
 
-        filename = None
-        content = None
+        result: Optional[Tuple[str, bytes, str]] = None
 
         branch_to_use = branch or parsed_branch
         if branch_to_use is None:
@@ -188,47 +191,40 @@ class ReadmeDownloader:
                 if readme_path:
                     try:
                         logging.debug("Found README at: %s", readme_path)
-                        res = self._get_content_by_path(owner, repo, readme_path, ref=branch_to_use)
-                        if res:
-                            filename, content, url = res
-                            self.readme_url = url
-                            logging.info("README downloaded via tree method: %s", filename)
+                        result = self._get_content_by_path(owner, repo, readme_path, ref=branch_to_use)
+                        if result:
+                            self.readme_url = result[2]
+                            logging.info("README downloaded via tree method: %s", result[0])
                     except requests.RequestException as e:
                         logging.warning("Failed to fetch content by path: %s", e)
-                        filename = None
-                        content = None
                 else:
                     logging.debug("README not found in tree")
 
-        if not content and prefer_api:
+        if not result and prefer_api:
             try:
                 logging.debug("Trying GitHub API endpoint...")
-                res = self._get_readme_api(owner, repo)
-                if res:
-                    filename, content, url = res
-                    self.readme_url = url
-                    logging.info("README downloaded via API method: %s", filename)
+                result = self._get_readme_api(owner, repo)
+                if result:
+                    self.readme_url = result[2]
+                    logging.info("README downloaded via API method: %s", result[0])
             except requests.RequestException as e:
                 logging.warning("Failed to fetch via API: %s", e)
-                filename = None
-                content = None
 
         # Fallback to raw content if API methods failed
-        if not content:
+        if not result:
             try:
                 logging.debug("Trying raw content fallback...")
-                res = self._try_raw_fallback(owner, repo, branch_to_use)
-                if res:
-                    filename, content, url = res
-                    self.readme_url = url
-                    logging.info("README downloaded via raw fallback: %s", filename)
+                result = self._try_raw_fallback(owner, repo, branch_to_use)
+                if result:
+                    self.readme_url = result[2]
+                    logging.info("README downloaded via raw fallback: %s", result[0])
             except requests.RequestException as e:
                 logging.warning("Failed to fetch via raw fallback: %s", e)
-                filename = None
-                content = None
 
-        if not content:
+        if not result:
             raise FileNotFoundError(f"README not found for repository {owner}/{repo}")
+
+        filename, content, _url = result
 
         # Always save to temp directory
         safe_name = f"{owner}-{repo}-{filename}"

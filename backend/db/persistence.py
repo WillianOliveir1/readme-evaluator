@@ -64,7 +64,7 @@ def save_to_mongo(
         return None
 
     try:
-        client = MongoClient(
+        client: MongoClient = MongoClient(
             uri,
             serverSelectionTimeoutMS=5000,
             connectTimeoutMS=5000,

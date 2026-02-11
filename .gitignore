@@ -17,7 +17,6 @@ pip-wheel-metadata/
 
 # Virtual environments
 .env
-.env.example
 .venv/
 venv/
 ENV/
@@ -80,3 +79,30 @@ frontend/dist/
 # PyInstaller
 *.manifest
 *.spec
+
+# Test output logs (temporary)
+pytest_*.txt
+test_output.txt
+test_health_result.txt
+
+# Git analysis temp files
+git_diff_output.txt
+git_full_diff.txt
+git_untracked.txt
+
+# Runtime-generated data (backups, results, jobs)
+data/processed/*-backup.json
+data/processed/README-result-*.json
+data/processed/result-result-*.json
+data/processed/evaluation-*.json
+data/processed/test-*.json
+data/processed/test-repo-*.json
+data/processed/README.md
+data/processed/my_output
+data/processing/jobs/
+data/reports/combined_quality_report.md
+data/reports/gemini_quality_report.md
+data/reports/manual_quality_report.md
+
+# Next.js
+.next/

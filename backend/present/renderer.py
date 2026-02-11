@@ -1,7 +1,7 @@
 """Presentation utilities: render validated JSON into human readable text.
 
-This module uses `backend.prompt_builder` to create a render prompt and
-optionally calls an LLM via `backend.gemini_client`.
+This module uses ``backend.prompt_builder`` to create a render prompt and
+optionally calls the configured LLM via ``backend.llm_factory``.
 """
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from typing import Any, Dict, Optional
 import os
 
 from backend import prompt_builder
-from backend.gemini_client import GeminiClient
+from backend.llm_factory import get_llm_client
 from backend.config import RENDER_MAX_TOKENS, RENDER_TEMPERATURE, RENDERER_PROMPT_PATH
 
 
@@ -47,7 +47,7 @@ def render_from_json(
     result = {"prompt": prompt}
 
     if model:
-        client = GeminiClient()
+        client = get_llm_client()
         out = client.generate(prompt, model=model, max_tokens=max_tokens, temperature=temperature)
         result["model_output"] = out
         result["text"] = out

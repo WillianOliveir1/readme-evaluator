@@ -17,7 +17,7 @@ import shutil
 import logging
 from pathlib import Path
 from datetime import datetime, timedelta
-from typing import Optional, Dict, List
+from typing import Any, Optional, Dict, List
 
 LOG = logging.getLogger(__name__)
 
@@ -38,7 +38,7 @@ class CacheManager:
         self.max_age_hours = max_age_hours
         self.max_age_seconds = max_age_hours * 3600
 
-    def get_stats(self) -> Dict[str, any]:
+    def get_stats(self) -> Dict[str, Any]:
         """Get cache statistics (size, file count, oldest file).
 
         Returns:
@@ -50,12 +50,12 @@ class CacheManager:
         }
         return stats
 
-    def _get_dir_stats(self, directory: str) -> Dict[str, any]:
+    def _get_dir_stats(self, directory: str) -> Dict[str, Any]:
         """Get statistics for a single directory."""
         if not os.path.exists(directory):
             return {"exists": False, "file_count": 0, "total_size_mb": 0, "oldest_file": None}
 
-        stats = {"exists": True, "file_count": 0, "total_size_bytes": 0, "oldest_file": None, "oldest_mtime": None}
+        stats: Dict[str, Any] = {"exists": True, "file_count": 0, "total_size_bytes": 0, "oldest_file": None, "oldest_mtime": None}
 
         try:
             for root, dirs, files in os.walk(directory):
@@ -100,7 +100,7 @@ class CacheManager:
         now = datetime.utcnow().timestamp()
         cutoff_time = now - self.max_age_seconds
 
-        deleted = {"processing": [], "processed": []}
+        deleted: Dict[str, List[str]] = {"processing": [], "processed": []}
 
         for directory_name, directory_path in [
             ("processing", self.processing_dir),
@@ -128,7 +128,7 @@ class CacheManager:
 
         return deleted
 
-    def cleanup_all(self, keep_jobs_dir: bool = True, dry_run: bool = False) -> Dict[str, any]:
+    def cleanup_all(self, keep_jobs_dir: bool = True, dry_run: bool = False) -> Dict[str, Any]:
         """Clear all cache files, optionally preserving processing/jobs/ for active jobs.
 
         Args:
@@ -138,7 +138,7 @@ class CacheManager:
         Returns:
             Dictionary with cleanup results and stats
         """
-        result = {"deleted_files": [], "preserved": [], "errors": []}
+        result: Dict[str, List[str]] = {"deleted_files": [], "preserved": [], "errors": []}
 
         # Clean processed/ directory (safe to remove entirely as it contains only finished results)
         if os.path.exists(self.processed_dir):
@@ -182,7 +182,7 @@ class CacheManager:
 
         return result
 
-    def cleanup_job(self, job_id: str, dry_run: bool = False) -> Dict[str, any]:
+    def cleanup_job(self, job_id: str, dry_run: bool = False) -> Dict[str, Any]:
         """Clean up files associated with a specific job.
 
         Args:
@@ -192,7 +192,7 @@ class CacheManager:
         Returns:
             Dictionary with cleanup results
         """
-        result = {"deleted_files": [], "errors": []}
+        result: Dict[str, List[str]] = {"deleted_files": [], "errors": []}
 
         patterns_to_remove = [
             f"{job_id}-readme.md",

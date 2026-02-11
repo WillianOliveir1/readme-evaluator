@@ -43,3 +43,17 @@ MONGODB_COLLECTION_NAME = os.getenv("MONGODB_COLLECTION", "evaluations")
 
 # GitHub Configuration
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+
+# API Authentication
+# When set, every request (except GET /) must include the header:
+#   X-API-Key: <value>
+# When unset the API runs without authentication (convenient for local dev).
+API_KEY = os.getenv("API_KEY")
+
+# LLM Provider Configuration
+# Supported: "gemini" (default), "ollama"
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "gemini").lower().strip()
+
+# Ollama Configuration (only used when LLM_PROVIDER=ollama)
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3")

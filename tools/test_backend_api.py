@@ -78,7 +78,7 @@ def check_server_running(base_url: str) -> bool:
     print_step(0, "Verificar se backend está rodando")
     
     try:
-        response = requests.get(f"{base_url}/health", timeout=5)
+        response = requests.get(f"{base_url}/", timeout=5)
         if response.status_code == 200:
             print_success(f"Backend rodando em {base_url}")
             return True
@@ -104,7 +104,7 @@ def test_single_evaluation(base_url: str, repo_url: str, repo_name: str) -> Opti
     try:
         # Make request
         response = requests.post(
-            f"{base_url}/evaluate",
+            f"{base_url}/jobs",
             json=payload,
             timeout=300  # 5 minutes timeout
         )
@@ -140,7 +140,7 @@ def wait_for_job_completion(base_url: str, job_id: str, timeout: int = 300) -> O
     
     while time.time() - start_time < timeout:
         try:
-            response = requests.get(f"{base_url}/job/{job_id}", timeout=10)
+            response = requests.get(f"{base_url}/jobs/{job_id}", timeout=10)
             
             if response.status_code == 200:
                 job_data = response.json()
@@ -186,7 +186,7 @@ def get_job_result(base_url: str, job_id: str) -> Optional[dict]:
     print_step(3, "Recuperar resultado da avaliação")
     
     try:
-        response = requests.get(f"{base_url}/job/{job_id}", timeout=10)
+        response = requests.get(f"{base_url}/jobs/{job_id}", timeout=10)
         
         if response.status_code == 200:
             job_data = response.json()

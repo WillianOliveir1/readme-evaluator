@@ -9,7 +9,7 @@ import os
 
 from backend import prompt_builder
 from backend.config import DEFAULT_MAX_TOKENS, DEFAULT_TEMPERATURE
-from backend.gemini_client import GeminiClient
+from backend.llm_factory import get_llm_client
 from backend.evaluate.progress import ProgressTracker, ProgressStage, EvaluationResult
 from backend.evaluate.json_postprocessor import fix_string_arrays_in_json, remove_disallowed_category_fields
 import logging
@@ -172,7 +172,7 @@ def extract_json_from_readme(
             model_start = time.time()
             
             try:
-                client = GeminiClient()
+                client = get_llm_client()
                 
                 # Streaming implementation
                 full_response = []
@@ -345,8 +345,8 @@ def extract_json_from_readme(
         
         timing["total"] = time.time() - tracker.start_time
         result_obj.timing = timing
-        result_obj.progress_history = tracker.get_history()
         tracker.complete_stage(ProgressStage.COMPLETED, "Evaluation completed")
+        result_obj.progress_history = tracker.get_history()
         
         return result_obj
         

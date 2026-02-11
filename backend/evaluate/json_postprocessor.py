@@ -468,9 +468,9 @@ if __name__ == "__main__":
     # Testa o fix
     print("Testando post-processor de JSON...")
     print("\n1. Antes do fix:")
-    print(f"   justifications type: {type(test_data['categories']['what']['justifications'])}")
+    print(f"   justifications type: {type(test_data['categories']['what']['justifications'])}")  # type: ignore[index]
     
-    fixed = fix_string_arrays_in_json(test_data)
+    fixed: Any = fix_string_arrays_in_json(test_data)
     
     print("\n2. Depois do fix:")
     print(f"   justifications type: {type(fixed['categories']['what']['justifications'])}")

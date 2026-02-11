@@ -58,7 +58,7 @@ class MongoDBConfig:
 
         try:
             # Create a temporary client with short timeout for validation
-            test_client = MongoClient(
+            test_client: MongoClient = MongoClient(
                 self.uri,
                 serverSelectionTimeoutMS=self.timeout_seconds * 1000,
                 connectTimeoutMS=self.timeout_seconds * 1000,

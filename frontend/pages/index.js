@@ -1,30 +1,277 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
+const MODEL = "gemini-2.5-flash";
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+function authHeaders() {
+  const key = process.env.NEXT_PUBLIC_API_KEY || "";
+  return {
+    "Content-Type": "application/json",
+    ...(key && { "X-API-Key": key }),
+  };
+}
+
+/* ============================================================
+   Sidebar
+   ============================================================ */
+
+function Sidebar({ history, activeIdx, onSelect, theme, onToggleTheme }) {
+  return (
+    <aside className="sidebar">
+      <div className="sidebar-brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+          <polyline points="10 9 9 9 8 9" />
+        </svg>
+        README Evaluator
+      </div>
+
+      <div className="sidebar-section-title">History</div>
+      <ul className="sidebar-list">
+        {history.length === 0 && (
+          <li className="sidebar-item" style={{ fontStyle: "italic", opacity: 0.6 }}>No evaluations yet</li>
+        )}
+        {history.map((h, i) => (
+          <li
+            key={i}
+            className={`sidebar-item ${i === activeIdx ? "active" : ""}`}
+            onClick={() => onSelect(i)}
+            title={h.url}
+          >
+            📄 {h.label}
+          </li>
+        ))}
+      </ul>
+
+      <div className="sidebar-footer">
+        <button className="theme-toggle" onClick={onToggleTheme}>
+          {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+        </button>
+      </div>
+    </aside>
+  );
+}
+
+/* ============================================================
+   Progress Panel
+   ============================================================ */
+
+function ProgressPanel({ progress, percentage }) {
+  return (
+    <div className="card progress-card">
+      <div className="card-header">Processing Pipeline</div>
+      <div className="card-body">
+        <div className="progress-label">
+          <span>Progress</span>
+          <span>{percentage}%</span>
+        </div>
+        <div className="progress-bar-wrapper">
+          <div className="progress-bar-fill" style={{ width: `${percentage}%` }} />
+        </div>
+        <div className="stages">
+          {progress.map((u, i) => (
+            <div key={i} className={`stage-chip stage-${u.stage}`}>
+              <div className="stage-name">{u.stage}</div>
+              <div className="stage-msg">{u.message}</div>
+              {u.elapsed_time != null && (
+                <div className="stage-time">⏱ {u.elapsed_time.toFixed(2)}s</div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   Report Card
+   ============================================================ */
+
+function ReportCard({ renderedText, result, onDownloadPdf }) {
+  return (
+    <div className="card report-card">
+      <div className="card-header">
+        <span>Evaluation Report</span>
+        <div className="actions-bar">
+          {onDownloadPdf && (
+            <button className="btn btn-outline btn-sm" onClick={onDownloadPdf}>
+              📥 Export PDF
+            </button>
+          )}
+        </div>
+      </div>
+      <div className="card-body markdown-body">
+        {renderedText ? (
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{renderedText}</ReactMarkdown>
+        ) : (
+          <p style={{ color: "var(--text-muted)" }}>
+            No rendered report available. The evaluation JSON is shown below.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ============================================================
+   Debug Details
+   ============================================================ */
+
+function DebugDetails({ result }) {
+  return (
+    <details className="card debug-details">
+      <summary>Show Debug Details (JSON, Prompt, Timing)</summary>
+      <div className="debug-content">
+        <div className="debug-grid">
+          <div className="debug-panel">
+            <div className="debug-panel-header">Prompt Built</div>
+            <pre>{result.prompt || "No prompt data available."}</pre>
+          </div>
+          <div className="debug-panel">
+            <div className="debug-panel-header">
+              Parsed JSON {result.validation_ok ? "✅" : "⚠️"}
+            </div>
+            <pre className="json-text">
+              {result.parsed ? JSON.stringify(result.parsed, null, 2) : "No JSON parsed."}
+            </pre>
+          </div>
+        </div>
+
+        <div className="debug-panel" style={{ marginBottom: 20 }}>
+          <div className="debug-panel-header">Raw Model Output</div>
+          <pre style={{ maxHeight: 200 }}>
+            {result.model_output || "No raw output available."}
+          </pre>
+        </div>
+
+        {result.timing && Object.keys(result.timing).length > 0 && (
+          <div className="timing-bar">
+            {Object.entries(result.timing).map(([key, value]) => (
+              <div key={key} className="timing-chip">
+                <div className="label">{key}</div>
+                <div className="value">
+                  {typeof value === "number" ? `${value.toFixed(3)}s` : value}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </details>
+  );
+}
+
+/* ============================================================
+   Empty State
+   ============================================================ */
+
+function EmptyState() {
+  return (
+    <div className="empty-state">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="11" cy="11" r="8" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      </svg>
+      <h2>Evaluate a README</h2>
+      <p>Paste a GitHub repository URL above and click <strong>Evaluate</strong> to get a comprehensive quality report.</p>
+    </div>
+  );
+}
+
+/* ============================================================
+   Main Page
+   ============================================================ */
 
 export default function Home() {
+  /* --- State --- */
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [progress, setProgress] = useState([]);
-  const [currentPercentage, setCurrentPercentage] = useState(0);
+  const [percentage, setPercentage] = useState(0);
   const [renderedText, setRenderedText] = useState(null);
-  
-  const MODEL = "gemini-2.5-flash"; // Fixed model
+  const [pdfLoading, setPdfLoading] = useState(false);
+
+  // History (persisted in localStorage)
+  const [history, setHistory] = useState([]);
+  const [activeIdx, setActiveIdx] = useState(-1);
+
+  // Theme
+  const [theme, setTheme] = useState("light");
+
+  // Refs
+  const urlRef = useRef(null);
+
+  /* --- Effects --- */
+
+  // Load history & theme from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("re_history");
+      if (saved) setHistory(JSON.parse(saved));
+    } catch { /* ignore */ }
+
+    const savedTheme = localStorage.getItem("re_theme") || "light";
+    setTheme(savedTheme);
+    document.documentElement.setAttribute("data-theme", savedTheme);
+  }, []);
+
+  // Persist history
+  useEffect(() => {
+    try {
+      localStorage.setItem("re_history", JSON.stringify(history.slice(0, 30)));
+    } catch { /* ignore */ }
+  }, [history]);
+
+  /* --- Handlers --- */
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => {
+      const next = prev === "light" ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem("re_theme", next);
+      return next;
+    });
+  }, []);
+
+  const selectHistory = useCallback((idx) => {
+    const entry = history[idx];
+    if (!entry) return;
+    setActiveIdx(idx);
+    setResult(entry.result);
+    setRenderedText(entry.renderedText);
+    setUrl(entry.url);
+    setError(null);
+    setProgress([]);
+    setPercentage(100);
+    setLoading(false);
+  }, [history]);
 
   async function handleSubmit(e) {
     e.preventDefault();
+    if (!url.trim()) return;
+
     setLoading(true);
     setResult(null);
     setError(null);
     setProgress([]);
-    setCurrentPercentage(0);
+    setPercentage(0);
     setRenderedText(null);
 
     try {
-      // Step 1: Download README
-      const readmeRes = await fetch("http://localhost:8000/readme", {
+      const headers = authHeaders();
+
+      // 1 — Download README
+      const readmeRes = await fetch(`${API_URL}/readme`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({ repo_url: url }),
       });
       if (!readmeRes.ok) {
@@ -33,67 +280,65 @@ export default function Home() {
       }
       const readmeData = await readmeRes.json();
 
-      // Step 2: Call /extract-json-stream with Server-Sent Events
-      const body = { 
-        readme_text: readmeData.content,
-        model: MODEL
-      };
-
-      const response = await fetch("http://localhost:8000/extract-json-stream", {
+      // 2 — Extract JSON via SSE stream
+      const response = await fetch(`${API_URL}/extract-json-stream`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        headers,
+        body: JSON.stringify({ readme_text: readmeData.content, model: MODEL }),
       });
-
       if (!response.ok) {
         const err = await response.json().catch(() => ({}));
         throw new Error(err.detail || `HTTP ${response.status}`);
       }
 
-      // Handle SSE streaming
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
+      let finalResult = null;
+      let finalRendered = null;
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split("\n");
         buffer = lines.pop() || "";
 
         for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            try {
-              const data = JSON.parse(line.slice(6));
-              console.log("SSE received:", data.type, data);
-
-              if (data.type === "progress") {
-                setProgress((prev) => [...prev, data]);
-                setCurrentPercentage(data.percentage || 0);
-              } else if (data.type === "result") {
-                const merged = {
-                  ...data.result,
-                  filename: readmeData.filename,
-                };
-                setResult(merged);
-                setCurrentPercentage(100);
-              } else if (data.type === "rendered") {
-                console.log("Rendered data received:", data.rendered);
-                // Handle both string (legacy) and object (new) formats
-                const text = typeof data.rendered === 'string' 
-                  ? data.rendered 
-                  : data.rendered.text;
-                setRenderedText(text);
-              } else if (data.type === "error") {
-                throw new Error(data.error);
-              }
-            } catch (parseErr) {
-              console.error("Failed to parse SSE data:", parseErr);
+          if (!line.startsWith("data: ")) continue;
+          try {
+            const data = JSON.parse(line.slice(6));
+            if (data.type === "progress") {
+              setProgress((prev) => [...prev, data]);
+              setPercentage(data.percentage || 0);
+            } else if (data.type === "result") {
+              finalResult = { ...data.result, filename: readmeData.filename };
+              setResult(finalResult);
+              setPercentage(100);
+            } else if (data.type === "rendered") {
+              const text = typeof data.rendered === "string"
+                ? data.rendered
+                : data.rendered?.text;
+              finalRendered = text;
+              setRenderedText(text);
+            } else if (data.type === "error") {
+              throw new Error(data.error);
             }
+          } catch (parseErr) {
+            if (parseErr.message.startsWith("HTTP") || parseErr.message.includes("error")) throw parseErr;
           }
         }
+      }
+
+      // Save to history
+      if (finalResult) {
+        const label = url.replace(/^https?:\/\/(www\.)?github\.com\//, "").replace(/\/$/, "") || url;
+        const entry = { url, label, result: finalResult, renderedText: finalRendered, ts: Date.now() };
+        setHistory((prev) => {
+          const updated = [entry, ...prev.filter((h) => h.url !== url)].slice(0, 30);
+          return updated;
+        });
+        setActiveIdx(0);
       }
     } catch (err) {
       setError(err.message);
@@ -102,273 +347,94 @@ export default function Home() {
     }
   }
 
-  const getStageColor = (stage) => {
-    const colors = {
-      BUILDING_PROMPT: "#1976d2",
-      CALLING_MODEL: "#2196f3",
-      PARSING_JSON: "#03a9f4",
-      VALIDATING: "#00bcd4",
-      COMPLETED: "#4caf50",
-    };
-    return colors[stage] || "#9e9e9e";
-  };
+  /* --- PDF Export --- */
 
-  // Simple Markdown Renderer (Dependency-free)
-  const renderMarkdown = (text) => {
-    if (!text) return null;
-    
-    // Escape HTML to prevent XSS (basic)
-    let html = text
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
+  const handleDownloadPdf = useCallback(async () => {
+    if (!renderedText && !result?.parsed) return;
+    setPdfLoading(true);
+    try {
+      const headers = authHeaders();
+      const res = await fetch(`${API_URL}/export-pdf`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          markdown_text: renderedText || null,
+          evaluation_json: result?.parsed || null,
+          repo_name: url.replace(/^https?:\/\/(www\.)?github\.com\//, "").replace(/\/$/, ""),
+        }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || `PDF export failed (${res.status})`);
+      }
+      const blob = await res.blob();
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `readme-evaluation-${Date.now()}.pdf`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    } catch (err) {
+      alert(`PDF export error: ${err.message}`);
+    } finally {
+      setPdfLoading(false);
+    }
+  }, [renderedText, result, url]);
 
-    // Headers
-    html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
-    html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
-    html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');
-
-    // Bold
-    html = html.replace(/\*\*(.*?)\*\*/gim, '<strong>$1</strong>');
-    
-    // Lists (basic)
-    html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
-    html = html.replace(/^- (.*$)/gim, '<li>$1</li>');
-    
-    // Wrap lists (naive)
-    html = html.replace(/(<li>.*<\/li>)/gim, '<ul>$1</ul>');
-    // Fix multiple ul tags
-    html = html.replace(/<\/ul><ul>/gim, '');
-
-    // Line breaks
-    html = html.replace(/\n/gim, '<br>');
-
-    return <div dangerouslySetInnerHTML={{ __html: html }} />;
-  };
+  /* --- Render --- */
 
   return (
-    <main style={{ padding: "40px 24px", fontFamily: "'Segoe UI', Roboto, Helvetica, Arial, sans-serif", maxWidth: "1000px", margin: "0 auto", color: "#333", lineHeight: "1.6" }}>
-      <h1 style={{ textAlign: "center", marginBottom: "40px", color: "#2c3e50" }}>README Evaluator</h1>
-      
-      <form onSubmit={handleSubmit} style={{ marginBottom: 32, display: "flex", gap: "12px", justifyContent: "center" }}>
-        <input
-          type="text"
-          placeholder="https://github.com/owner/repo"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          style={{ 
-            width: "60%", 
-            padding: "12px 16px", 
-            fontSize: "16px", 
-            border: "1px solid #ddd", 
-            borderRadius: "8px",
-            outline: "none",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
-          }}
-        />
-        <button 
-          type="submit" 
-          disabled={loading} 
-          style={{ 
-            padding: "12px 24px", 
-            fontSize: "16px", 
-            fontWeight: "600",
-            cursor: loading ? "not-allowed" : "pointer",
-            background: loading ? "#b0bec5" : "#1976d2",
-            color: "white",
-            border: "none",
-            borderRadius: "8px",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-            transition: "background 0.2s"
-          }}
-        >
-          {loading ? "Processing..." : "Evaluate"}
-        </button>
-      </form>
+    <div className="app-layout">
+      <Sidebar
+        history={history}
+        activeIdx={activeIdx}
+        onSelect={selectHistory}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+      />
 
-      {error && (
-        <div style={{ color: "#d32f2f", marginBottom: 24, padding: "16px", background: "#ffebee", border: "1px solid #ef5350", borderRadius: "8px" }}>
-          <strong>Error:</strong> {error}
-        </div>
-      )}
+      <main className="main-content">
+        <h1 style={{ fontSize: 28, fontWeight: 800, marginBottom: 28, letterSpacing: "-0.02em" }}>
+          README Evaluator
+        </h1>
 
-      {/* Real-time Progress Display */}
-      {loading && (
-        <div style={{ marginBottom: 40, padding: "24px", background: "#fff", border: "1px solid #e0e0e0", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
-          <h3 style={{ marginTop: 0, marginBottom: 16, fontSize: "18px", color: "#555" }}>Processing Pipeline</h3>
+        <form className="eval-form" onSubmit={handleSubmit}>
+          <input
+            ref={urlRef}
+            type="text"
+            className="eval-input"
+            placeholder="https://github.com/owner/repo"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+            autoFocus
+          />
+          <button type="submit" className="btn btn-primary" disabled={loading}>
+            {loading ? "Processing…" : "Evaluate"}
+          </button>
+        </form>
 
-          {/* Progress Bar */}
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-              <span style={{ fontSize: "14px", fontWeight: "600", color: "#666" }}>Progress</span>
-              <span style={{ fontSize: "14px", fontWeight: "600", color: "#1976d2" }}>{currentPercentage}%</span>
-            </div>
-            <div style={{ width: "100%", height: "8px", background: "#f0f0f0", borderRadius: "4px", overflow: "hidden" }}>
-              <div
-                style={{
-                  width: `${currentPercentage}%`,
-                  height: "100%",
-                  background: `linear-gradient(90deg, #1976d2 0%, #42a5f5 100%)`,
-                  transition: "width 0.3s ease",
-                }}
-              />
-            </div>
+        {error && (
+          <div className="error-banner">
+            <strong>Error: </strong>{error}
           </div>
+        )}
 
-          {/* Stage Timeline */}
-          <div style={{ display: "flex", gap: "12px", overflowX: "auto", paddingBottom: "8px" }}>
-            {progress.map((update, idx) => (
-              <div
-                key={idx}
-                style={{
-                  minWidth: "140px",
-                  padding: "12px",
-                  background: "#f8f9fa",
-                  borderLeft: `4px solid ${getStageColor(update.stage)}`,
-                  borderRadius: "4px",
-                  fontSize: "13px",
-                }}
-              >
-                <div style={{ fontWeight: "700", color: getStageColor(update.stage), marginBottom: 4, fontSize: "11px", textTransform: "uppercase" }}>
-                  {update.stage}
-                </div>
-                <div style={{ color: "#333", marginBottom: 4 }}>{update.message}</div>
-                {update.elapsed_time && (
-                  <div style={{ color: "#757575", fontSize: "11px" }}>
-                    ⏱ {update.elapsed_time.toFixed(2)}s
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+        {loading && progress.length > 0 && (
+          <ProgressPanel progress={progress} percentage={percentage} />
+        )}
 
-      {/* Result Display */}
-      {result && (
-        <section>
-          {/* 1. Main Report (Rendered) */}
-          {renderedText && typeof renderedText === "string" && (
-            <div style={{ 
-              marginBottom: 40, 
-              padding: "40px", 
-              background: "#fff", 
-              borderRadius: "12px", 
-              boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-              border: "1px solid #eee"
-            }}>
-              <div style={{ 
-                fontSize: "16px", 
-                lineHeight: "1.8", 
-                color: "#2c3e50" 
-              }} className="markdown-body">
-                {renderMarkdown(renderedText)}
-              </div>
-            </div>
-          )}
-
-          {/* 2. Debug Details (Collapsible) */}
-          <details style={{ 
-            background: "#f8f9fa", 
-            borderRadius: "8px", 
-            border: "1px solid #e0e0e0",
-            overflow: "hidden"
-          }}>
-            <summary style={{ 
-              padding: "16px 24px", 
-              cursor: "pointer", 
-              fontWeight: "600", 
-              color: "#555",
-              userSelect: "none",
-              outline: "none"
-            }}>
-              Show Debug Details (JSON, Prompt, Timing)
-            </summary>
-            
-            <div style={{ padding: "24px", borderTop: "1px solid #e0e0e0" }}>
-              <h2 style={{ marginTop: 0, fontSize: "18px", marginBottom: 16 }}>Technical Details — {result.filename || "README"}</h2>
-              
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 24 }}>
-                {/* Left: Prompt */}
-                <div style={{ border: "1px solid #ddd", borderRadius: "6px", background: "#fff", overflow: "hidden" }}>
-                  <div style={{ padding: "8px 12px", background: "#f5f5f5", borderBottom: "1px solid #ddd", fontWeight: "600", fontSize: "12px", color: "#666" }}>PROMPT BUILT</div>
-                  <pre
-                    style={{
-                      margin: 0,
-                      whiteSpace: "pre-wrap",
-                      maxHeight: "400px",
-                      overflow: "auto",
-                      padding: "12px",
-                      fontSize: "12px",
-                      fontFamily: "Consolas, monospace",
-                      color: "#444"
-                    }}
-                  >
-                    {result.prompt || "No prompt data available."}
-                  </pre>
-                </div>
-
-                {/* Right: Parsed JSON */}
-                <div style={{ border: "1px solid #ddd", borderRadius: "6px", background: "#fff", overflow: "hidden" }}>
-                  <div style={{ padding: "8px 12px", background: "#f5f5f5", borderBottom: "1px solid #ddd", fontWeight: "600", fontSize: "12px", color: "#666" }}>
-                    PARSED JSON {result.validation_ok ? "✅" : "⚠️"}
-                  </div>
-                  <pre
-                    style={{
-                      margin: 0,
-                      whiteSpace: "pre-wrap",
-                      maxHeight: "400px",
-                      overflow: "auto",
-                      padding: "12px",
-                      fontSize: "12px",
-                      fontFamily: "Consolas, monospace",
-                      color: "#2e7d32"
-                    }}
-                  >
-                    {result.parsed ? JSON.stringify(result.parsed, null, 2) : "No JSON parsed."}
-                  </pre>
-                </div>
-              </div>
-
-              {/* Model Output (Raw) */}
-              <div style={{ marginBottom: 24, border: "1px solid #ddd", borderRadius: "6px", background: "#fff", overflow: "hidden" }}>
-                 <div style={{ padding: "8px 12px", background: "#f5f5f5", borderBottom: "1px solid #ddd", fontWeight: "600", fontSize: "12px", color: "#666" }}>RAW MODEL OUTPUT</div>
-                 <pre
-                    style={{
-                      margin: 0,
-                      whiteSpace: "pre-wrap",
-                      maxHeight: "200px",
-                      overflow: "auto",
-                      padding: "12px",
-                      fontSize: "12px",
-                      fontFamily: "Consolas, monospace",
-                      color: "#555"
-                    }}
-                  >
-                    {result.model_output || "No raw output available."}
-                  </pre>
-              </div>
-
-              {/* Timing Summary */}
-              {result.timing && Object.keys(result.timing).length > 0 && (
-                <div style={{ padding: "16px", background: "#e3f2fd", border: "1px solid #90caf9", borderRadius: "6px" }}>
-                  <h4 style={{ marginTop: 0, marginBottom: 12, color: "#1565c0" }}>Timing Summary</h4>
-                  <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
-                    {Object.entries(result.timing).map(([key, value]) => (
-                      <div key={key} style={{ padding: "8px 16px", background: "#fff", borderRadius: "4px", textAlign: "center", boxShadow: "0 1px 2px rgba(0,0,0,0.1)" }}>
-                        <div style={{ fontSize: "11px", color: "#666", textTransform: "uppercase", marginBottom: 4 }}>{key}</div>
-                        <div style={{ fontSize: "16px", fontWeight: "bold", color: "#1976d2" }}>
-                          {typeof value === "number" ? `${value.toFixed(3)}s` : value}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </details>
-        </section>
-      )}
-    </main>
+        {result ? (
+          <>
+            <ReportCard
+              renderedText={renderedText}
+              result={result}
+              onDownloadPdf={handleDownloadPdf}
+            />
+            <DebugDetails result={result} />
+          </>
+        ) : (
+          !loading && !error && <EmptyState />
+        )}
+      </main>
+    </div>
   );
 }

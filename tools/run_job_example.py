@@ -20,7 +20,7 @@ def main():
     # Run synchronously for the example
     runner.run(job_id, params)
     # Print final status
-    status_path = Path(os.getcwd()) / "processing" / "jobs" / f"{job_id}.json"
+    status_path = Path(os.getcwd()) / "data" / "processing" / "jobs" / f"{job_id}.json"
     if status_path.exists():
         print("Status file:", status_path)
         with open(status_path, "r", encoding="utf-8") as f:
