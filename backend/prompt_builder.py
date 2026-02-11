@@ -2,6 +2,8 @@ import json
 import textwrap
 from typing import Optional, List, Tuple
 
+from backend.input_sanitizer import wrap_in_delimiters
+
 
 class PromptBuilder:
     """Composable prompt builder that accepts N named parts and renders a single prompt string.
@@ -126,6 +128,10 @@ class PromptBuilder:
         parts: List[str] = [header, "INSTRUCTIONS:", instruction, ""]
 
         for label, text in self.parts:
+            # Wrap user-supplied content (readme, text inputs) in delimiters
+            # so the model treats them as data, not instructions.
+            if label.lower() in ("readme", "readme_text", "readme_content"):
+                text = wrap_in_delimiters(text, "README_CONTENT")
             parts.append(f"{label}:")
             parts.append(text)
             parts.append("")

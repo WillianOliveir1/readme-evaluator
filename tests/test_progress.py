@@ -1,10 +1,10 @@
-"""Tests for backend.evaluate.progress — pure logic, no mocking."""
+"""Tests for backend.evaluate.progress — substep-based design."""
 from __future__ import annotations
 
 import time
-import pytest
 
 from backend.evaluate.progress import (
+    DEFAULT_SUBSTEPS,
     ProgressStage,
     ProgressStatus,
     ProgressUpdate,
@@ -110,11 +110,90 @@ class TestEvaluationResult:
 
 
 # =====================================================================
-# ProgressTracker
+# ProgressTracker — Substep-based design
 # =====================================================================
 
 class TestProgressTracker:
-    """Test the ProgressTracker state machine."""
+    """Test the substep-based ProgressTracker."""
+
+    # ---- construction --------------------------------------------------
+
+    def test_default_substeps(self):
+        tracker = ProgressTracker()
+        assert tracker.total_substeps == sum(DEFAULT_SUBSTEPS.values())
+        assert tracker.completed_substeps == 0
+
+    def test_custom_substeps(self):
+        custom = {ProgressStage.BUILDING_PROMPT: 2, ProgressStage.COMPLETED: 1}
+        tracker = ProgressTracker(substeps=custom)
+        assert tracker.total_substeps == 3
+
+    def test_default_total_is_14(self):
+        """DEFAULT_SUBSTEPS should sum to 14."""
+        assert sum(DEFAULT_SUBSTEPS.values()) == 14
+
+    # ---- percentage computation ----------------------------------------
+
+    def test_percentage_starts_at_zero(self):
+        tracker = ProgressTracker()
+        assert tracker._base_percentage() == 0
+
+    def test_start_stage_increments(self):
+        tracker = ProgressTracker()
+        tracker.start_stage(ProgressStage.DOWNLOADING)
+        assert tracker.completed_substeps == 1
+        # 1/14 = 7%
+        assert tracker._base_percentage() == 7
+
+    def test_update_stage_increments(self):
+        tracker = ProgressTracker()
+        tracker.start_stage(ProgressStage.DOWNLOADING)
+        tracker.update_stage(ProgressStage.DOWNLOADING, "Downloading...")
+        assert tracker.completed_substeps == 2
+        # 2/14 = 14%
+        assert tracker._base_percentage() == 14
+
+    def test_complete_stage_snaps_to_boundary(self):
+        """complete_stage snaps the counter to the stage boundary.
+
+        DOWNLOADING has 3 substeps, so after complete_stage the counter
+        should be at 3 even if only start+complete were emitted (2 events).
+        """
+        tracker = ProgressTracker()
+        tracker.start_stage(ProgressStage.DOWNLOADING)  # 1
+        tracker.complete_stage(ProgressStage.DOWNLOADING)  # snap to 3
+        assert tracker.completed_substeps == 3
+        # 3/14 = 21%
+        assert tracker._base_percentage() == 21
+
+    def test_complete_full_3_event_stage(self):
+        """When all 3 events are emitted, complete_stage still snaps to 3."""
+        tracker = ProgressTracker()
+        tracker.start_stage(ProgressStage.DOWNLOADING)      # 1
+        tracker.update_stage(ProgressStage.DOWNLOADING, "x") # 2
+        tracker.complete_stage(ProgressStage.DOWNLOADING)     # max(3, 3) = 3
+        assert tracker.completed_substeps == 3
+
+    def test_percentage_after_full_pipeline(self):
+        """After completing all stages, percentage == 100."""
+        tracker = ProgressTracker()
+        for stage in DEFAULT_SUBSTEPS:
+            tracker.start_stage(stage)
+            tracker.complete_stage(stage)
+        assert tracker._base_percentage() == 100
+
+    def test_percentage_never_exceeds_100(self):
+        tracker = ProgressTracker()
+        # Complete everything twice
+        for stage in DEFAULT_SUBSTEPS:
+            tracker.start_stage(stage)
+            tracker.complete_stage(stage)
+        for stage in DEFAULT_SUBSTEPS:
+            tracker.start_stage(stage)
+            tracker.complete_stage(stage)
+        assert tracker._base_percentage() == 100
+
+    # ---- history recording ---------------------------------------------
 
     def test_start_stage_records_history(self):
         tracker = ProgressTracker()
@@ -158,7 +237,6 @@ class TestProgressTracker:
     def test_get_elapsed_increases(self):
         tracker = ProgressTracker()
         e1 = tracker.get_elapsed()
-        # Tiny sleep to ensure time passes
         time.sleep(0.01)
         e2 = tracker.get_elapsed()
         assert e2 > e1
@@ -168,15 +246,141 @@ class TestProgressTracker:
         tracker.start_stage(ProgressStage.BUILDING_PROMPT)
         h1 = tracker.get_history()
         h1.append("extra")
-        # Internal list should not be affected
         assert len(tracker.get_history()) == 1
 
-    def test_stage_percentages(self):
-        """Ensure the percentage mapping is consistent and monotonic."""
+    # ---- error advances counter ----------------------------------------
+
+    def test_error_advances_counter(self):
+        """error_stage advances the substep counter so the bar moves."""
         tracker = ProgressTracker()
-        prev = 0
+        before = tracker.completed_substeps
+        tracker.error_stage(ProgressStage.CALLING_MODEL, "fail")
+        assert tracker.completed_substeps == before + 1
+
+    # ---- monotonic percentage through full pipeline --------------------
+
+    def test_full_pipeline_percentages_monotonic(self):
+        """Percentages never decrease through a full start/complete cycle."""
+        tracker = ProgressTracker()
+        prev_pct = 0
+        for stage in DEFAULT_SUBSTEPS:
+            tracker.start_stage(stage)
+            pct_start = tracker.get_history()[-1].percentage
+            assert pct_start >= prev_pct, f"start({stage}) {pct_start} < {prev_pct}"
+            tracker.complete_stage(stage)
+            pct_end = tracker.get_history()[-1].percentage
+            assert pct_end >= pct_start, f"complete({stage}) {pct_end} < {pct_start}"
+            prev_pct = pct_end
+        assert prev_pct == 100
+
+    def test_skip_intermediate_still_monotonic(self):
+        """Even when skipping update_stage, percentages stay monotonic.
+
+        Simulates the text-input path: DOWNLOADING gets start+complete
+        (2 events instead of 3), but complete_stage snaps to boundary.
+        """
+        tracker = ProgressTracker()
+        # Only start + complete (skip update)
+        tracker.start_stage(ProgressStage.DOWNLOADING)
+        tracker.complete_stage(ProgressStage.DOWNLOADING)
+        pct_after_download = tracker.get_history()[-1].percentage
+
+        tracker.start_stage(ProgressStage.BUILDING_PROMPT)
+        pct_build_start = tracker.get_history()[-1].percentage
+        assert pct_build_start >= pct_after_download
+
+    # ---- stream sub-progress -------------------------------------------
+
+    def test_update_stream_progress_with_estimate(self):
+        """Sub-progress interpolates within the current stage window."""
+        received = []
+        tracker = ProgressTracker(callback=lambda u: received.append(u))
+        # Complete DOWNLOADING so model-call stage is next
+        tracker.start_stage(ProgressStage.DOWNLOADING)
+        tracker.complete_stage(ProgressStage.DOWNLOADING)
+        tracker.start_stage(ProgressStage.BUILDING_PROMPT)
+        tracker.complete_stage(ProgressStage.BUILDING_PROMPT)
+        tracker.start_stage(ProgressStage.CALLING_MODEL)
+        start_pct, end_pct = tracker._step_bounds()
+        tracker.update_stream_progress(chars_received=500, estimated_total=1000)
+        pct = received[-1].percentage
+        assert start_pct <= pct <= end_pct
+
+    def test_update_stream_progress_without_estimate(self):
+        """Without estimated_total, uses logarithmic curve within bounds."""
+        received = []
+        tracker = ProgressTracker(callback=lambda u: received.append(u))
+        tracker.start_stage(ProgressStage.DOWNLOADING)
+        tracker.complete_stage(ProgressStage.DOWNLOADING)
+        tracker.start_stage(ProgressStage.BUILDING_PROMPT)
+        tracker.complete_stage(ProgressStage.BUILDING_PROMPT)
+        tracker.start_stage(ProgressStage.CALLING_MODEL)
+        start_pct, end_pct = tracker._step_bounds()
+        tracker.update_stream_progress(chars_received=2000)
+        pct = received[-1].percentage
+        assert start_pct <= pct <= end_pct
+
+    def test_update_stream_progress_zero_chars(self):
+        """With 0 chars received should sit at the start of the window."""
+        received = []
+        tracker = ProgressTracker(callback=lambda u: received.append(u))
+        tracker.start_stage(ProgressStage.DOWNLOADING)
+        tracker.complete_stage(ProgressStage.DOWNLOADING)
+        tracker.start_stage(ProgressStage.BUILDING_PROMPT)
+        tracker.complete_stage(ProgressStage.BUILDING_PROMPT)
+        tracker.start_stage(ProgressStage.CALLING_MODEL)
+        start_pct, _ = tracker._step_bounds()
+        tracker.update_stream_progress(chars_received=0)
+        assert received[-1].percentage == start_pct
+
+    def test_stream_progress_does_not_advance_counter(self):
+        """update_stream_progress must NOT advance the substep counter."""
+        tracker = ProgressTracker()
+        tracker.start_stage(ProgressStage.CALLING_MODEL)
+        before = tracker.completed_substeps
+        tracker.update_stream_progress(chars_received=1000)
+        tracker.update_stream_progress(chars_received=5000)
+        assert tracker.completed_substeps == before
+
+    # ---- stages exist --------------------------------------------------
+
+    def test_all_stages_in_default_substeps(self):
+        """Every ProgressStage should be declared in DEFAULT_SUBSTEPS."""
         for stage in ProgressStage:
-            pct = tracker.STAGE_PERCENTAGES[stage]
-            assert pct >= prev, f"{stage} percentage {pct} < previous {prev}"
-            prev = pct
-        assert prev == 100
+            assert stage in DEFAULT_SUBSTEPS, f"{stage} missing from DEFAULT_SUBSTEPS"
+
+    def test_new_stages_in_enum(self):
+        """Verify DOWNLOADING and RENDERING stages exist."""
+        assert hasattr(ProgressStage, "DOWNLOADING")
+        assert hasattr(ProgressStage, "RENDERING")
+
+    # ---- estimate remaining --------------------------------------------
+
+    def test_estimate_remaining_none_at_start(self):
+        tracker = ProgressTracker()
+        assert tracker._estimate_remaining() is None
+
+    def test_estimate_remaining_positive(self):
+        tracker = ProgressTracker()
+        tracker.start_stage(ProgressStage.BUILDING_PROMPT)
+        time.sleep(0.01)
+        est = tracker._estimate_remaining()
+        assert est is not None
+        assert est >= 0
+
+    # ---- stage_end_boundary --------------------------------------------
+
+    def test_stage_end_boundary_downloading(self):
+        """DOWNLOADING boundary should be 3 (sum of its substeps)."""
+        tracker = ProgressTracker()
+        assert tracker._stage_end_boundary(ProgressStage.DOWNLOADING) == 3
+
+    def test_stage_end_boundary_building_prompt(self):
+        """BUILDING_PROMPT comes after DOWNLOADING(3), so boundary = 3+2 = 5."""
+        tracker = ProgressTracker()
+        assert tracker._stage_end_boundary(ProgressStage.BUILDING_PROMPT) == 5
+
+    def test_stage_end_boundary_completed(self):
+        """COMPLETED is the last stage, boundary should equal total."""
+        tracker = ProgressTracker()
+        assert tracker._stage_end_boundary(ProgressStage.COMPLETED) == tracker.total_substeps

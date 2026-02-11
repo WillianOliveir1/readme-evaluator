@@ -41,12 +41,16 @@ class ReadmeDownloader:
         logging.debug("Using temp directory: %s", self.temp_dir)
 
     def _parse_repo(self, url: str) -> Tuple[str, str, Optional[str]]:
-        m = re.match(r"git@github.com:(?P<owner>[^/]+)/(?P<repo>[^/]+?)(?:\.git)?$", url)
+        url = url.strip()
+
+        # SSH format: git@github.com:owner/repo.git
+        m = re.match(r"git@github\.com:(?P<owner>[^/]+)/(?P<repo>[^/]+?)(?:\.git)?$", url)
         if m:
             return m.group("owner"), m.group("repo"), None
 
+        # Full URL: http(s)://github.com/owner/repo[/tree|blob/branch]
         m = re.match(
-            r"https?://github.com/(?P<owner>[^/]+)/(?P<repo>[^/]+?)(?:/(?:tree|blob)/(?P<branch>[^/]+))?/?$",
+            r"https?://github\.com/(?P<owner>[^/]+)/(?P<repo>[^/]+?)(?:/(?:tree|blob)/(?P<branch>[^/]+))?/?$",
             url,
         )
         if m:
@@ -55,6 +59,11 @@ class ReadmeDownloader:
                 repo = repo[:-4]
             branch = m.group("branch")
             return m.group("owner"), repo, branch
+
+        # Shorthand: owner/repo (no protocol)
+        m = re.match(r"^(?P<owner>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)$", url)
+        if m:
+            return m.group("owner"), m.group("repo"), None
 
         raise ValueError(f"Could not parse GitHub repository from URL: {url}")
 

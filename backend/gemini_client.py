@@ -24,7 +24,7 @@ from tenacity import (
 )
 
 from backend.config import DEFAULT_MODEL
-from backend.llm_base import LLMClient
+from backend.llm_base import LLMClient, UsageStats
 
 LOG = logging.getLogger(__name__)
 
@@ -34,6 +34,11 @@ LOG = logging.getLogger(__name__)
 GEMINI_MAX_RETRIES = int(os.environ.get("GEMINI_MAX_RETRIES", "3"))
 GEMINI_BACKOFF_MIN = float(os.environ.get("GEMINI_BACKOFF_MIN", "1"))  # seconds
 GEMINI_BACKOFF_MAX = float(os.environ.get("GEMINI_BACKOFF_MAX", "60"))  # seconds
+
+# Approximate pricing per 1M tokens (as of 2025, Gemini 2.5 Flash)
+# These are rough estimates; update when Google publishes new prices.
+GEMINI_COST_PER_1M_INPUT = float(os.environ.get("GEMINI_COST_INPUT_1M", "0.15"))
+GEMINI_COST_PER_1M_OUTPUT = float(os.environ.get("GEMINI_COST_OUTPUT_1M", "0.60"))
 
 
 def _is_retryable(exc: BaseException) -> bool:
@@ -84,6 +89,24 @@ class GeminiClient(LLMClient):
         except Exception as exc:
             raise RuntimeError("Failed to initialize GenAI client: %s" % exc)
 
+    def _extract_usage(self, response, model_id: str) -> UsageStats:
+        """Extract token usage from a Gemini response object."""
+        stats = UsageStats(model=model_id)
+        try:
+            usage = getattr(response, "usage_metadata", None)
+            if usage:
+                stats.input_tokens = getattr(usage, "prompt_token_count", 0) or 0
+                stats.output_tokens = getattr(usage, "candidates_token_count", 0) or 0
+                stats.total_tokens = getattr(usage, "total_token_count", 0) or (stats.input_tokens + stats.output_tokens)
+                # Estimate cost
+                stats.estimated_cost_usd = (
+                    (stats.input_tokens / 1_000_000) * GEMINI_COST_PER_1M_INPUT
+                    + (stats.output_tokens / 1_000_000) * GEMINI_COST_PER_1M_OUTPUT
+                )
+        except Exception:
+            pass
+        return stats
+
     def generate(self, prompt: str, model: Optional[str] = None, max_tokens: int = 512, temperature: float = 0.0) -> str:
         """Generate text for the given prompt (with automatic retry on transient failures)."""
         model_id = model or self.default_model
@@ -107,6 +130,7 @@ class GeminiClient(LLMClient):
                 contents=prompt,
                 config=config,
             )
+            self.last_usage = self._extract_usage(response, model_id)
             return response.text or ""
 
         try:
@@ -148,8 +172,10 @@ class GeminiClient(LLMClient):
         except Exception as exc:
             raise RuntimeError(f"Gemini API streaming error: {exc}")
 
+        last_chunk = None
         try:
             for chunk in response_stream:
+                last_chunk = chunk
                 if hasattr(chunk, "text") and chunk.text:
                     yield chunk.text
                 elif hasattr(chunk, "parts") and chunk.parts:
@@ -158,6 +184,11 @@ class GeminiClient(LLMClient):
                             yield part.text
         except Exception as exc:
             raise RuntimeError(f"Gemini API streaming error: {exc}")
+        finally:
+            # Extract usage from the last chunk (Gemini includes usage_metadata
+            # on the final streamed chunk)
+            if last_chunk is not None:
+                self.last_usage = self._extract_usage(last_chunk, model_id)
 
 
 __all__ = ["GeminiClient"]

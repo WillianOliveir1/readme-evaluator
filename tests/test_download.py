@@ -47,6 +47,22 @@ class TestParseRepo:
         assert owner == "owner"
         assert repo == "repo"
 
+    def test_shorthand_owner_repo(self):
+        owner, repo, branch = self._parse("keras-team/keras")
+        assert owner == "keras-team"
+        assert repo == "keras"
+        assert branch is None
+
+    def test_shorthand_with_dots(self):
+        owner, repo, branch = self._parse("user.name/my-repo.js")
+        assert owner == "user.name"
+        assert repo == "my-repo.js"
+
+    def test_http_url(self):
+        owner, repo, branch = self._parse("http://github.com/owner/repo")
+        assert owner == "owner"
+        assert repo == "repo"
+
     def test_invalid_url_raises(self):
         with pytest.raises(ValueError, match="Could not parse"):
             self._parse("https://gitlab.com/owner/repo")

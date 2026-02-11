@@ -62,6 +62,13 @@ function Sidebar({ history, activeIdx, onSelect, theme, onToggleTheme }) {
    ============================================================ */
 
 function ProgressPanel({ progress, percentage }) {
+  // Deduplicate stages: show only latest update per stage
+  const latestByStage = {};
+  progress.forEach((u) => {
+    latestByStage[u.stage] = u;
+  });
+  const stages = Object.values(latestByStage);
+
   return (
     <div className="card progress-card">
       <div className="card-header">Processing Pipeline</div>
@@ -71,15 +78,21 @@ function ProgressPanel({ progress, percentage }) {
           <span>{percentage}%</span>
         </div>
         <div className="progress-bar-wrapper">
-          <div className="progress-bar-fill" style={{ width: `${percentage}%` }} />
+          <div
+            className="progress-bar-fill"
+            style={{
+              width: `${percentage}%`,
+              transition: "width 0.5s ease-out",
+            }}
+          />
         </div>
         <div className="stages">
-          {progress.map((u, i) => (
+          {stages.map((u, i) => (
             <div key={i} className={`stage-chip stage-${u.stage}`}>
               <div className="stage-name">{u.stage}</div>
               <div className="stage-msg">{u.message}</div>
-              {u.elapsed_time != null && (
-                <div className="stage-time">⏱ {u.elapsed_time.toFixed(2)}s</div>
+              {u.elapsed_seconds != null && (
+                <div className="stage-time">⏱ {u.elapsed_seconds.toFixed(2)}s</div>
               )}
             </div>
           ))}
@@ -160,6 +173,35 @@ function DebugDetails({ result }) {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {result.tokens && Object.keys(result.tokens).length > 0 && (
+          <div className="timing-bar" style={{ marginTop: 12 }}>
+            <div className="timing-chip">
+              <div className="label">Input Tokens</div>
+              <div className="value">{result.tokens.input_tokens?.toLocaleString() || "—"}</div>
+            </div>
+            <div className="timing-chip">
+              <div className="label">Output Tokens</div>
+              <div className="value">{result.tokens.output_tokens?.toLocaleString() || "—"}</div>
+            </div>
+            <div className="timing-chip">
+              <div className="label">Total Tokens</div>
+              <div className="value">{result.tokens.total_tokens?.toLocaleString() || "—"}</div>
+            </div>
+            {result.tokens.estimated_cost_usd > 0 && (
+              <div className="timing-chip">
+                <div className="label">Est. Cost</div>
+                <div className="value">${result.tokens.estimated_cost_usd?.toFixed(4) || "—"}</div>
+              </div>
+            )}
+            {result.tokens.model && (
+              <div className="timing-chip">
+                <div className="label">Model</div>
+                <div className="value">{result.tokens.model}</div>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -309,8 +351,10 @@ export default function Home() {
           try {
             const data = JSON.parse(line.slice(6));
             if (data.type === "progress") {
+              // Throttle progress updates: only update if percentage changed
+              const newPct = data.percentage || 0;
               setProgress((prev) => [...prev, data]);
-              setPercentage(data.percentage || 0);
+              setPercentage((prevPct) => Math.max(prevPct, newPct));
             } else if (data.type === "result") {
               finalResult = { ...data.result, filename: readmeData.filename };
               setResult(finalResult);
@@ -332,7 +376,7 @@ export default function Home() {
 
       // Save to history
       if (finalResult) {
-        const label = url.replace(/^https?:\/\/(www\.)?github\.com\//, "").replace(/\/$/, "") || url;
+        const label = url.replace(/^https?:\/\/(www\.)?github\.com\//, "").replace(/^git@github\.com:/, "").replace(/\.git$/, "").replace(/\/$/, "") || url;
         const entry = { url, label, result: finalResult, renderedText: finalRendered, ts: Date.now() };
         setHistory((prev) => {
           const updated = [entry, ...prev.filter((h) => h.url !== url)].slice(0, 30);
@@ -402,7 +446,7 @@ export default function Home() {
             ref={urlRef}
             type="text"
             className="eval-input"
-            placeholder="https://github.com/owner/repo"
+            placeholder="owner/repo or https://github.com/owner/repo"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             autoFocus

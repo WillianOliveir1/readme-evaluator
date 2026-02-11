@@ -1,64 +1,48 @@
 import json
 import os
 import glob
-import numpy as np
+from statistics import mean
 
 def calculate_average(categories, metric):
+    """Calculate average for a metric across categories (excluding dimensions_summary)."""
     values = []
-    # Check categories
     for cat_name, cat_data in categories.items():
         if cat_name == 'dimensions_summary':
             continue
         
-        # Check if category is present/relevant if that info is available
-        # For now, just check if the metric exists
-        
         val = None
-        if 'quality' in cat_data:
+        if 'quality' in cat_data and isinstance(cat_data['quality'], dict):
             q = cat_data['quality']
-            if isinstance(q, dict):
-                if metric in q:
-                    val = q[metric]
-                    if isinstance(val, dict) and 'note' in val:
-                        val = val['note']
+            if metric in q:
+                val = q[metric]
+                if isinstance(val, dict) and 'note' in val:
+                    val = val['note']
         
         if val is not None and isinstance(val, (int, float)):
             values.append(val)
             
     if not values:
-        return 0
-    return np.mean(values)
+        return 0.0
+    return mean(values)
 
-def calculate_average_with_summary(data, metric):
-    values = []
-    categories = data.get('categories', {})
+def calculate_from_summary(data, metric):
+    """Calculate a metric score from dimensions_summary (holistic score).
     
-    # Categories
-    for cat_name, cat_data in categories.items():
-        val = None
-        if 'quality' in cat_data:
-            q = cat_data['quality']
-            if isinstance(q, dict):
-                if metric in q:
-                    val = q[metric]
-                    if isinstance(val, dict) and 'note' in val:
-                        val = val['note']
-        
-        if val is not None and isinstance(val, (int, float)):
-            values.append(val)
-            
-    # Dimensions Summary
+    This is the recommended approach: use the global dimensions_summary
+    which provides holistic scores, NOT the per-category averages.
+    """
     summary = data.get('dimensions_summary', {})
     val = summary.get(metric)
-    if isinstance(val, dict) and 'note' in val:
-        val = val['note']
-        
+    
+    if isinstance(val, dict):
+        val = val.get('note', val.get('score'))
+    
     if val is not None and isinstance(val, (int, float)):
-        values.append(val)
-        
-    if not values:
-        return 0
-    return np.mean(values)
+        return float(val)
+    
+    # Fallback: compute from categories if summary is missing
+    categories = data.get('categories', {})
+    return calculate_average(categories, metric)
 
 def process_file(filepath):
     with open(filepath, 'r', encoding='utf-8') as f:
@@ -71,8 +55,8 @@ def process_file(filepath):
     results = {}
     
     for m in metrics:
-        avg = calculate_average_with_summary(data, m)
-        results[m] = round(avg, 2)
+        score = calculate_from_summary(data, m)
+        results[m] = round(score, 2)
         
     return repo, evaluator, results
 

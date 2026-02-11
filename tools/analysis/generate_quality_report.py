@@ -1,117 +1,138 @@
+"""Generate a comparative quality report from manual and Gemini evaluations.
+
+Reads evaluation JSON files from data/samples/ directories, extracts dimension
+scores from ``dimensions_summary``, and produces a Markdown comparison table.
+
+Dependencies: Only uses Python stdlib (json, glob, os, statistics).
+"""
 import json
 import glob
 import os
-import pandas as pd
-import numpy as np
+from statistics import mean
+from typing import Any, Dict, List, Optional, Set, Tuple
 
-def load_evaluations(directory, source_label):
-    evaluations = []
-    files = glob.glob(os.path.join(directory, "*.json"))
+
+def load_evaluations(directory: str, source_label: str) -> List[Dict[str, Any]]:
+    """Load all JSON evaluation files from *directory*."""
+    evaluations: list[dict] = []
+    files = sorted(glob.glob(os.path.join(directory, "*.json")))
     for f in files:
         try:
-            with open(f, 'r', encoding='utf-8') as file:
-                data = json.load(file)
-                if 'metadata' not in data:
-                    data['metadata'] = {}
-                data['metadata']['source'] = source_label
+            with open(f, "r", encoding="utf-8") as fh:
+                data = json.load(fh)
+                if "metadata" not in data:
+                    data["metadata"] = {}
+                data["metadata"]["source"] = source_label
                 evaluations.append(data)
         except Exception as e:
-            print(f"Error reading {f}: {e}")
+            print(f"⚠️ Error reading {f}: {e}")
     return evaluations
 
-def calculate_averages(evaluations):
-    repo_data = []
-    all_dimensions = set()
+
+def _extract_dimension_score(value: Any) -> Optional[float]:
+    """Extract a numeric score from a dimension value.
+
+    Dimensions can be stored as plain numbers or as dicts with ``note``
+    or ``score`` keys.
+    """
+    if isinstance(value, (int, float)):
+        return float(value)
+    if isinstance(value, dict):
+        for key in ("note", "score"):
+            v = value.get(key)
+            if isinstance(v, (int, float)):
+                return float(v)
+    return None
+
+
+def calculate_averages(
+    evaluations: List[Dict[str, Any]],
+) -> Tuple[List[Dict[str, Any]], List[str]]:
+    """Return per-repo score dicts and the sorted list of dimension names."""
+    repo_data: list[dict] = []
+    all_dimensions: Set[str] = set()
+
+    # Keys that are global notes, not numeric dimensions
+    exclude_keys = {"global_notes", "global_observations"}
 
     for eval_data in evaluations:
-        repo_name_raw = eval_data.get('metadata', {}).get('repository_name', 'Unknown')
-        source = eval_data.get('metadata', {}).get('source', 'Unknown')
-        repo_name = f"{repo_name_raw} ({source})"
-        
-        categories = eval_data.get('categories', {})
-        dimensions_summary = eval_data.get('dimensions_summary', {})
-        
-        target_dims = [k for k in dimensions_summary.keys() if k not in ['global_notes', 'global_observations']]
+        meta = eval_data.get("metadata", {})
+        repo_name_raw = meta.get("repository_name", "Unknown")
+        source = meta.get("source", "Unknown")
+
+        dimensions_summary = eval_data.get("dimensions_summary", {})
+
+        target_dims = [k for k in dimensions_summary if k not in exclude_keys]
         all_dimensions.update(target_dims)
-        
-        # Use ONLY dimensions_summary for calculations
-        repo_avgs = {
-            'Repository': repo_name_raw,
-            'Source': source
-        }
-        valid_scores_count = 0
-        sum_avgs = 0
-        
+
+        repo_avgs: Dict[str, Any] = {"Repository": repo_name_raw, "Source": source}
+        scores: list[float] = []
+
         for dim in target_dims:
-            score = dimensions_summary.get(dim)
-            final_score = None
-            
-            if isinstance(score, (int, float)):
-                final_score = score
-            elif isinstance(score, dict):
-                if 'note' in score:
-                    final_score = score['note']
-                elif 'score' in score:
-                    final_score = score['score']
-            
-            if final_score is not None:
-                repo_avgs[dim] = round(float(final_score), 2)
-                sum_avgs += final_score
-                valid_scores_count += 1
+            score = _extract_dimension_score(dimensions_summary[dim])
+            if score is not None:
+                repo_avgs[dim] = round(score, 2)
+                scores.append(score)
             else:
-                repo_avgs[dim] = np.nan
-        
-        if valid_scores_count > 0:
-            repo_avgs['Overall'] = round(sum_avgs / valid_scores_count, 2)
-        else:
-            repo_avgs['Overall'] = 0.0
-            
+                repo_avgs[dim] = None  # will be ignored in averages
+
+        repo_avgs["Overall"] = round(mean(scores), 2) if scores else 0.0
         repo_data.append(repo_avgs)
 
-    return repo_data, sorted(list(all_dimensions))
+    return repo_data, sorted(all_dimensions)
 
-def generate_markdown_report(repo_data, dimensions, output_file):
-    df = pd.DataFrame(repo_data)
-    
-    for dim in dimensions:
-        if dim not in df.columns:
-            df[dim] = np.nan
 
-    # Group by Source and calculate mean for dimensions + Overall
-    # numeric_only=True is safer
-    grouped = df.groupby('Source')[dimensions + ['Overall']].mean(numeric_only=True)
-    
-    # Transpose: Rows become Dimensions, Columns become Sources
-    transposed = grouped.T
-    
-    # Ensure column order: Manual, Gemini (if they exist)
-    cols = []
-    if 'Manual' in transposed.columns:
-        cols.append('Manual')
-    if 'Gemini' in transposed.columns:
-        cols.append('Gemini')
-    
-    # Add any other sources found
-    for c in transposed.columns:
-        if c not in cols:
-            cols.append(c)
-            
-    transposed = transposed[cols]
-    
-    # Reset index to get 'Dimensão' column
-    transposed.index.name = 'Dimensão'
-    transposed = transposed.reset_index()
-    
-    # Round numeric columns
-    for col in cols:
-        transposed[col] = transposed[col].round(2)
-        
-    # Rename columns for the final report
-    final_cols = ['Dimensão'] + [f'Média {c}' for c in cols]
-    transposed.columns = final_cols
+def _build_markdown_table(
+    headers: List[str], rows: List[List[str]], align: Optional[List[str]] = None
+) -> str:
+    """Build a simple Markdown table from headers and rows."""
+    if align is None:
+        align = ["left"] + ["right"] * (len(headers) - 1)
+    sep_map = {"left": ":---", "right": "---:", "center": ":---:"}
 
-    markdown_table = transposed.to_markdown(index=False)
-    
+    lines = [
+        "| " + " | ".join(headers) + " |",
+        "| " + " | ".join(sep_map.get(a, "---") for a in align) + " |",
+    ]
+    for row in rows:
+        lines.append("| " + " | ".join(row) + " |")
+    return "\n".join(lines)
+
+
+def generate_markdown_report(
+    repo_data: List[Dict[str, Any]], dimensions: List[str], output_file: str
+) -> None:
+    """Write a Markdown quality comparison report to *output_file*."""
+    # Group scores by source and compute mean per dimension
+    source_scores: Dict[str, Dict[str, list]] = {}
+    for entry in repo_data:
+        src = entry["Source"]
+        if src not in source_scores:
+            source_scores[src] = {d: [] for d in dimensions + ["Overall"]}
+        for dim in dimensions + ["Overall"]:
+            val = entry.get(dim)
+            if val is not None and isinstance(val, (int, float)):
+                source_scores[src][dim].append(val)
+
+    # Determine column order (Manual first if present)
+    sources = sorted(source_scores.keys())
+    if "Manual" in sources:
+        sources.remove("Manual")
+        sources = ["Manual"] + sources
+
+    headers = ["Dimensão"] + [f"Média {s}" for s in sources]
+    rows: list[list[str]] = []
+
+    for dim in dimensions + ["Overall"]:
+        row = [dim]
+        for src in sources:
+            vals = source_scores.get(src, {}).get(dim, [])
+            avg = round(mean(vals), 2) if vals else "-"
+            row.append(str(avg))
+        rows.append(row)
+
+    markdown_table = _build_markdown_table(headers, rows)
+
     content = f"""# Relatório de Qualidade dos READMEs (Comparativo)
 
 ## Metodologia
@@ -125,32 +146,33 @@ def generate_markdown_report(repo_data, dimensions, output_file):
 
 {markdown_table}
 """
-    
+
     os.makedirs(os.path.dirname(output_file), exist_ok=True)
-    with open(output_file, 'w', encoding='utf-8') as f:
+    with open(output_file, "w", encoding="utf-8") as f:
         f.write(content)
-    
-    print(f"Report generated at: {output_file}")
+
+    print(f"✅ Report generated at: {output_file}")
     print(markdown_table)
+
 
 if __name__ == "__main__":
     base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    
+
     manual_eval_dir = os.path.join(base_dir, "data", "samples", "manual-evaluation")
     gemini_eval_dir = os.path.join(base_dir, "data", "samples", "gemini-evaluation")
-    
+
     output_report = os.path.join(base_dir, "data", "reports", "combined_quality_report.md")
-    
-    all_evals = []
-    
+
+    all_evals: list[dict] = []
+
     print(f"Reading Manual evaluations from: {manual_eval_dir}")
     all_evals.extend(load_evaluations(manual_eval_dir, "Manual"))
-    
+
     print(f"Reading Gemini evaluations from: {gemini_eval_dir}")
     all_evals.extend(load_evaluations(gemini_eval_dir, "Gemini"))
-    
+
     if all_evals:
         data, dims = calculate_averages(all_evals)
         generate_markdown_report(data, dims, output_report)
     else:
-        print("No evaluation files found.")
+        print("⚠️ No evaluation files found.")

@@ -27,7 +27,12 @@ from backend.config import (
 from backend.db.mongodb_handler import MongoDBHandler
 from backend.download.download import ReadmeDownloader
 from backend.evaluate.extractor import extract_json_from_readme
-from backend.evaluate.progress import ProgressUpdate
+from backend.evaluate.progress import (
+    DEFAULT_SUBSTEPS,
+    ProgressStage,
+    ProgressTracker,
+    ProgressUpdate,
+)
 from backend.models import ExtractRequest
 from backend.present.renderer import render_from_json
 from backend.rate_limit import limiter, EXPENSIVE_LIMIT
@@ -172,8 +177,25 @@ async def extract_stream_endpoint(request: Request, req: ExtractRequest):
     async def progress_generator():
         progress_queue: queue.Queue = queue.Queue()
 
+        # All steps, including download and rendering handled here
+        tracker = ProgressTracker(
+            substeps=DEFAULT_SUBSTEPS,
+            callback=lambda u: progress_queue.put(u.to_dict()),
+        )
+
         def on_progress(update: ProgressUpdate):
+            """Forward tracker events from the extractor (runs in thread)."""
             progress_queue.put(update.to_dict())
+
+        def _drain_queue():
+            """Yield all pending progress events as SSE data lines."""
+            items = []
+            while not progress_queue.empty():
+                try:
+                    items.append(progress_queue.get_nowait())
+                except queue.Empty:
+                    break
+            return items
 
         loop = asyncio.get_event_loop()
 
@@ -187,25 +209,46 @@ async def extract_stream_endpoint(request: Request, req: ExtractRequest):
             if req.repo_url:
                 log.info("extract-stream: received repo_url=%s", req.repo_url)
 
-                yield f"data: {_json.dumps({'type': 'progress', 'stage': 'downloading', 'status': 'in_progress', 'percentage': 10, 'message': 'Downloading README...'})}\n\n"
+                tracker.start_stage(ProgressStage.DOWNLOADING, "Parsing repository URL...")
+                for item in _drain_queue():
+                    yield f"data: {_json.dumps({'type': 'progress', **item})}\n\n"
 
                 clean_url = req.repo_url.strip().rstrip("/")
+                # Try full URL format first
                 match = re.match(
                     r"https?://github\.com/(?P<owner>[^/]+)/(?P<repo>[^/]+)",
                     clean_url,
                 )
+                if not match:
+                    # Try shorthand format: owner/repo
+                    match = re.match(
+                        r"^(?P<owner>[a-zA-Z0-9_.-]+)/(?P<repo>[a-zA-Z0-9_.-]+)$",
+                        clean_url,
+                    )
+                if not match:
+                    # Try SSH format: git@github.com:owner/repo
+                    match = re.match(
+                        r"git@github\.com:(?P<owner>[^/]+)/(?P<repo>[^/]+?)(?:\.git)?$",
+                        clean_url,
+                    )
                 if match:
                     owner = match.group("owner")
                     repo = match.group("repo")
                     if repo.endswith(".git"):
                         repo = repo[:-4]
 
+                tracker.update_stage(ProgressStage.DOWNLOADING, "Downloading README...")
+                for item in _drain_queue():
+                    yield f"data: {_json.dumps({'type': 'progress', **item})}\n\n"
+
                 dl = ReadmeDownloader()
                 try:
                     path = await loop.run_in_executor(
                         None, functools.partial(dl.download, req.repo_url)
                     )
-                    yield f"data: {_json.dumps({'type': 'progress', 'stage': 'downloading', 'status': 'completed', 'percentage': 20, 'message': 'Download complete'})}\n\n"
+                    tracker.complete_stage(ProgressStage.DOWNLOADING, "README downloaded successfully")
+                    for item in _drain_queue():
+                        yield f"data: {_json.dumps({'type': 'progress', **item})}\n\n"
 
                     if dl.readme_url:
                         readme_raw_link = dl.readme_url
@@ -213,6 +256,9 @@ async def extract_stream_endpoint(request: Request, req: ExtractRequest):
                         readme_raw_link = f"https://raw.githubusercontent.com/{owner}/{repo}/main/{os.path.basename(path)}"
                 except Exception as exc:
                     log.exception("extract-stream: failed to download: %s", exc)
+                    tracker.error_stage(ProgressStage.DOWNLOADING, str(exc))
+                    for item in _drain_queue():
+                        yield f"data: {_json.dumps({'type': 'progress', **item})}\n\n"
                     yield f"data: {_json.dumps({'error': str(exc), 'type': 'error'})}\n\n"
                     return
 
@@ -224,12 +270,19 @@ async def extract_stream_endpoint(request: Request, req: ExtractRequest):
                     readme_text = data.decode("utf-8", errors="replace")
             elif req.readme_text:
                 readme_text = req.readme_text
+                # No download step — mark it completed immediately
+                tracker.start_stage(ProgressStage.DOWNLOADING, "Using provided text")
+                tracker.complete_stage(ProgressStage.DOWNLOADING, "Text input ready")
+                for item in _drain_queue():
+                    yield f"data: {_json.dumps({'type': 'progress', **item})}\n\n"
             else:
                 yield f"data: {_json.dumps({'error': 'Either repo_url or readme_text required', 'type': 'error'})}\n\n"
                 return
 
             system_prompt_text = _load_system_prompt(req.system_prompt)
 
+            # The extractor creates its own internal tracker. We pass our
+            # *callback* so every update it emits lands in the same queue.
             future = loop.run_in_executor(
                 None,
                 functools.partial(
@@ -250,20 +303,12 @@ async def extract_stream_endpoint(request: Request, req: ExtractRequest):
             )
 
             while not future.done():
-                while not progress_queue.empty():
-                    try:
-                        update = progress_queue.get_nowait()
-                        yield f"data: {_json.dumps({'type': 'progress', **update})}\n\n"
-                    except queue.Empty:
-                        break
+                for item in _drain_queue():
+                    yield f"data: {_json.dumps({'type': 'progress', **item})}\n\n"
                 await asyncio.sleep(0.1)
 
-            while not progress_queue.empty():
-                try:
-                    update = progress_queue.get_nowait()
-                    yield f"data: {_json.dumps({'type': 'progress', **update})}\n\n"
-                except queue.Empty:
-                    break
+            for item in _drain_queue():
+                yield f"data: {_json.dumps({'type': 'progress', **item})}\n\n"
 
             result = await future
             result_dict = result.to_dict()
@@ -315,7 +360,9 @@ async def extract_stream_endpoint(request: Request, req: ExtractRequest):
             # Auto-render -----------------------------------------------------
             if result_dict.get("validation_ok") and result_dict.get("parsed"):
                 try:
-                    yield f"data: {_json.dumps({'type': 'progress', 'stage': 'rendering', 'status': 'in_progress', 'percentage': 90, 'message': 'Generating report...'})}\n\n"
+                    tracker.start_stage(ProgressStage.RENDERING, "Generating report...")
+                    for item in _drain_queue():
+                        yield f"data: {_json.dumps({'type': 'progress', **item})}\n\n"
 
                     default_style = (
                         "Create a professional, clear summary of this README evaluation. "
@@ -329,9 +376,17 @@ async def extract_stream_endpoint(request: Request, req: ExtractRequest):
                         max_tokens=DEFAULT_MAX_TOKENS,
                         temperature=RENDER_TEMPERATURE,
                     )
+
+                    tracker.complete_stage(ProgressStage.RENDERING, "Report generated")
+                    for item in _drain_queue():
+                        yield f"data: {_json.dumps({'type': 'progress', **item})}\n\n"
+
                     yield f"data: {_json.dumps({'type': 'rendered', 'rendered': rendered})}\n\n"
                 except Exception as render_exc:
                     log.exception("Error rendering evaluation in extract-stream")
+                    tracker.error_stage(ProgressStage.RENDERING, str(render_exc))
+                    for item in _drain_queue():
+                        yield f"data: {_json.dumps({'type': 'progress', **item})}\n\n"
                     yield f"data: {_json.dumps({'type': 'render_error', 'error': str(render_exc)})}\n\n"
 
             yield f"data: {_json.dumps({'type': 'result', 'result': result_dict})}\n\n"

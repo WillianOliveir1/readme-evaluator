@@ -25,7 +25,7 @@ from tenacity import (
     before_sleep_log,
 )
 
-from backend.llm_base import LLMClient
+from backend.llm_base import LLMClient, UsageStats
 
 LOG = logging.getLogger(__name__)
 
@@ -110,7 +110,20 @@ class OllamaClient(LLMClient):
                 timeout=300,
             )
             resp.raise_for_status()
-            return resp.json().get("response", "")
+            data = resp.json()
+            # Capture usage stats from Ollama response
+            self.last_usage = UsageStats(
+                input_tokens=data.get("prompt_eval_count", 0),
+                output_tokens=data.get("eval_count", 0),
+                total_tokens=data.get("prompt_eval_count", 0) + data.get("eval_count", 0),
+                model=model_id,
+                estimated_cost_usd=0.0,  # Local model, no API cost
+                extra={
+                    "eval_duration_ns": data.get("eval_duration", 0),
+                    "total_duration_ns": data.get("total_duration", 0),
+                },
+            )
+            return data.get("response", "")
 
         try:
             return _call()
@@ -172,6 +185,18 @@ class OllamaClient(LLMClient):
                     if token:
                         yield token
                     if data.get("done", False):
+                        # Capture usage stats from final Ollama chunk
+                        self.last_usage = UsageStats(
+                            input_tokens=data.get("prompt_eval_count", 0),
+                            output_tokens=data.get("eval_count", 0),
+                            total_tokens=data.get("prompt_eval_count", 0) + data.get("eval_count", 0),
+                            model=model_id,
+                            estimated_cost_usd=0.0,
+                            extra={
+                                "eval_duration_ns": data.get("eval_duration", 0),
+                                "total_duration_ns": data.get("total_duration", 0),
+                            },
+                        )
                         break
                 except json.JSONDecodeError:
                     continue

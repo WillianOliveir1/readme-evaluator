@@ -10,8 +10,9 @@ import os
 from backend import prompt_builder
 from backend.config import DEFAULT_MAX_TOKENS, DEFAULT_TEMPERATURE
 from backend.llm_factory import get_llm_client
-from backend.evaluate.progress import ProgressTracker, ProgressStage, EvaluationResult
+from backend.evaluate.progress import ProgressTracker, ProgressStage, EvaluationResult, DEFAULT_SUBSTEPS
 from backend.evaluate.json_postprocessor import fix_string_arrays_in_json, remove_disallowed_category_fields
+from backend.input_sanitizer import sanitize_readme, sanitize_system_prompt
 import logging
 
 logger = logging.getLogger(__name__)
@@ -44,8 +45,24 @@ def extract_json_from_readme(
     # Log received arguments for debugging
     logging.info(f"extract_json_from_readme called with: owner={owner}, repo={repo}, readme_raw_link={readme_raw_link}")
 
-    # Initialize progress tracker
-    tracker = ProgressTracker(callback=progress_callback)
+    # Sanitise user-supplied inputs to mitigate prompt injection
+    readme_text = sanitize_readme(readme_text)
+    system_prompt = sanitize_system_prompt(system_prompt)
+
+    # Use the shared tracker when provided (SSE pipeline), otherwise create
+    # a standalone tracker scoped to the extractor's own stages.
+    if progress_callback and hasattr(progress_callback, '__self__'):
+        # Duck-type check: if it looks like a bound method of a tracker
+        # we just create a local one — the callback forwards events.
+        pass
+    EXTRACTOR_SUBSTEPS = {
+        ProgressStage.BUILDING_PROMPT: 2,
+        ProgressStage.CALLING_MODEL: 2,
+        ProgressStage.PARSING_JSON: 2,
+        ProgressStage.VALIDATING: 2,
+        ProgressStage.COMPLETED: 1,
+    }
+    tracker = ProgressTracker(substeps=EXTRACTOR_SUBSTEPS, callback=progress_callback)
     timing = {}
     
     try:
@@ -180,17 +197,21 @@ def extract_json_from_readme(
                 
                 for chunk in stream:
                     full_response.append(chunk)
-                    # Update progress with current length
+                    # Update progress with smooth interpolation
                     current_len = sum(len(c) for c in full_response)
-                    tracker.update_stage(
-                        ProgressStage.CALLING_MODEL, 
-                        f"Generating response... ({current_len} chars)"
+                    tracker.update_stream_progress(
+                        chars_received=current_len,
+                        message=f"Generating response... ({current_len} chars)",
                     )
                 
                 raw = "".join(full_response)
                 
                 result_obj.model_output = raw
                 timing["model_call"] = time.time() - model_start
+
+                # Capture token usage from the client
+                if hasattr(client, "last_usage") and client.last_usage:
+                    result_obj.tokens = client.last_usage.to_dict()
                 
                 if not raw or not raw.strip():
                     # Empty response from model
