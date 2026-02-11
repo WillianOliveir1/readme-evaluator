@@ -23,7 +23,7 @@ def _load_job(path: str) -> Optional[dict]:
     """Safely load a single job JSON file (returns *None* on error)."""
     try:
         with open(path, "r", encoding="utf-8") as f:
-            return _json.load(f)
+            return dict(_json.load(f))
     except Exception:
         return None
 

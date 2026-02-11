@@ -123,7 +123,7 @@ class OllamaClient(LLMClient):
                     "total_duration_ns": data.get("total_duration", 0),
                 },
             )
-            return data.get("response", "")
+            return str(data.get("response", ""))
 
         try:
             return _call()

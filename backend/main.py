@@ -207,7 +207,7 @@ async def health_check():
     if mongodb_uri:
         try:
             from pymongo import MongoClient as _MongoClient
-            _client: _MongoClient = _MongoClient(mongodb_uri, serverSelectionTimeoutMS=3000)  # type: ignore[type-arg]
+            _client: _MongoClient = _MongoClient(mongodb_uri, serverSelectionTimeoutMS=3000)
             _client.admin.command("ping")
             _client.close()
             checks["mongodb"] = {"status": "ok"}
