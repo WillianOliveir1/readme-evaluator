@@ -72,7 +72,7 @@ app = FastAPI(title="Readme Evaluator API")
 
 # Rate limiting (slowapi)
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore[arg-type]
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)  # type: ignore
 
 # CORS — allow local Next.js dev server and Docker network by default
 _cors_env = os.environ.get("CORS_ORIGINS", "")

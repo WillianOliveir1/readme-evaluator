@@ -40,7 +40,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
-          pip install pytest httpx mypy types-requests
+          pip install pytest httpx types-requests types-Markdown
 
       # ---- mypy ----
       - name: Type-check with mypy

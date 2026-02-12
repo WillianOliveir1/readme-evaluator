@@ -72,7 +72,7 @@ strong { font-weight: bold; }
 
 def _markdown_to_html(md_text: str, repo_name: Optional[str]) -> str:
     """Convert markdown text to a full HTML document for PDF rendering."""
-    import markdown  # type: ignore[import-untyped]
+    import markdown
 
     extensions = [
         "markdown.extensions.tables",
