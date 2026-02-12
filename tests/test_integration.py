@@ -63,6 +63,7 @@ class TestExtractWithModelFlow:
     and JSON validation run for real.
     """
 
+    @patch.dict(os.environ, {"GEMINI_API_KEY": "test-key"})
     @patch("backend.evaluate.extractor.get_llm_client")
     def test_extract_with_model_valid_json(self, mock_factory):
         """Model returns well-formed taxonomy JSON → success + parsed."""
@@ -80,6 +81,7 @@ class TestExtractWithModelFlow:
         assert data["parsed"] is not None
         assert data["parsed"]["metadata"]["repository_name"] == "test-repo"
 
+    @patch.dict(os.environ, {"GEMINI_API_KEY": "test-key"})
     @patch("backend.evaluate.extractor.get_llm_client")
     def test_extract_with_model_bad_json(self, mock_factory):
         """Model returns garbage → success = True but validation may fail."""

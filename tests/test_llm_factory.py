@@ -16,6 +16,7 @@ from backend.llm_base import LLMClient
 class TestGetLlmClient:
     """Unit tests for the get_llm_client factory."""
 
+    @patch.dict(os.environ, {"GEMINI_API_KEY": "test-key"})
     @patch("backend.llm_factory.LLM_PROVIDER", "gemini")
     @patch("backend.gemini_client.genai")
     def test_default_returns_gemini(self, mock_genai):
@@ -40,6 +41,7 @@ class TestGetLlmClient:
         from backend.ollama_client import OllamaClient
         assert isinstance(client, OllamaClient)
 
+    @patch.dict(os.environ, {"GEMINI_API_KEY": "test-key"})
     @patch("backend.gemini_client.genai")
     def test_explicit_gemini_provider(self, mock_genai):
         mock_genai.Client.return_value = MagicMock()
@@ -65,6 +67,7 @@ class TestGetLlmClient:
         client = get_llm_client(provider="ollama", default_model="codellama")
         assert client.default_model == "codellama"
 
+    @patch.dict(os.environ, {"GEMINI_API_KEY": "test-key"})
     @patch("backend.gemini_client.genai")
     def test_default_model_forwarded_to_gemini(self, mock_genai):
         mock_genai.Client.return_value = MagicMock()
